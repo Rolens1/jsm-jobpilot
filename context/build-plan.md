@@ -228,6 +228,8 @@ Wire filter tabs, sort dropdown, text search, and pagination to real InsForge DB
 
 ### 12 Job Details Page — Full UI
 
+> Spec: [docs/specs/0007-job-details-page/index.md](docs/specs/0007-job-details-page/index.md)
+
 Build the complete job details page UI. Job data from DB is already available from Phase 3 — wire real data for all job info and match sections immediately. Company research section shows empty state only.
 
 **UI:**

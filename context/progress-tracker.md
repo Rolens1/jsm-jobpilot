@@ -8,7 +8,7 @@ Update this file after every completed feature. Any AI agent reading this should
 
 **Phase:** Phase 4: Job Details Page
 **Last completed:** 11 Filter, Sort, and Pagination (Real Database Wire Up and UI Controls)
-**Next:** 12 Job Details Page: Full UI (/find-jobs/[id])
+**Next:** 12 Job Details Page: Full UI (Spec 0007 ready for /develop)
 
 ---
 
