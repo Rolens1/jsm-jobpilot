@@ -9,7 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@insforge/sdk": "^1.5.2",
+    "lucide-react": "^1.61.0",
     "next": "16.4.3",
+    "posthog-js": "^1.438.21",
+    "posthog-node": "^5.57.1",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
