@@ -6,9 +6,9 @@ Update this file after every completed feature. Any AI agent reading this should
 
 ## Current Status
 
-**Phase:** Phase 2 — Profile Page
-**Last completed:** 04 Database Schema
-**Next:** 05 Profile Page — Full UI
+**Phase:** Phase 3 — Find Jobs Page
+**Last completed:** 08 Resume PDF Generation from Profile (Phase 2 complete, Spec 0004 built & verified)
+**Next:** 09 Find Jobs Page — Full UI
 
 ---
 
@@ -23,10 +23,10 @@ Update this file after every completed feature. Any AI agent reading this should
 
 ### Phase 2 — Profile Page
 
-- [ ] 05 Profile Page — Full UI
-- [ ] 06 Profile Save Logic
-- [ ] 07 AI Profile Extraction from Resume
-- [ ] 08 Resume PDF Generation from Profile
+- [x] 05 Profile Page — Full UI
+- [x] 06 Profile Save Logic & Secure PDF Resume Viewer
+- [x] 07 AI Profile Extraction from Resume
+- [x] 08 Resume PDF Generation from Profile
 
 ### Phase 3 — Find Jobs Page
 
@@ -56,6 +56,12 @@ Update this file after every completed feature. Any AI agent reading this should
 - **PostHog Dual-Client Integration**: Built `lib/posthog-client.ts` (`posthog-js`) with `PostHogProvider` client component wrapping root layout (`app/layout.tsx`), and `lib/posthog-server.ts` (`posthog-node` with `flushAt: 1, flushInterval: 0`).
 - **Canonical Event Contracts**: Typed and exposed the 4 project events (`job_search_started`, `job_found`, `profile_completed`, `company_researched`) client-side and server-side via `actions/analytics.ts`. Added interactive event dispatcher on the Dashboard.
 - **Normalized InsForge Database Schema**: Established `profiles`, `agent_runs`, `jobs`, and `agent_logs` tables in InsForge PostgreSQL. Enforced user-isolated Row Level Security (RLS) on all tables, foreign key cascade constraints, unique composite constraint on `(user_id, source_url)` with upsert support, and auto-provisioning trigger from `auth.users`. Created private `resumes` storage bucket with authenticated user path isolation. Added TypeScript definitions in `types/database.ts`.
+- **Modular Profile Page Architecture**: Built Feature 05 profile page with 3 isolated components (`ProfileAttentionBanner`, `ResumeSection`, `ProfileForm`) following `context/designs/profile.png` and token constraints in `app/globals.css`. Embedded SVG 70% circular progress meter, drag-and-drop resume upload zone with client-side PDF verification, interactive tag inputs for skills & industries with `Enter` and removal controls, and expandable work experience roles with "Currently working here" toggle. Synchronized authenticated navbar indicators across all app routes.
+- **Multi-Provider Free LLM Architecture**: Integrated Groq (`qwen/qwen3.8-27b`, 14,400 RPD free), Google Gemini (`gemini-3.8-flash`, 1,500 RPD free), Cerebras, and Mistral in `lib/ai.ts`. Sourced from the `free-llm-apis` ecosystem to guarantee high-rate zero-cost AI extraction, supported by a deterministic fallback parser in `lib/resume-heuristics.ts`. Designed `ExtractedResumeReview` component providing explicit candidate review with granular section checkmarks and a one-click "Auto-fill and validate" workflow.
+- **Non-Destructive Education & Snapshot Revert**: Form supports multiple education entries (`EducationEntry[]`). Validating education appends new unique institutions rather than overwriting manual entries. Every section captures a pre-validation snapshot on validation check; unchecking any section immediately restores the previous manual inputs without database pollution.
+- **Server Side PDF Resume Architecture (Spec 0004)**: Selected `@react-pdf/renderer` with `renderToBuffer` in a Server Action. Classic monochrome serif styling calibrated for strict single page ATS compliance. AI executive summary and experience bullets tailored to the candidate target job title, with instant zero latency fallback to raw profile text on any upstream model failure. Uploads to private InsForge Storage and opens in the in-app preview modal.
+
+
 
 ---
 

@@ -101,6 +101,8 @@ Build the complete profile page UI with mock data. No save logic yet.
 
 ### 06 Profile Save Logic
 
+> Spec: [docs/specs/0002-profile-save-logic/index.md](docs/specs/0002-profile-save-logic/index.md)
+
 Wire profile form to InsForge DB.
 
 **Logic:**
@@ -116,6 +118,8 @@ Wire profile form to InsForge DB.
 ---
 
 ### 07 AI Profile Extraction from Resume
+
+> Spec: [docs/specs/0003-resume-ai-extraction/index.md](docs/specs/0003-resume-ai-extraction/index.md)
 
 Extract from Resume button — GPT-4o reads uploaded PDF and auto-fills profile form fields.
 
@@ -137,6 +141,8 @@ Extract from Resume button — GPT-4o reads uploaded PDF and auto-fills profile 
 ---
 
 ### 08 Resume PDF Generation from Profile
+
+> Spec: [docs/specs/0004-resume-pdf-generation/index.md](docs/specs/0004-resume-pdf-generation/index.md)
 
 Generate a clean professional PDF resume from current profile data using GPT-4o.
 

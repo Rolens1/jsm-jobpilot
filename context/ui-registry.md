@@ -22,9 +22,10 @@ After building any component — update this file with the component name, file 
 - **File**: `components/layout/Navbar.tsx`
 - **Classes**: `h-16 w-full bg-surface border-b border-border sticky top-0 z-50`
 - **Container**: `max-w-[1440px] mx-auto h-full px-6 flex items-center justify-between`
-- **Active Nav Item**: `text-sm font-medium text-accent`
-- **Inactive Nav Item**: `text-sm font-medium text-text-dark hover:text-accent transition-colors`
-- **Action Button**: `bg-text-darkest text-surface rounded-lg px-4 py-2 text-sm font-medium hover:opacity-90 transition-opacity`
+- **Authenticated App Nav Items**: `Dashboard`, `Find Jobs`, `Profile` with Lucide icons (`LayoutDashboard`, `Search`, `User`)
+- **Active App Nav Item**: `h-full flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium transition-colors border-b-2 border-accent text-accent`
+- **Inactive App Nav Item**: `h-full flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium transition-colors border-b-2 border-transparent text-text-secondary hover:text-text-primary`
+- **Unauthenticated Nav Action Button**: `bg-text-darkest text-surface rounded-lg px-4 py-2 text-sm font-medium hover:opacity-90 transition-opacity`
 
 ### `Footer`
 - **File**: `components/layout/Footer.tsx`
@@ -114,6 +115,68 @@ After building any component — update this file with the component name, file 
 ### `PostHogProvider`
 - **File**: `components/providers/PostHogProvider.tsx`
 - **Purpose**: Client provider wrapping root layout to initialize PostHog in the browser.
+
+### `ProfileAttentionBanner`
+- **File**: `components/profile/ProfileAttentionBanner.tsx`
+- **Card**: `w-full bg-surface rounded-2xl border border-border p-6 sm:p-7 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-6`
+- **Attention Icon**: `w-5 h-5 text-error shrink-0`
+- **Completed Icon**: `w-5 h-5 text-success shrink-0`
+- **Heading**: `text-lg font-bold tracking-tight text-text-primary`
+- **Description**: `text-xs sm:text-sm text-text-secondary mt-1.5 max-w-xl leading-relaxed`
+- **Missing Tag Badge**: `px-2.5 py-1 rounded-md text-[11px] font-semibold tracking-wider uppercase bg-error/10 text-error border border-error/20`
+- **Progress Ring**: SVG 96x96 circle, radius 38, strokeWidth 9, background `stroke-border-light`, active stroke `stroke-error` (attention) or `stroke-success` (completed), center text `text-xl sm:text-2xl font-bold text-text-primary`
+
+### `ResumeSection`
+- **File**: `components/profile/ResumeSection.tsx`
+- **Card**: `w-full bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm`
+- **Dropzone Area**: `mt-6 border-2 border-dashed border-border-muted rounded-xl p-8 sm:p-10 flex flex-col items-center justify-center text-center bg-surface-secondary/40 hover:bg-surface-secondary/70 transition-all`
+- **Cloud Badge**: `w-12 h-12 rounded-full bg-accent-light/50 flex items-center justify-center text-accent mb-3.5`
+- **Saved Resume Badge**: `inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface border border-border shadow-xs text-xs sm:text-sm font-medium text-text-primary`
+- **View Resume Action Button**: `bg-accent hover:bg-accent-dark text-accent-foreground font-semibold px-4 py-2 rounded-lg text-xs sm:text-sm flex items-center gap-2 shadow-xs transition-colors cursor-pointer`
+- **Extract from Resume Button**: `bg-accent/15 hover:bg-accent/25 text-accent border border-accent/30 font-semibold px-4 py-2 rounded-lg text-xs sm:text-sm flex items-center gap-2 shadow-xs transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed`
+- **Resume PDF Preview Modal**: `fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xs animate-in fade-in duration-200`
+- **Resume Modal Container**: `relative w-full max-w-4xl bg-surface border border-border rounded-2xl shadow-xl flex flex-col overflow-hidden max-h-[90vh]`
+- **Resume Modal Iframe Viewer**: `w-full h-[68vh] rounded-xl border border-border bg-surface`
+- **Change File Button**: `px-3.5 py-2 bg-surface hover:bg-surface-secondary border border-border rounded-lg text-xs sm:text-sm font-medium text-text-secondary transition-colors cursor-pointer`
+- **Select Button**: `mt-4 px-4 py-2 bg-surface hover:bg-surface-secondary border border-border rounded-lg text-xs sm:text-sm font-medium text-text-primary shadow-xs transition-colors cursor-pointer`
+- **Generate AI Resume Action**: `bg-accent hover:bg-accent-dark text-accent-foreground rounded-lg px-4 py-2 text-xs sm:text-sm font-semibold flex items-center gap-2 transition-colors shadow-xs cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed shrink-0`
+- **Modal Download Action**: `px-3 py-1.5 rounded-lg bg-accent hover:bg-accent-dark text-accent-foreground text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs`
+
+
+### `ProfileForm`
+- **File**: `components/profile/ProfileForm.tsx`
+- **Card**: `w-full bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm text-left`
+- **Section Heading**: `text-base font-bold text-text-primary mb-4`
+- **Section Action Button (Add education / Add role)**: `text-sm font-medium text-accent hover:text-accent-dark transition-colors flex items-center gap-1 cursor-pointer`
+- **Field Label**: `text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5`
+- **Input**: `w-full bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors`
+- **Read-only Input**: `w-full bg-surface-secondary border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-secondary cursor-not-allowed select-none`
+- **Select Dropdown**: `w-full bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary appearance-none focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer pr-10`
+- **Skill/Industry Tag**: `bg-surface-secondary border border-border rounded-lg px-3 py-1.5 text-xs font-medium text-text-primary inline-flex items-center gap-1.5`
+- **Role / Education Card**: `border border-border rounded-xl p-4 sm:p-5 bg-surface space-y-4 relative`
+- **Remove Card Action**: `absolute top-4 right-4 text-text-muted hover:text-error transition-colors p-1 cursor-pointer`
+- **Save Profile Button**: `w-full py-3.5 bg-accent hover:bg-accent-dark text-accent-foreground font-semibold rounded-xl transition-all duration-200 shadow-sm text-base flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed`
+- **Error Alert Banner**: `p-3.5 rounded-xl bg-error/10 border border-error/20 text-error text-xs sm:text-sm font-medium flex items-center gap-2.5`
+- **Warning Alert Banner**: `p-3.5 rounded-xl bg-warning/10 border border-warning/20 text-warning text-xs sm:text-sm font-medium flex items-center gap-2.5`
+- **Form State Snapshot & Revert Pattern**: Validating a section in review captures a deep snapshot of manual field entries. Unchecking restores the exact pre validation snapshot into form state immediately without database mutations.
+
+### `ExtractedResumeReview`
+- **File**: `components/profile/ExtractedResumeReview.tsx`
+- **Card**: `w-full bg-surface rounded-2xl border-2 border-accent/40 bg-accent-muted/10 p-6 sm:p-7 shadow-sm transition-all text-left animate-in fade-in duration-300`
+- **Extraction Source Badge**: `inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-accent/15 text-accent border border-accent/30`
+- **Auto-fill & Validate All Action**: `bg-accent hover:bg-accent-dark disabled:opacity-60 text-accent-foreground font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow-xs transition-all cursor-pointer disabled:cursor-not-allowed`
+- **Section Validate Check (Active/Validated)**: `bg-success/15 text-success border border-success/30 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer`
+- **Section Validate Check (Unvalidated)**: `bg-surface hover:bg-surface-secondary text-text-secondary border border-border inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer`
+- **Section Inner Card**: `p-4 rounded-xl bg-surface border border-border flex flex-col justify-between gap-3 shadow-2xs`
+
+### `ProfileContainer`
+- **File**: `components/profile/ProfileContainer.tsx`
+- **Container**: `flex flex-col gap-6`
+- **Coordination**: Connects Server Component profile prefetch with live attention banner percentage recalculations, resume upload selection, AI extraction (`extractResumeProfile`), non-destructive form field merge, and `saveProfile` Server Action submission.
+- **AI Extraction Success Alert**: `p-4 rounded-xl border flex items-center justify-between gap-3 text-xs sm:text-sm font-medium bg-accent/10 border-accent/30 text-text-primary transition-all`
+- **AI Extraction Error Alert**: `p-4 rounded-xl border flex items-center justify-between gap-3 text-xs sm:text-sm font-medium bg-error/10 border-error/20 text-error transition-all`
+
+
 
 
 

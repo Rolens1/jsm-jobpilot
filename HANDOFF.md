@@ -1,72 +1,64 @@
 # Handoff / Session Memory
 
-> Generated: 2026-10-24T19:44:00-04:00  
+> Generated: 2026-10-24T23:11:00-04:00  
 > Project: JobPilot (`d:/Ai Projects/job-pilot`)  
-> Session summary: Successfully debugged and verified PostHog integration in Next.js 16 (App Router + Turbopack). Resolved the `[PostHog.js] [SessionRecording] "could not load recorder"` console issue by disabling session recording, configured reverse proxy `/ingest` rewrites in `next.config.ts`, fixed Next.js 16 dynamic prerender `Date.now()` boundaries with `await connection()`, fixed `<Image>` aspect ratio styles, and confirmed 100% clean production build (`npm run build` exit code 0). Completed `/code-review-and-quality` audit and updated project memory. Ready for Feature 04 (Database Schema).
+> Session summary: Completed `/architect feature 7` (AI Profile Extraction from Resume). Ratified specification [0003-resume-ai-extraction](docs/specs/0003-resume-ai-extraction/index.md) and its companion [rationale.md](docs/specs/0003-resume-ai-extraction/rationale.md). Settled all core architecture decisions: (1) Explicit candidate trigger via "Extract from Resume" button rather than silent auto-extraction on upload; (2) Interactive review panel displaying six section cards with granular checkmark toggles and an "Auto-fill & Validate All" action; (3) Non-destructive union merge to preserve manual entries and combine skills/industries; (4) Multi-provider model gateway (Groq primary, Gemini secondary, with deterministic heuristic fallback) for 100% availability and zero cost; (5) Form pre-fill with explicit candidate review before database persistence on clicking the primary "Save Profile" button. Ready for `/develop feature 7`.
 
 ## Goal
 
-Build JobPilot, an AI-powered job hunting assistant using Next.js 16 (App Router), InsForge backend (Auth, DB, Storage), Browserbase + Stagehand for company research, Adzuna API for job discovery, OpenAI GPT-4o for matching/synthesis, and PostHog for analytics. Follow the 17-feature build plan in `context/build-plan.md`.
+Build JobPilot, an AI-powered job hunting assistant using Next.js 16 (App Router), InsForge backend (Auth, DB, Storage), Browserbase + Stagehand for company research, Adzuna API for job discovery, OpenAI/Groq/Gemini for LLM operations, and PostHog for analytics. Follow the 17-feature build plan in `context/build-plan.md`.
 
 ## Current State
 
 **Completed & Confirmed Working:**
 - **Feature 01: Homepage** is fully implemented and compiled cleanly with `npm run build` (Next.js 16.4.3 Turbopack, 0 errors).
-- **Feature 02: Auth** is fully implemented and compiled cleanly with `npm run build`:
-  - `@insforge/sdk@1.5.2` installed with credentials in `.env.local`.
-  - Browser client in [lib/insforge-client.ts](file:///d:/Ai%20Projects/job-pilot/lib/insforge-client.ts) and server client in [lib/insforge-server.ts](file:///d:/Ai%20Projects/job-pilot/lib/insforge-server.ts).
-  - Login page at [app/(auth)/login/page.tsx](file:///d:/Ai%20Projects/job-pilot/app/(auth)/login/page.tsx) with `LoginCard` supporting Google and GitHub OAuth, loading states, error handling, and clean navigation.
-  - Server-side OAuth callback Route Handler at [app/(auth)/callback/route.ts](file:///d:/Ai%20Projects/job-pilot/app/(auth)/callback/route.ts) with PKCE authorization code exchange and instant redirect to `/dashboard` or `/profile`.
-  - Route protection middleware in [middleware.ts](file:///d:/Ai%20Projects/job-pilot/middleware.ts) safeguarding `/dashboard`, `/profile`, and `/find-jobs`.
-- **Feature 03: PostHog Initialization & Event Tracking** is fully implemented, debugged, and verified:
-  - `posthog-js` and `posthog-node` integrated.
-  - Browser client in [lib/posthog-client.ts](file:///d:/Ai%20Projects/job-pilot/lib/posthog-client.ts) initialized with project token, host, `disable_session_recording: true`, and manual pageview capture.
-  - Reverse proxy rewrite in [next.config.ts](file:///d:/Ai%20Projects/job-pilot/next.config.ts) proxying `/ingest/:path*` to `https://us.i.posthog.com/:path*` to prevent ad-blocker drops.
-  - Server client in [lib/posthog-server.ts](file:///d:/Ai%20Projects/job-pilot/lib/posthog-server.ts) configured with `flushAt: 1` and `flushInterval: 0` for immediate serverless delivery.
-  - Root layout in [app/layout.tsx](file:///d:/Ai%20Projects/job-pilot/app/layout.tsx) wrapped in [components/providers/PostHogProvider.tsx](file:///d:/Ai%20Projects/job-pilot/components/providers/PostHogProvider.tsx).
-  - User identification via `identifyUser()` on dashboard and profile visits; reset via `resetUser()` on logout in [components/auth/SignOutButton.tsx](file:///d:/Ai%20Projects/job-pilot/components/auth/SignOutButton.tsx).
-  - Server action in [actions/analytics.ts](file:///d:/Ai%20Projects/job-pilot/actions/analytics.ts) (`trackServerAnalyticsEvent`) for server-side capturing.
-  - Interactive event tracking panel in [components/dashboard/EventTrackingCard.tsx](file:///d:/Ai%20Projects/job-pilot/components/dashboard/EventTrackingCard.tsx) and [components/profile/ProfileCompleteTracker.tsx](file:///d:/Ai%20Projects/job-pilot/components/profile/ProfileCompleteTracker.tsx) supporting all 4 canonical project events: `job_search_started`, `job_found`, `profile_completed`, `company_researched`.
-- **Feature 04: Database Schema & Storage Bucket** is fully implemented, migrated, and verified:
-  - Spec [docs/specs/0001-database-schema.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0001-database-schema.md) created and `Accepted`.
-  - All four PostgreSQL tables (`profiles`, `agent_runs`, `jobs`, `agent_logs`) created live in InsForge with exact column types and constraints.
-  - Composite unique constraint `jobs_user_source_url_unique` enforced on `(user_id, source_url)` for idempotent upserts.
-  - Automatic `updated_at` trigger on `profiles` and `jobs`, plus `handle_new_user` auto-provisioning trigger from `auth.users`.
-  - 16 Row Level Security policies active across all four tables.
-  - Storage bucket `resumes` created with authenticated access (`public: false`).
-  - Migration script committed to [lib/migrations/0001_initial_schema.sql](file:///d:/Ai%20Projects/job-pilot/lib/migrations/0001_initial_schema.sql).
-  - TypeScript types defined in [types/database.ts](file:///d:/Ai%20Projects/job-pilot/types/database.ts).
-  - Detailed verification checklist saved to [docs/specs/0001-database-schema-verify.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0001-database-schema-verify.md).
-  - Production build (`npm run build`) and typecheck (`npx tsc --noEmit`) pass with 0 errors.
+- **Feature 02: Auth** is fully implemented and compiled cleanly with `npm run build`.
+- **Feature 03: PostHog Initialization & Event Tracking** is fully implemented, debugged, and verified.
+- **Feature 04: Database Schema & Storage Bucket** is fully implemented, migrated, and verified.
+- **Feature 05: Profile Page — Full UI** is fully implemented, responsive, and verified.
+- **Feature 06: Profile Save Logic & Secure Resume PDF Viewing** is fully implemented, hardened, and verified:
+  - Profile fields persist directly to the PostgreSQL `profiles` table via Server Action [actions/profile.ts](file:///d:/Ai%20Projects/job-pilot/actions/profile.ts).
+  - Resumes upload to private storage bucket `resumes` under user-scoped paths (`{userId}/resume.pdf`).
+  - Authenticated streaming endpoint [app/api/resume/route.ts](file:///d:/Ai%20Projects/job-pilot/app/api/resume/route.ts) streams stored PDF files directly with `Content-Disposition: inline`.
+  - In-app PDF preview modal in [components/profile/ResumeSection.tsx](file:///d:/Ai%20Projects/job-pilot/components/profile/ResumeSection.tsx) allows users to view selected local files or existing saved resumes in an embedded viewer or open in a native browser tab.
+- **Feature 07: AI Profile Extraction from Resume** is fully implemented, debugged, and verified:
+  - Multi provider AI model gateway in [lib/ai.ts](file:///d:/Ai%20Projects/job-pilot/lib/ai.ts) and [actions/resume.ts](file:///d:/Ai%20Projects/job-pilot/actions/resume.ts) using Groq, Gemini, and offline heuristics.
+  - Explicit candidate trigger buttons ("Extract from Resume", "Extract from Saved Resume") in [components/profile/ResumeSection.tsx](file:///d:/Ai%20Projects/job-pilot/components/profile/ResumeSection.tsx).
+  - Interactive validation panel [components/profile/ExtractedResumeReview.tsx](file:///d:/Ai%20Projects/job-pilot/components/profile/ExtractedResumeReview.tsx) displaying six section cards with checkmarks and an "Auto-fill & Validate All" action.
+  - Non-destructive form merge in [components/profile/ProfileForm.tsx](file:///d:/Ai%20Projects/job-pilot/components/profile/ProfileForm.tsx) applying only validated cards with unique union merges for tags and preserving manual inputs.
+  - Preserved candidate persistence boundary (AC-8): form updates remain in review state until the user clicks the primary "Save Profile" button.
+  - Verified test checklist in [docs/specs/0003-resume-ai-extraction/verify.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0003-resume-ai-extraction/verify.md).
+- **Feature 08: Resume PDF Generation from Profile** is fully implemented, verified, and accepted (Spec [0004-resume-pdf-generation](docs/specs/0004-resume-pdf-generation/index.md)):
+  - Server Action rendering via `@react-pdf/renderer` with `renderToBuffer()`.
+  - Classic monochrome serif styling in [ClassicMonochromeTemplate.tsx](file:///d:/Ai%20Projects/job-pilot/lib/pdf/ClassicMonochromeTemplate.tsx) calibrated for strict single page ATS compliance.
+  - Domain tailored executive summary and bullet points matching target job titles in [lib/ai.ts](file:///d:/Ai%20Projects/job-pilot/lib/ai.ts).
+  - Instant zero latency fallback to raw profile text on upstream AI provider errors or timeouts.
+  - Direct upload to private InsForge Storage (`resumes/{user_id}/resume.pdf`) and auto-opening preview modal with direct PDF download.
+  - All 8 acceptance criteria verified in [verify.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0004-resume-pdf-generation/verify.md).
+- **Phase 2 (Profile Page) is 100% Complete!**
+- **Next up:**
+  - **Phase 3 — Find Jobs Page**: Feature 09 (Find Jobs Page — Full UI).
 
 ## Files in Play
 
 | File | Why It Matters |
 |------|---------------|
-| [docs/specs/0001-database-schema.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0001-database-schema.md) | Governing build spec for database schema and storage architecture |
-| [docs/specs/0001-database-schema-verify.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0001-database-schema-verify.md) | Verification checklist covering all acceptance criteria and value sourcing |
-| [lib/migrations/0001_initial_schema.sql](file:///d:/Ai%20Projects/job-pilot/lib/migrations/0001_initial_schema.sql) | Raw PostgreSQL migration script executed on InsForge |
-| [types/database.ts](file:///d:/Ai%20Projects/job-pilot/types/database.ts) | TypeScript interfaces for `Profile`, `AgentRun`, `Job`, and `AgentLog` |
-| [context/progress-tracker.md](file:///d:/Ai%20Projects/job-pilot/context/progress-tracker.md) | Progress tracker marking Feature 04 complete, Phase 1 100% done |
-| [context/architecture.md](file:///d:/Ai%20Projects/job-pilot/context/architecture.md) | System architecture with database schemas and storage specs |
+| [docs/specs/0004-resume-pdf-generation/index.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0004-resume-pdf-generation/index.md) | Governing build specification for Feature 08 |
+| [docs/specs/0004-resume-pdf-generation/rationale.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0004-resume-pdf-generation/rationale.md) | Architectural rationale and tradeoffs for Feature 08 |
+| [docs/specs/0004-resume-pdf-generation/verify.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0004-resume-pdf-generation/verify.md) | Verification checklist with all 8 ACs verified |
+| [actions/resume.ts](file:///d:/Ai%20Projects/job-pilot/actions/resume.ts) | Server Actions for resume extraction and PDF generation |
+| [lib/pdf/ClassicMonochromeTemplate.tsx](file:///d:/Ai%20Projects/job-pilot/lib/pdf/ClassicMonochromeTemplate.tsx) | React-pdf declarative document template |
+| [components/profile/ResumeSection.tsx](file:///d:/Ai%20Projects/job-pilot/components/profile/ResumeSection.tsx) | Generate AI Resume button, error alerts, and preview modal trigger |
+| [context/progress-tracker.md](file:///d:/Ai%20Projects/job-pilot/context/progress-tracker.md) | Progress tracker marking Phase 2 complete and Phase 3 next |
+| [context/build-plan.md](file:///d:/Ai%20Projects/job-pilot/context/build-plan.md) | 17-feature build plan |
 
-## Current Best Theory & Next Steps
+## Next Steps
 
-Phase 1 (Foundation) is 100% complete! All 4 foundation features (01 Homepage, 02 Auth, 03 PostHog, 04 Database Schema) are live, tested, and compiling cleanly.
+1. Transition to **Phase 3 (Find Jobs Page)**.
+2. Run `/architect feature 9` or build **Feature 09 (Find Jobs Page — Full UI)**.
 
-The immediate next milestone is **Phase 2, Feature 05: Profile Page — Full UI**.
 
-1. **Feature 05: Profile Page — Full UI**
-   - Profile completion banner with percentage progress ring and missing field chips (e.g. PHONE, LOCATION, EDUCATION).
-   - Resume upload area (drag & drop zone, PDF only, Select Resume button, Generate Resume button).
-   - Structured profile information sections:
-     - Personal Info (Full Name, read-only Email, Phone, Location, LinkedIn, Portfolio, Work Authorization).
-     - Professional Info (Current Title, Experience Level, Years of Experience, Skills tag input, Industries tag input).
-     - Work Experience (up to 3 roles with Company, Title, Dates, Current checkbox, Responsibilities).
-     - Education (Degree, Field of Study, Institution, Graduation Year).
-     - Job Preferences (Target Titles, Remote Preference, Salary Expectation, Preferred Locations, Tone).
-   - Save Profile button at bottom.
-   - Use mock data first; wiring to InsForge DB is Feature 06.
+
 
 ## Key Constraints
 
