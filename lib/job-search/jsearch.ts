@@ -21,9 +21,9 @@ export async function searchJSearch(
   });
 
   const host = process.env.RAPIDAPI_HOST || "jsearch.p.rapidapi.com";
-  const url = `https://${host}/search?${params.toString()}`;
-
-  const response = await fetch(url, {
+  
+  // Try /search-v2 first (active RapidAPI endpoint), fallback to /search
+  let response = await fetch(`https://${host}/search-v2?${params.toString()}`, {
     method: "GET",
     headers: {
       "x-rapidapi-key": apiKey,
@@ -33,12 +33,27 @@ export async function searchJSearch(
     cache: "no-store",
   });
 
+  if (!response.ok && response.status === 404) {
+    response = await fetch(`https://${host}/search?${params.toString()}`, {
+      method: "GET",
+      headers: {
+        "x-rapidapi-key": apiKey,
+        "x-rapidapi-host": host,
+      },
+      cache: "no-store",
+    });
+  }
+
   if (!response.ok) {
     throw new Error(`JSearch API error: ${response.status} ${response.statusText}`);
   }
 
   const data = await response.json();
-  const rawJobs = Array.isArray(data?.data) ? data.data : [];
+  const rawJobs = Array.isArray(data?.data?.jobs)
+    ? data.data.jobs
+    : Array.isArray(data?.data)
+    ? data.data
+    : [];
 
   return rawJobs.map((raw: any): UnifiedJob => {
     let jobType: JobType = "fulltime";
