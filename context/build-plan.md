@@ -450,13 +450,54 @@ Wire three dashboard charts to real PostHog event data for current user.
 
 ---
 
+## Phase 6: Internationalization (French and English Localization)
+
+### 18 Language Architecture, Dictionaries, and Onboarding Preference
+
+Build the core bilingual infrastructure with frictionless first login onboarding and a sleek navbar control.
+
+**Logic & UI:**
+- Lightweight type safe dictionary system (`messages/en.json` and `messages/fr.json`) supporting server and client components without route disruption.
+- Automatic browser language detection on initial landing using `Accept-Language` header and browser navigator.
+- First time login language prompt: displays an elegant onboarding prompt asking the candidate for their preferred language (English or Français) with one click confirmation, immediately setting `NEXT_LOCALE` cookie and updating `preferred_language` in the InsForge `profiles` table.
+- Professional Navbar switcher: integrated seamlessly into the top navigation bar alongside profile controls as a clean segmented pill (EN | FR) with smooth micro interactions, avoiding persistent floating badges.
+- Instant cookie synchronization and live revalidation on language switch.
+
+---
+
+### 19 Full UI Copy Conversion Across All App Surfaces
+
+Translate all application screens and UI components with high quality native French terminology tailored to modern engineering and tech recruitment.
+
+**Scope:**
+- Public pages: Homepage (Hero, Features, Testimonial, Bottom CTA), Footer, Auth (Login card, callback states).
+- Candidate Profile: Attention banner, circular progress meter, resume dropzone, profile form sections, tag inputs, and extracted resume review modal.
+- Find Jobs: Search controls, quick filter bar, status tabs (All Matches / Toutes les correspondances, High Match / Forte compatibilité), table columns, and pagination labels.
+- Job Details: Header card, metrics grid (Salary, Type, Found Date, Source), AI match analysis badges, job description layout, and floating sticky apply bar.
+- Dashboard: Header greeting, stats cards, recent activity feed, and analytics chart axes.
+
+---
+
+### 20 Bilingual AI and Document Intelligence
+
+Make AI generation, scoring explanations, and document generation respect the candidate active language preference.
+
+**Logic:**
+- Scorer Prompt Calibration (`lib/job-search/scorer.ts`): Passes candidate preferred language to the AI system prompt so `match_reason` narrative and skill summaries are generated in French when requested.
+- ATS Resume PDF Generator (`lib/pdf/ClassicMonochromeTemplate.tsx`): Translates classic ATS section headings (Expérience professionnelle, Formation, Compétences clés) and date format strings based on candidate preference.
+- Resume AI Extraction (`actions/resume.ts`): Preserves multilingual extraction compatibility, handling both French and English CVs seamlessly.
+- Error messages and validation alerts rendered in the candidate chosen language.
+
+---
+
 ## Feature Count
 
 | Phase                 | Features |
 | --------------------- | -------- |
-| Phase 1 — Foundation  | 4        |
-| Phase 2 — Profile     | 4        |
-| Phase 3 — Find Jobs   | 3        |
-| Phase 4 — Job Details | 2        |
-| Phase 5 — Dashboard   | 4        |
-| **Total**             | **17**   |
+| Phase 1: Foundation   | 4        |
+| Phase 2: Profile      | 4        |
+| Phase 3: Find Jobs    | 3        |
+| Phase 4: Job Details  | 2        |
+| Phase 5: Dashboard    | 4        |
+| Phase 6: i18n (FR/EN) | 3        |
+| **Total**             | **20**   |

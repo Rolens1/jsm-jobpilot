@@ -46,6 +46,12 @@ Update this file after every completed feature. Any AI agent reading this should
 - [ ] 16 Recent Activity — Real Data
 - [ ] 17 Analytics Charts — PostHog Data
 
+### Phase 6: Internationalization (French and English)
+
+- [ ] 18 Language Architecture, Dictionaries, and Onboarding Preference
+- [ ] 19 Full UI Copy Conversion Across All App Surfaces
+- [ ] 20 Bilingual AI and Document Intelligence
+
 ---
 
 ## Decisions Made During Build
