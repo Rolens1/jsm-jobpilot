@@ -182,30 +182,26 @@ Build the complete Find Jobs page UI with mock data. No logic yet.
 
 ---
 
-### 10 Adzuna Job Discovery
+### 10 Multi Provider Job Discovery Agent
 
-Agent calls Adzuna API to find jobs matching user's search criteria, scores them against user profile, saves to DB.
+Agent finds jobs matching user search criteria using JSearch on RapidAPI as the primary provider with full descriptions, falling back to Jooble and Adzuna. Scored against user profile using GPT-4o, with same search caching and deduplication.
 
 **Logic:**
 
-- POST /api/agent/find receives jobTitle and location from client
-- Call Adzuna API:
-  - GET https://api.adzuna.com/v1/api/jobs/{country}/search/1
-  - params: what={jobTitle}, where={location}, results_per_page=10, app_id, app_key
-  - Detect country from location input — default to 'us'
-- For each job returned:
-  - Extract title, company, location, salary, description snippet, redirect_url
-  - GPT-4o scores job against user profile:
-    - matchScore — integer 0-100
-    - matchReason — one paragraph explanation
-    - matchedSkills — skills user has that job requires
-    - missingSkills — skills job requires that user lacks
-  - Save complete record to jobs table:
-    - source: 'search'
-    - run_id from agent_runs record
-    - All structured fields saved
-- Create agent_run record in DB
-- After all jobs saved — update agent_run with total count, return success message to frontend
+- POST /api/agent/find receives jobTitle, location, and optional page/forceRefresh from client
+- Check database for existing matches. If the user submits the identical search terms without changes, return existing records without consuming external API credits.
+- Query external providers in cascade:
+  - Primary: JSearch via RapidAPI (10 jobs per page, full descriptions, company logos, direct apply links)
+  - Secondary fallback: Jooble API (if JSearch returns 429 or error)
+  - Tertiary fallback: Adzuna API (if both prior providers fail)
+- Deduplicate listings against existing user jobs in the database
+- Batch evaluate all new listings with GPT-4o in a single structured JSON completion:
+  - matchScore: integer 0 to 100
+  - matchReason: one paragraph explanation
+  - matchedSkills: skills user has that job requires
+  - missingSkills: skills job requires that user lacks
+- Persist structured jobs into jobs table and create agent_run record
+- Return discovered jobs and success counts to frontend
 
 **PostHog events:** `job_search_started`, `job_found`
 

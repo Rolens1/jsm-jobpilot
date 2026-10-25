@@ -31,7 +31,7 @@ Update this file after every completed feature. Any AI agent reading this should
 ### Phase 3 — Find Jobs Page
 
 - [x] 09 Find Jobs Page — Full UI
-- [ ] 10 Adzuna Job Discovery
+- [ ] 10 Multi Provider Job Discovery Agent
 - [ ] 11 Filter + Sort + Pagination
 
 ### Phase 4 — Job Details Page
@@ -61,6 +61,7 @@ Update this file after every completed feature. Any AI agent reading this should
 - **Non-Destructive Education & Snapshot Revert**: Form supports multiple education entries (`EducationEntry[]`). Validating education appends new unique institutions rather than overwriting manual entries. Every section captures a pre-validation snapshot on validation check; unchecking any section immediately restores the previous manual inputs without database pollution.
 - **Server Side PDF Resume Architecture (Spec 0004)**: Selected `@react-pdf/renderer` with `renderToBuffer` in a Server Action. Classic monochrome serif styling calibrated for strict single page ATS compliance. AI executive summary and experience bullets tailored to the candidate target job title, with instant zero latency fallback to raw profile text on any upstream model failure. Uploads to private InsForge Storage and opens in the in-app preview modal.
 - **Find Jobs Page Modular UI Architecture (Spec 0005)**: Built full client interface for `/find-jobs` with 24 realistic mock jobs mirroring the InsForge jobs schema. Decomposed into four modular presentation components (`SearchControls`, `JobFilters`, `JobsTable`, `JobsPagination`) orchestrated by `FindJobsContainer`. Interactive text filter across title, company, location, and matched skills. Match score threshold select (`all`, `high` 70%+, `low` <70%) and sort selector (`match_score`, `newest`, `oldest`). Progress bars adhere strictly to token rules (`bg-success` 80%+, `bg-info` 60% to 79%, `bg-warning` <60%). Added route fallback at `/find-jobs/[id]` wrapped in Suspense for seamless row navigation and Next.js 16 Partial Prerendering compliance.
+- **Multi Provider Job Discovery Engine (Spec 0006)**: Replaced single Adzuna dependency with a cascading multi provider search engine in `lib/job-search/` (JSearch on RapidAPI primary, Jooble secondary, Adzuna tertiary). Added query deduplication, same search guard (prevents external API calls if search terms are unchanged), on demand pagination ("Load 10 More from Web"), and single batch GPT-4o structured JSON scoring.
 
 
 

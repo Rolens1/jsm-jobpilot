@@ -155,101 +155,138 @@ const url = data.publicUrl;
 
 ---
 
-## Adzuna API
+## Job Search APIs (JSearch, Jooble, Adzuna)
 
-**Check first:** Check AGENTS.md for an installed Adzuna skill. If none exists — use this file and the official Adzuna API docs.
+JobPilot uses a multi provider cascading engine for job discovery. JSearch on RapidAPI is the primary provider with full job descriptions and employer logos. Jooble and Adzuna serve as automated fallbacks when quotas or errors occur.
 
-### Job Search
+### Provider Cascade Architecture
+
+```
+User Search → Check Existing DB Listings (Same Search Guard)
+                     │
+         ┌───────────┴───────────┐
+         │ (If new or refresh)   │
+         ▼                       ▼
+    1. JSearch (Primary)    2. Jooble (Fallback 1)    3. Adzuna (Fallback 2)
+    RapidAPI GET            POST JSON                 GET REST
+    Full descriptions       Excerpts                  Excerpts
+```
+
+### 1. JSearch API (Primary Provider)
 
 ```typescript
-// lib/adzuna.ts
-export async function searchJobs(
+// lib/job-search/jsearch.ts
+export async function searchJSearch(
   jobTitle: string,
   location: string,
-  country: string = "us",
-): Promise<AdzunaJob[]> {
+  page: number = 1
+): Promise<UnifiedJob[]> {
+  const query = location ? `${jobTitle} in ${location}` : jobTitle;
   const params = new URLSearchParams({
-    app_id: process.env.ADZUNA_APP_ID!,
-    app_key: process.env.ADZUNA_APP_KEY!,
-    what: jobTitle,
-    category: "it-jobs", // always filter to IT jobs
-    results_per_page: "10",
-    "content-type": "application/json",
+    query,
+    page: String(page),
+    num_pages: "1",
+    country: "ca",
+    date_posted: "month",
   });
 
-  // Only add where if location is provided
-  if (location) {
-    params.set("where", location);
-  }
-
   const response = await fetch(
-    `https://api.adzuna.com/v1/api/jobs/${country}/search/1?${params}`,
+    `https://jsearch.p.rapidapi.com/search?${params}`,
+    {
+      headers: {
+        "x-rapidapi-key": process.env.RAPIDAPI_KEY!,
+        "x-rapidapi-host": process.env.RAPIDAPI_HOST || "jsearch.p.rapidapi.com",
+      },
+    }
   );
 
   if (!response.ok) {
-    throw new Error(`Adzuna API error: ${response.status}`);
+    throw new Error(`JSearch API error: ${response.status}`);
   }
 
   const data = await response.json();
-  return data.results || [];
+  return (data.data || []).map((raw: any) => ({
+    id: raw.job_id,
+    provider: "jsearch",
+    title: raw.job_title,
+    company: raw.employer_name,
+    location: raw.job_city ? `${raw.job_city}, ${raw.job_state || ""}` : raw.job_country,
+    salary: raw.job_salary_string || (raw.job_min_salary ? `$${Math.round(raw.job_min_salary / 1000)}k` : null),
+    jobType: raw.job_employment_type?.toLowerCase().includes("contract") ? "contract" : "fulltime",
+    aboutRole: raw.job_description,
+    sourceUrl: raw.job_google_link || raw.job_apply_link,
+    externalApplyUrl: raw.job_apply_link,
+    employerLogo: raw.employer_logo || null,
+  }));
 }
 ```
 
-### Response Shape
-
-Each Adzuna job result contains:
+### 2. Jooble API (Secondary Fallback)
 
 ```typescript
-type AdzunaJob = {
+// lib/job-search/jooble.ts
+export async function searchJooble(
+  jobTitle: string,
+  location: string,
+  page: number = 1
+): Promise<UnifiedJob[]> {
+  const key = process.env.JOOBLE_API_KEY;
+  if (!key) throw new Error("JOOBLE_API_KEY not configured");
+
+  const response = await fetch(`https://jooble.org/api/${key}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      keywords: jobTitle,
+      location: location || "Canada",
+      page,
+      ResultOnPage: 10,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Jooble API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return (data.jobs || []).map((raw: any) => ({
+    id: String(raw.id),
+    provider: "jooble",
+    title: raw.title.replace(/<\/?[^>]+(>|$)/g, ""),
+    company: raw.company,
+    location: raw.location,
+    salary: raw.salary || null,
+    jobType: "fulltime",
+    aboutRole: raw.snippet.replace(/<\/?[^>]+(>|$)/g, ""),
+    sourceUrl: raw.link,
+    externalApplyUrl: raw.link,
+  }));
+}
+```
+
+### 3. Unified Job Type
+
+```typescript
+export type UnifiedJob = {
   id: string;
+  provider: "jsearch" | "jooble" | "adzuna";
   title: string;
-  company: { display_name: string };
-  location: { display_name: string };
-  description: string; // snippet only — not full description
-  redirect_url: string; // Adzuna tracking URL → redirects to actual job
-  salary_min?: number;
-  salary_max?: number;
-  salary_is_predicted: "0" | "1"; // "1" means salary is estimated
-  contract_type?: string;
-  created: string; // ISO date string
-  category: { tag: string; label: string };
+  company: string;
+  location: string | null;
+  salary: string | null;
+  jobType: "fulltime" | "parttime" | "contract";
+  aboutRole: string;
+  sourceUrl: string;
+  externalApplyUrl: string | null;
+  employerLogo?: string | null;
 };
 ```
 
-### Saving Jobs to DB
-
-```typescript
-// Map Adzuna result to jobs table
-const jobRecord = {
-  user_id: userId,
-  run_id: runId,
-  source: "search", // always 'search' for Adzuna jobs
-  source_url: job.redirect_url,
-  external_apply_url: job.redirect_url,
-  title: job.title,
-  company: job.company.display_name,
-  location: job.location.display_name,
-  salary: job.salary_min
-    ? `$${Math.round(job.salary_min / 1000)}k - $${Math.round(job.salary_max! / 1000)}k`
-    : null,
-  job_type: job.contract_type || "fulltime",
-  about_role: job.description, // Adzuna returns snippet — used as description
-  match_score: scoredJob.matchScore,
-  match_reason: scoredJob.matchReason,
-  matched_skills: scoredJob.matchedSkills,
-  missing_skills: scoredJob.missingSkills,
-  found_at: new Date().toISOString(),
-};
-```
-
-**Rules:**
-
-- Always include `category=it-jobs` — never search Adzuna without this filter
-- Never pass `where` if location is empty — omit the parameter entirely
-- `source` is always `'search'` for Adzuna jobs — never any other value
-- `salary_is_predicted: "1"` means Adzuna estimated the salary — this is normal
-- Adzuna description is a snippet — GPT-4o scores from it, not a full description
-- Default country to `'us'` — support `gb`, `au`, `ca` as alternatives
+### Rules:
+- Default `num_pages` to `1` (10 results per search) to conserve API credits.
+- If the user repeats the exact same search terms without changing input, return database records without calling external APIs.
+- Deduplicate listings against existing user jobs in the database before running AI scoring.
+- Batch evaluate all new listings in a single GPT-4o call.
 
 ---
 
