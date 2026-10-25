@@ -136,11 +136,30 @@ After building any component — update this file with the component name, file 
 - **Extract from Resume Button**: `bg-accent/15 hover:bg-accent/25 text-accent border border-accent/30 font-semibold px-4 py-2 rounded-lg text-xs sm:text-sm flex items-center gap-2 shadow-xs transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed`
 - **Resume PDF Preview Modal**: `fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-xs animate-in fade-in duration-200`
 - **Resume Modal Container**: `relative w-full max-w-4xl bg-surface border border-border rounded-2xl shadow-xl flex flex-col overflow-hidden max-h-[90vh]`
+- **Resume Modal Header**: `flex items-center justify-between px-6 py-4 border-b border-border bg-surface-secondary/40`
 - **Resume Modal Iframe Viewer**: `w-full h-[68vh] rounded-xl border border-border bg-surface`
 - **Change File Button**: `px-3.5 py-2 bg-surface hover:bg-surface-secondary border border-border rounded-lg text-xs sm:text-sm font-medium text-text-secondary transition-colors cursor-pointer`
 - **Select Button**: `mt-4 px-4 py-2 bg-surface hover:bg-surface-secondary border border-border rounded-lg text-xs sm:text-sm font-medium text-text-primary shadow-xs transition-colors cursor-pointer`
+- **Tailor Resume Footer Row**: `mt-6 pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-border/60`
 - **Generate AI Resume Action**: `bg-accent hover:bg-accent-dark text-accent-foreground rounded-lg px-4 py-2 text-xs sm:text-sm font-semibold flex items-center gap-2 transition-colors shadow-xs cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed shrink-0`
 - **Modal Download Action**: `px-3 py-1.5 rounded-lg bg-accent hover:bg-accent-dark text-accent-foreground text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs`
+- **Modal Open in Tab Action**: `px-3 py-1.5 rounded-lg border border-border hover:bg-surface-secondary text-text-secondary hover:text-text-primary text-xs font-medium flex items-center gap-1.5 transition-colors`
+- **Generation Error Banner**: `mt-4 p-3.5 rounded-xl bg-error/10 border border-error/20 text-error text-xs sm:text-sm font-medium flex items-center justify-between gap-2.5`
+
+### `ClassicMonochromeTemplate`
+- **File**: `lib/pdf/ClassicMonochromeTemplate.tsx`
+- **Document Engine**: `@react-pdf/renderer` single page ATS serif document layout
+- **Page Dimensions**: Standard Letter `612 x 792pt` with `36pt` margins (half inch)
+- **Primary Typography**: Times-Roman serif body, Times-Bold for headings and titles
+- **Candidate Header**: `fontSize: 18pt`, bold, uppercase, letter spacing `0.5pt`, centered
+- **Contact Row**: `fontSize: 9pt`, color `#4b5563`, centered, items separated by bullet dots (`•`)
+- **Section Heading**: `fontSize: 10pt`, bold, uppercase, bottom hairline divider (`borderBottomWidth: 0.75pt`, `borderBottomColor: #111827`, padding bottom `2pt`, margin bottom `5pt`)
+- **Experience Entry**: Two column top row with job title and bold company name on the left, right aligned date range and location, followed by bullet point list
+- **Bullet Point Row**: Left indented bullet dot (`width: 10pt`), bullet text `fontSize: 8.5pt`, line height `1.3`, color `#1f2937`
+- **Education Entry**: Degree name, institution, graduation year, and optional honors or relevant coursework
+- **Skills Category**: Inline bold category prefix with comma separated skill badges (`fontSize: 8.5pt`)
+- **Permissive Omission**: Omits sections cleanly when empty without leaving vacant header borders or irregular vertical gaps
+
 
 
 ### `ProfileForm`
