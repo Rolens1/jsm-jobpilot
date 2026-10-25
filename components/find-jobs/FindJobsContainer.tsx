@@ -9,8 +9,6 @@ import { JobsTable } from "@/components/find-jobs/JobsTable";
 import { JobsPagination } from "@/components/find-jobs/JobsPagination";
 import { CloudDownload, Loader2 } from "lucide-react";
 
-const PAGE_SIZE = 6;
-
 interface FindJobsContainerProps {
   initialJobs?: Job[];
   defaultJobTitle?: string;
@@ -26,6 +24,9 @@ export function FindJobsContainer({
   const [jobs, setJobs] = useState<Job[]>(
     initialJobs.length > 0 ? initialJobs : MOCK_JOBS
   );
+
+  // Pagination page size state (defaults to 10, allows 20 per build-plan.md)
+  const [pageSize, setPageSize] = useState<number>(10);
 
   // Search state
   const [jobTitle, setJobTitle] = useState(defaultJobTitle);
@@ -193,14 +194,14 @@ export function FindJobsContainer({
 
   // Adjust page if filter text shrinks result count below currentPage
   const totalResults = filteredAndSortedJobs.length;
-  const totalPages = Math.max(1, Math.ceil(totalResults / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(totalResults / pageSize));
   const activePage = Math.min(currentPage, totalPages);
 
   // Paginated slice
   const paginatedJobs = useMemo(() => {
-    const startIdx = (activePage - 1) * PAGE_SIZE;
-    return filteredAndSortedJobs.slice(startIdx, startIdx + PAGE_SIZE);
-  }, [filteredAndSortedJobs, activePage]);
+    const startIdx = (activePage - 1) * pageSize;
+    return filteredAndSortedJobs.slice(startIdx, startIdx + pageSize);
+  }, [filteredAndSortedJobs, activePage, pageSize]);
 
   // Reset filters
   const handleResetFilters = () => {
@@ -271,8 +272,12 @@ export function FindJobsContainer({
           currentPage={activePage}
           totalPages={totalPages}
           totalResults={totalResults}
-          pageSize={PAGE_SIZE}
+          pageSize={pageSize}
           onPageChange={(p) => setCurrentPage(p)}
+          onPageSizeChange={(s) => {
+            setPageSize(s);
+            setCurrentPage(1);
+          }}
         />
       </div>
     </div>

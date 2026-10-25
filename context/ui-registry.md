@@ -231,5 +231,6 @@ After building any component — update this file with the component name, file 
 ### `FindJobsContainer`
 - **File**: `components/find-jobs/FindJobsContainer.tsx`
 - **Layout Container**: `w-full space-y-6`
-- **Coordination**: Connects search trigger simulation, real time client text search, match threshold filtering, sorting by score or date, and pagination slice bounds across 24 realistic mock positions.
+- **Load More Button**: `inline-flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-medium rounded-lg text-text-primary bg-surface border border-border hover:bg-surface-hover hover:border-accent/40 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm`
+- **Coordination**: Connects `/api/agent/find` route handler, same search guard, on demand pagination from web, live database state synchronization with profile defaults, and client filtering across company, title, location, and skills.
 

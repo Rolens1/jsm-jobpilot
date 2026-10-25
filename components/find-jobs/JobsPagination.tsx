@@ -9,6 +9,7 @@ type Props = {
   totalResults: number;
   pageSize: number;
   onPageChange: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
 };
 
 export function JobsPagination({
@@ -17,6 +18,7 @@ export function JobsPagination({
   totalResults,
   pageSize,
   onPageChange,
+  onPageSizeChange,
 }: Props) {
   if (totalResults === 0) return null;
 
@@ -31,13 +33,26 @@ export function JobsPagination({
 
   return (
     <div className="w-full bg-surface rounded-2xl border border-border px-5 py-3.5 sm:px-6 sm:py-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-      {/* Slice Counter */}
-      <span className="text-xs sm:text-sm text-text-secondary">
-        Showing{" "}
-        <span className="font-semibold text-text-primary">{startIdx}</span> to{" "}
-        <span className="font-semibold text-text-primary">{endIdx}</span> of{" "}
-        <span className="font-semibold text-text-primary">{totalResults}</span> results
-      </span>
+      {/* Slice Counter and Page Size Selector */}
+      <div className="flex items-center gap-3">
+        <span className="text-xs sm:text-sm text-text-secondary">
+          Showing{" "}
+          <span className="font-semibold text-text-primary">{startIdx}</span> to{" "}
+          <span className="font-semibold text-text-primary">{endIdx}</span> of{" "}
+          <span className="font-semibold text-text-primary">{totalResults}</span> results
+        </span>
+        {onPageSizeChange && (
+          <select
+            value={pageSize}
+            onChange={(e) => onPageSizeChange(Number(e.target.value))}
+            aria-label="Results per page"
+            className="bg-surface-secondary/70 border border-border rounded-lg px-2 py-1 text-xs font-medium text-text-secondary hover:text-text-primary focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent cursor-pointer transition-all"
+          >
+            <option value={10}>10 / page</option>
+            <option value={20}>20 / page</option>
+          </select>
+        )}
+      </div>
 
       {/* Navigation Buttons */}
       <div className="flex items-center gap-1.5 sm:gap-2">
