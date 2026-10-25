@@ -1,12 +1,12 @@
 # Handoff / Session Memory
 
-> Generated: 2026-10-25T00:23:00-04:00  
+> Generated: 2026-10-25T13:03:00-04:00  
 > Project: JobPilot (`d:/Ai Projects/job-pilot`)  
-> Session summary: Completed Feature 08 (Resume PDF Generation from Profile) with single page serif styling, AI tailoring with zero latency raw fallback, private InsForge Storage persistence, and in app modal preview with direct download. Verified all 8 acceptance criteria, completed five axis quality audit, updated registry via `/imprint`, and saved memory to prepare for Phase 3.
+> Session summary: Completed Feature 09 (Find Jobs Page Full UI) with 24 realistic mock jobs, interactive search controls, green discovery feedback banner, real time filtering, match score thresholding, sorting, color coded progress bars, and pagination. Verified all 8 acceptance criteria, registered components in UI registry, and verified clean Next.js 16 Partial Prerendering build.
 
 ## Goal
 
-Build JobPilot, an AI-powered job hunting assistant using Next.js 16 (App Router), InsForge backend (Auth, DB, Storage), Browserbase + Stagehand for company research, Adzuna API for job discovery, OpenAI/Groq/Gemini for LLM operations, and PostHog for analytics. Follow the 17-feature build plan in `context/build-plan.md`.
+Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router), InsForge backend (Auth, DB, Storage), Browserbase and Stagehand for company research, Adzuna API for job discovery, OpenAI/Groq/Gemini for LLM operations, and PostHog for analytics. Follow the 17 feature build plan in `context/build-plan.md`.
 
 ## Current State
 
@@ -15,55 +15,42 @@ Build JobPilot, an AI-powered job hunting assistant using Next.js 16 (App Router
 - **Feature 02: Auth** is fully implemented and compiled cleanly with `npm run build`.
 - **Feature 03: PostHog Initialization & Event Tracking** is fully implemented, debugged, and verified.
 - **Feature 04: Database Schema & Storage Bucket** is fully implemented, migrated, and verified.
-- **Feature 05: Profile Page — Full UI** is fully implemented, responsive, and verified.
-- **Feature 06: Profile Save Logic & Secure Resume PDF Viewing** is fully implemented, hardened, and verified:
-  - Profile fields persist directly to the PostgreSQL `profiles` table via Server Action [actions/profile.ts](file:///d:/Ai%20Projects/job-pilot/actions/profile.ts).
-  - Resumes upload to private storage bucket `resumes` under user-scoped paths (`{userId}/resume.pdf`).
-  - Authenticated streaming endpoint [app/api/resume/route.ts](file:///d:/Ai%20Projects/job-pilot/app/api/resume/route.ts) streams stored PDF files directly with `Content-Disposition: inline`.
-  - In-app PDF preview modal in [components/profile/ResumeSection.tsx](file:///d:/Ai%20Projects/job-pilot/components/profile/ResumeSection.tsx) allows users to view selected local files or existing saved resumes in an embedded viewer or open in a native browser tab.
-- **Feature 07: AI Profile Extraction from Resume** is fully implemented, debugged, and verified:
-  - Multi provider AI model gateway in [lib/ai.ts](file:///d:/Ai%20Projects/job-pilot/lib/ai.ts) and [actions/resume.ts](file:///d:/Ai%20Projects/job-pilot/actions/resume.ts) using Groq, Gemini, and offline heuristics.
-  - Explicit candidate trigger buttons ("Extract from Resume", "Extract from Saved Resume") in [components/profile/ResumeSection.tsx](file:///d:/Ai%20Projects/job-pilot/components/profile/ResumeSection.tsx).
-  - Interactive validation panel [components/profile/ExtractedResumeReview.tsx](file:///d:/Ai%20Projects/job-pilot/components/profile/ExtractedResumeReview.tsx) displaying six section cards with checkmarks and an "Auto-fill & Validate All" action.
-  - Non-destructive form merge in [components/profile/ProfileForm.tsx](file:///d:/Ai%20Projects/job-pilot/components/profile/ProfileForm.tsx) applying only validated cards with unique union merges for tags and preserving manual inputs.
-  - Preserved candidate persistence boundary (AC-8): form updates remain in review state until the user clicks the primary "Save Profile" button.
-  - Verified test checklist in [docs/specs/0003-resume-ai-extraction/verify.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0003-resume-ai-extraction/verify.md).
-- **Feature 08: Resume PDF Generation from Profile** is fully implemented, verified, and accepted (Spec [0004-resume-pdf-generation](docs/specs/0004-resume-pdf-generation/index.md)):
-  - Server Action rendering via `@react-pdf/renderer` with `renderToBuffer()`.
-  - Classic monochrome serif styling in [ClassicMonochromeTemplate.tsx](file:///d:/Ai%20Projects/job-pilot/lib/pdf/ClassicMonochromeTemplate.tsx) calibrated for strict single page ATS compliance.
-  - Domain tailored executive summary and bullet points matching target job titles in [lib/ai.ts](file:///d:/Ai%20Projects/job-pilot/lib/ai.ts).
-  - Instant zero latency fallback to raw profile text on upstream AI provider errors or timeouts.
-  - Direct upload to private InsForge Storage (`resumes/{user_id}/resume.pdf`) and auto-opening preview modal with direct PDF download.
-  - All 8 acceptance criteria verified in [verify.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0004-resume-pdf-generation/verify.md).
-- **Phase 2 (Profile Page) is 100% Complete!**
+- **Feature 05: Profile Page Full UI** is fully implemented, responsive, and verified.
+- **Feature 06: Profile Save Logic & Secure Resume PDF Viewing** is fully implemented, hardened, and verified.
+- **Feature 07: AI Profile Extraction from Resume** is fully implemented, debugged, and verified.
+- **Feature 08: Resume PDF Generation from Profile** is fully implemented, verified, and accepted (Spec [0004-resume-pdf-generation](file:///d:/Ai%20Projects/job-pilot/docs/specs/0004-resume-pdf-generation/index.md)).
+- **Feature 09: Find Jobs Page Full UI** is fully implemented, verified, and accepted (Spec [0005-find-jobs-ui](file:///d:/Ai%20Projects/job-pilot/docs/specs/0005-find-jobs-ui/index.md)):
+  - Top navigation bar on `/find-jobs` highlights Find Jobs tab with active purple indicator.
+  - SearchControls component with Job Title input, Location input, Find Jobs button with simulated loading state, and green discovery feedback banner ("Found 8 jobs and saved 4 strong matches.").
+  - JobFilters toolbar with real time text search across role, company, location, and skills; match score threshold selector (All Matches, High Match 70%+, Low Match under 70%); and sort selector (Match Score, Newest, Oldest).
+  - Structured JobsTable displaying company initial avatar, role title link to `/find-jobs/[id]`, color coded match score progress bar with percentage, salary estimate, and relative date found.
+  - Color coded match score progress bar strictly adhering to tokens (`bg-success` for 80%+, `bg-info` for 60% to 79%, `bg-warning` for under 60%).
+  - JobsPagination component with slice counter ("Showing 1 to 6 of 24 results"), previous and next buttons, and active purple numbered page buttons.
+  - Route fallback at `/find-jobs/[id]` wrapped in Suspense for smooth navigation and Next.js 16 Partial Prerendering compliance.
+  - All 8 acceptance criteria verified in [verify.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0005-find-jobs-ui/verify.md).
 - **Next up:**
-  - **Phase 3 — Find Jobs Page**: Feature 09 (Find Jobs Page — Full UI).
+  - **Feature 10: Adzuna Job Discovery** (Calling Adzuna API, scoring jobs with GPT-4o against user profile, and storing to InsForge DB).
 
 ## Files in Play
 
 | File | Why It Matters |
 |------|---------------|
-| [docs/specs/0004-resume-pdf-generation/index.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0004-resume-pdf-generation/index.md) | Governing build specification for Feature 08 |
-| [docs/specs/0004-resume-pdf-generation/rationale.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0004-resume-pdf-generation/rationale.md) | Architectural rationale and tradeoffs for Feature 08 |
-| [docs/specs/0004-resume-pdf-generation/verify.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0004-resume-pdf-generation/verify.md) | Verification checklist with all 8 ACs verified |
-| [actions/resume.ts](file:///d:/Ai%20Projects/job-pilot/actions/resume.ts) | Server Actions for resume extraction and PDF generation |
-| [lib/pdf/ClassicMonochromeTemplate.tsx](file:///d:/Ai%20Projects/job-pilot/lib/pdf/ClassicMonochromeTemplate.tsx) | React-pdf declarative document template |
-| [components/profile/ResumeSection.tsx](file:///d:/Ai%20Projects/job-pilot/components/profile/ResumeSection.tsx) | Generate AI Resume button, error alerts, and preview modal trigger |
-| [context/progress-tracker.md](file:///d:/Ai%20Projects/job-pilot/context/progress-tracker.md) | Progress tracker marking Phase 2 complete and Phase 3 next |
-| [context/build-plan.md](file:///d:/Ai%20Projects/job-pilot/context/build-plan.md) | 17-feature build plan |
+| [docs/specs/0005-find-jobs-ui/index.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0005-find-jobs-ui/index.md) | Governing build specification for Feature 09 |
+| [docs/specs/0005-find-jobs-ui/rationale.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0005-find-jobs-ui/rationale.md) | Architectural rationale and tradeoffs for Feature 09 |
+| [docs/specs/0005-find-jobs-ui/verify.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0005-find-jobs-ui/verify.md) | Verification checklist with all 8 ACs verified |
+| [lib/mock-jobs.ts](file:///d:/Ai%20Projects/job-pilot/lib/mock-jobs.ts) | Realistic dataset with 24 job positions matching schema |
+| [lib/date-utils.ts](file:///d:/Ai%20Projects/job-pilot/lib/date-utils.ts) | Helper formatting relative time strings |
+| [components/find-jobs/SearchControls.tsx](file:///d:/Ai%20Projects/job-pilot/components/find-jobs/SearchControls.tsx) | Search inputs, action button, and feedback banner |
+| [components/find-jobs/JobFilters.tsx](file:///d:/Ai%20Projects/job-pilot/components/find-jobs/JobFilters.tsx) | Text filter, threshold dropdown, and sort selector |
+| [components/find-jobs/JobsTable.tsx](file:///d:/Ai%20Projects/job-pilot/components/find-jobs/JobsTable.tsx) | Structured jobs table with score progress bars |
+| [components/find-jobs/JobsPagination.tsx](file:///d:/Ai%20Projects/job-pilot/components/find-jobs/JobsPagination.tsx) | Slice counter and numbered page selectors |
+| [components/find-jobs/FindJobsContainer.tsx](file:///d:/Ai%20Projects/job-pilot/components/find-jobs/FindJobsContainer.tsx) | Client container orchestrating search, filter, and pagination states |
+| [app/find-jobs/page.tsx](file:///d:/Ai%20Projects/job-pilot/app/find-jobs/page.tsx) | Authenticated server page route for Find Jobs |
+| [app/find-jobs/[id]/page.tsx](file:///d:/Ai%20Projects/job-pilot/app/find-jobs/%5Bid%5D/page.tsx) | Job details route with AI match breakdown and skills tags |
+| [context/ui-registry.md](file:///d:/Ai%20Projects/job-pilot/context/ui-registry.md) | UI registry updated with new component tokens |
+| [context/progress-tracker.md](file:///d:/Ai%20Projects/job-pilot/context/progress-tracker.md) | Progress tracker marking Feature 09 complete |
 
 ## Next Steps
 
-1. Transition to **Phase 3 (Find Jobs Page)**.
-2. Run `/architect feature 9` or build **Feature 09 (Find Jobs Page — Full UI)**.
-
-
-
-
-## Key Constraints
-
-- **Tailwind v4 `@theme` only**: Never use hardcoded hex values or raw Tailwind colors. Use token utilities (`bg-accent`, `text-text-primary`, `bg-surface`, etc.).
-- **Server Components by default**: Only use `"use client"` when state, effects, or browser APIs are required.
-- **Always update trackers**: Keep `context/progress-tracker.md` and `context/ui-registry.md` current after every feature.
-- **Client vs Server separation**: Keep `insforge-client.ts` and `insforge-server.ts` completely isolated.
-- **4 Canonical PostHog Events**: `job_search_started`, `job_found`, `profile_completed`, `company_researched`. Keep payloads strictly typed.
+1. Transition to **Feature 10 (Adzuna Job Discovery)**.
+2. Run `/architect feature 10` or `/develop feature 10` to connect live Adzuna API job searching and GPT-4o profile match scoring.

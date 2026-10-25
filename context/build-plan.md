@@ -164,6 +164,8 @@ Generate a clean professional PDF resume from current profile data using GPT-4o.
 
 ### 09 Find Jobs Page — Full UI
 
+> Spec: [docs/specs/0005-find-jobs-ui/index.md](docs/specs/0005-find-jobs-ui/index.md)
+
 Build the complete Find Jobs page UI with mock data. No logic yet.
 
 **UI:**

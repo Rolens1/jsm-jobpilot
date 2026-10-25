@@ -194,8 +194,39 @@ After building any component — update this file with the component name, file 
 - **Coordination**: Connects Server Component profile prefetch with live attention banner percentage recalculations, resume upload selection, AI extraction (`extractResumeProfile`), non-destructive form field merge, and `saveProfile` Server Action submission.
 - **AI Extraction Success Alert**: `p-4 rounded-xl border flex items-center justify-between gap-3 text-xs sm:text-sm font-medium bg-accent/10 border-accent/30 text-text-primary transition-all`
 - **AI Extraction Error Alert**: `p-4 rounded-xl border flex items-center justify-between gap-3 text-xs sm:text-sm font-medium bg-error/10 border-error/20 text-error transition-all`
+### `SearchControls`
+- **File**: `components/find-jobs/SearchControls.tsx`
+- **Card**: `w-full bg-surface rounded-2xl border border-border p-5 sm:p-6 shadow-sm`
+- **Inputs**: `w-full pl-10 pr-4 py-2.5 sm:py-3 bg-surface-secondary/70 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-all`
+- **Submit Button**: `bg-accent text-accent-foreground font-semibold px-6 py-2.5 sm:py-3 rounded-xl hover:bg-accent-dark transition-colors flex items-center justify-center gap-2 shadow-sm shrink-0 disabled:opacity-75 cursor-pointer text-sm`
+- **Feedback Banner**: `mt-4 bg-success-lightest border border-success/30 text-success-dark font-medium rounded-xl p-3.5 flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-1 duration-200`
 
+### `JobFilters`
+- **File**: `components/find-jobs/JobFilters.tsx`
+- **Card**: `w-full bg-surface rounded-2xl border border-border p-3 sm:p-4 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4`
+- **Quick Text Filter Input**: `w-full pl-10 pr-9 py-2 bg-surface-secondary/60 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-all`
+- **Dropdown Selects**: `bg-surface-secondary/60 border border-border rounded-xl px-3 py-2 text-xs sm:text-sm font-medium text-text-primary focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent cursor-pointer transition-all`
 
+### `JobsTable`
+- **File**: `components/find-jobs/JobsTable.tsx`
+- **Card**: `w-full bg-surface rounded-2xl border border-border shadow-sm overflow-hidden`
+- **Table Head**: `border-b border-border bg-surface-secondary/40 text-[11px] sm:text-xs font-semibold text-text-secondary uppercase tracking-wider`
+- **Table Row**: `hover:bg-surface-secondary/50 transition-colors group`
+- **Company Initial Box**: `w-10 h-10 rounded-xl border border-border flex items-center justify-center font-bold text-sm shrink-0`
+- **Role Title Link**: `font-medium text-text-primary hover:text-accent transition-colors text-sm flex items-center gap-1.5`
+- **Match Score Bar Track**: `w-20 sm:w-28 h-2 bg-border-light rounded-full overflow-hidden shrink-0`
+- **Match Score Fills**: `bg-success` (score 80+), `bg-info` (score 60 to 79), `bg-warning` (score below 60)
+- **Empty State Card**: `w-full bg-surface rounded-2xl border border-border p-12 shadow-sm flex flex-col items-center justify-center text-center`
 
+### `JobsPagination`
+- **File**: `components/find-jobs/JobsPagination.tsx`
+- **Bar Container**: `w-full bg-surface rounded-2xl border border-border px-5 py-3.5 sm:px-6 sm:py-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4`
+- **Navigation Buttons**: `px-3 py-1.5 rounded-xl border border-border text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer`
+- **Active Page Number Button**: `w-8 h-8 rounded-xl flex items-center justify-center text-xs sm:text-sm border-2 border-accent text-accent bg-accent-muted font-bold shadow-xs`
+- **Inactive Page Number Button**: `w-8 h-8 rounded-xl flex items-center justify-center text-xs sm:text-sm border border-border text-text-secondary hover:text-text-primary hover:bg-surface-secondary font-medium`
 
+### `FindJobsContainer`
+- **File**: `components/find-jobs/FindJobsContainer.tsx`
+- **Layout Container**: `w-full space-y-6`
+- **Coordination**: Connects search trigger simulation, real time client text search, match threshold filtering, sorting by score or date, and pagination slice bounds across 24 realistic mock positions.
 
