@@ -1,4 +1,5 @@
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import { AlertCircle, CheckCircle2, Search, ArrowRight } from "lucide-react";
 
 type Props = {
   percentage?: number;
@@ -48,6 +49,19 @@ export function ProfileAttentionBanner({
             ? "Great job! All required fields and your resume are saved. The JobPilot agent can now discover matching roles and tailor your documents."
             : "Complete the missing fields to improve your chance of getting tailored matches and generating quality resumes."}
         </p>
+
+        {isComplete && (
+          <div className="mt-4">
+            <Link
+              href="/find-jobs"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-accent text-accent-foreground text-xs font-semibold hover:bg-accent-dark transition-colors shadow-xs"
+            >
+              <Search className="w-3.5 h-3.5" />
+              <span>Explore matching jobs</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        )}
 
         {!isComplete && missingFields.length > 0 && (
           <div className="mt-4 flex flex-wrap items-center gap-2">

@@ -58,7 +58,7 @@ async function JobDetailsContent({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Navbar activePath="/find-jobs" />
+      <Navbar activePath="/find-jobs" userEmail={data.user.email} />
 
       <main className="flex-1 max-w-[1200px] mx-auto w-full px-4 sm:px-6 md:px-8 py-8">
         {/* Back Link */}

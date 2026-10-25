@@ -39,7 +39,7 @@ async function ProfileContent() {
   return (
     <>
       <PostHogUserIdentity userId={user.id} email={user.email} />
-      <Navbar activePath="/profile" />
+      <Navbar activePath="/profile" userEmail={userEmail} />
 
       {/* Main Profile Page Content */}
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-10">

@@ -6,7 +6,8 @@ import { connection } from "next/server";
 import { createInsforgeServer } from "@/lib/insforge-server";
 import { PostHogUserIdentity, SignOutButton } from "@/components/auth/SignOutButton";
 import { EventTrackingCard } from "@/components/dashboard/EventTrackingCard";
-import { CheckCircle2, Home, Sparkles, Loader2 } from "lucide-react";
+import { Navbar } from "@/components/layout/Navbar";
+import { CheckCircle2, Home, Sparkles, Loader2, Search } from "lucide-react";
 
 async function DashboardContent() {
   await connection();
@@ -23,34 +24,7 @@ async function DashboardContent() {
     <>
       <PostHogUserIdentity userId={data.user.id} email={data.user.email} />
       {/* Top Navbar */}
-      <header className="h-16 w-full bg-surface border-b border-border sticky top-0 z-50">
-        <div className="max-w-[1440px] mx-auto h-full px-6 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
-            <Image
-              src="/logo.png"
-              alt="JobPilot"
-              width={140}
-              height={36}
-              className="h-9 w-auto object-contain"
-              style={{ width: "auto" }}
-              priority
-            />
-          </Link>
-
-          <div className="flex items-center gap-4">
-            <Link
-              href="/profile"
-              className="text-xs sm:text-sm font-medium text-text-secondary hover:text-accent transition-colors"
-            >
-              Profile
-            </Link>
-            <span className="text-xs sm:text-sm text-text-secondary hidden sm:inline-block">
-              {userEmail}
-            </span>
-            <SignOutButton />
-          </div>
-        </div>
-      </header>
+      <Navbar activePath="/dashboard" userEmail={userEmail} />
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-4xl mx-auto w-full px-6 py-12 flex flex-col items-center justify-center text-center">
@@ -81,6 +55,14 @@ async function DashboardContent() {
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
+              href="/find-jobs"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-accent text-accent-foreground text-sm font-semibold hover:bg-accent-dark transition-colors shadow-sm"
+            >
+              <Search className="w-4 h-4" />
+              <span>Find Jobs</span>
+            </Link>
+
+            <Link
               href="/profile"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-text-darkest text-surface text-sm font-medium hover:opacity-90 transition-opacity"
             >
@@ -94,8 +76,6 @@ async function DashboardContent() {
               <Home className="w-4 h-4" />
               <span>Homepage</span>
             </Link>
-
-            <SignOutButton className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface border border-border text-text-primary text-sm font-medium hover:bg-surface-secondary transition-colors cursor-pointer" />
           </div>
         </div>
 
