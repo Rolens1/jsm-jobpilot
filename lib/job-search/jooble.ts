@@ -52,7 +52,7 @@ export async function searchJooble(
       salary: raw.salary ? raw.salary.trim() : null,
       jobType: "fulltime",
       aboutRole: cleanSnippet,
-      sourceUrl: raw.link || "https://jooble.org",
+      sourceUrl: raw.link || `https://jooble.org/job/${raw.id || Math.random().toString(36).substring(2, 9)}`,
       externalApplyUrl: raw.link || null,
       employerLogo: null,
       postedAt: raw.updated || null,

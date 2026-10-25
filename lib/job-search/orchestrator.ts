@@ -52,30 +52,58 @@ export async function executeJobSearch(
     }
   }
 
-  // 2. Multi-Provider Cascade
+  // 2. Multi-Provider Cascade with Coverage Augmentation
   let rawJobs: UnifiedJob[] = [];
   let providerUsed: "jsearch" | "jooble" | "adzuna" = "jsearch";
   const errors: string[] = [];
+  const seenUrls = new Set<string>();
+
+  const addUniqueRawJobs = (newJobs: UnifiedJob[], provider: "jsearch" | "jooble" | "adzuna") => {
+    let addedCount = 0;
+    for (const job of newJobs) {
+      const urlKey = job.sourceUrl || job.externalApplyUrl || `${job.company}:${job.title}`;
+      if (!seenUrls.has(urlKey)) {
+        seenUrls.add(urlKey);
+        rawJobs.push(job);
+        addedCount++;
+      }
+    }
+    if (addedCount > 0 && rawJobs.length === addedCount) {
+      providerUsed = provider;
+    }
+  };
 
   // Try JSearch (Primary)
   try {
-    rawJobs = await searchJSearch(jobTitle, location, page);
-    providerUsed = "jsearch";
+    const jsearchJobs = await searchJSearch(jobTitle, location, page);
+    if (jsearchJobs.length > 0) {
+      addUniqueRawJobs(jsearchJobs, "jsearch");
+    }
   } catch (err: any) {
     errors.push(`JSearch error: ${err?.message || err}`);
-    // Fallback to Jooble
+  }
+
+  // If low coverage (< 5 jobs), try Jooble
+  if (rawJobs.length < 5) {
     try {
-      rawJobs = await searchJooble(jobTitle, location, page);
-      providerUsed = "jooble";
+      const joobleJobs = await searchJooble(jobTitle, location, page);
+      if (joobleJobs.length > 0) {
+        addUniqueRawJobs(joobleJobs, "jooble");
+      }
     } catch (joobleErr: any) {
       errors.push(`Jooble error: ${joobleErr?.message || joobleErr}`);
-      // Fallback to Adzuna
-      try {
-        rawJobs = await searchAdzuna(jobTitle, location, page);
-        providerUsed = "adzuna";
-      } catch (adzunaErr: any) {
-        errors.push(`Adzuna error: ${adzunaErr?.message || adzunaErr}`);
+    }
+  }
+
+  // If still low coverage (< 5 jobs), augment with Adzuna
+  if (rawJobs.length < 5) {
+    try {
+      const adzunaJobs = await searchAdzuna(jobTitle, location, page);
+      if (adzunaJobs.length > 0) {
+        addUniqueRawJobs(adzunaJobs, "adzuna");
       }
+    } catch (adzunaErr: any) {
+      errors.push(`Adzuna error: ${adzunaErr?.message || adzunaErr}`);
     }
   }
 
@@ -187,22 +215,60 @@ export async function executeJobSearch(
       found_at: new Date().toISOString(),
     }));
 
-    await insforge.database.from("jobs").insert(recordsToInsert);
+    // Ensure initial agent_runs row exists to satisfy foreign key constraint
+    const { data: existingRun } = await insforge.database
+      .from("agent_runs")
+      .select("id")
+      .eq("id", runId)
+      .single();
+
+    if (!existingRun) {
+      await insforge.database.from("agent_runs").insert([
+        {
+          id: runId,
+          user_id: userId,
+          status: "running",
+          job_title_searched: jobTitle,
+          location_searched: location || null,
+          jobs_found: rawJobs.length,
+          started_at: startTime,
+        },
+      ]);
+    }
+
+    const { error: insertError } = await insforge.database
+      .from("jobs")
+      .upsert(recordsToInsert, { onConflict: "user_id,source_url" });
+
+    if (insertError) {
+      console.warn("[Orchestrator] Batch upsert warning, retrying individually:", insertError);
+      for (const rec of recordsToInsert) {
+        try {
+          await insforge.database
+            .from("jobs")
+            .upsert([rec], { onConflict: "user_id,source_url" });
+        } catch (singleErr) {
+          console.warn("[Orchestrator] Single job insert skipped:", singleErr);
+        }
+      }
+    }
   }
 
-  // Record agent_run
-  await insforge.database.from("agent_runs").insert([
-    {
-      id: runId,
-      user_id: userId,
-      status: "completed",
-      job_title_searched: jobTitle,
-      location_searched: location || null,
-      jobs_found: rawJobs.length,
-      started_at: startTime,
-      completed_at: new Date().toISOString(),
-    },
-  ]);
+  // Update or insert agent_run
+  await insforge.database
+    .from("agent_runs")
+    .upsert([
+      {
+        id: runId,
+        user_id: userId,
+        status: "completed",
+        job_title_searched: jobTitle,
+        location_searched: location || null,
+        jobs_found: rawJobs.length,
+        started_at: startTime,
+        completed_at: new Date().toISOString(),
+      },
+    ]);
 
   // Record audit log
   await insforge.database.from("agent_logs").insert([

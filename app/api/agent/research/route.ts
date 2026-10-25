@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { createInsforgeServer } from "@/lib/insforge-server";
 import { captureServerEvent } from "@/lib/posthog-server";
 import { Job, Profile } from "@/types/database";
-import { MOCK_JOBS } from "@/lib/mock-jobs";
 import {
   deriveCompanyDomain,
   extractCompanyWebFootprint,
@@ -33,7 +32,7 @@ export async function POST(req: NextRequest) {
 
     const userId = authData.user.id;
 
-    // 1. Retrieve target job from database or fallback to mock fixtures
+    // 1. Retrieve target job from database
     let job: Job | null = null;
     try {
       const { data: dbJob } = await insforge.database
@@ -48,14 +47,6 @@ export async function POST(req: NextRequest) {
       }
     } catch (err) {
       console.warn("[CompanyResearch] Error loading job from database:", err);
-    }
-
-    // Check mock jobs if not in DB
-    if (!job) {
-      const mock = MOCK_JOBS.find((j) => j.id === jobId.trim());
-      if (mock) {
-        job = mock;
-      }
     }
 
     if (!job) {
@@ -128,20 +119,18 @@ export async function POST(req: NextRequest) {
       sources,
     });
 
-    // 5. Persist dossier into jobs.company_research in PostgreSQL (if real DB job)
-    if (!jobId.startsWith("job-00")) {
-      try {
-        await insforge.database
-          .from("jobs")
-          .update({
-            company_research: dossier,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", job.id)
-          .eq("user_id", userId);
-      } catch (saveErr) {
-        console.warn("[CompanyResearch] Failed to update jobs table:", saveErr);
-      }
+    // 5. Persist dossier into jobs.company_research in PostgreSQL
+    try {
+      await insforge.database
+        .from("jobs")
+        .update({
+          company_research: dossier,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", job.id)
+        .eq("user_id", userId);
+    } catch (saveErr) {
+      console.warn("[CompanyResearch] Failed to update jobs table:", saveErr);
     }
 
     // 6. Record agent run and agent log
@@ -170,7 +159,7 @@ export async function POST(req: NextRequest) {
             user_id: userId,
             message: `Synthesized company research dossier for ${job.company} (${job.title})`,
             level: "success",
-            job_id: job.id.startsWith("job-00") ? null : job.id,
+            job_id: job.id,
             created_at: new Date().toISOString(),
           },
         ]);

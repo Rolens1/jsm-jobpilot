@@ -27,7 +27,12 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
   - Multi tier domain derivation and web footprint extractor in `lib/agent/research.ts`.
   - Resilient AI synthesis pipeline producing 9 field structured dossiers (`companyOverview`, `techStack`, `culture`, `whyThisRole`, `yourEdge`, `gapsToAddress`, `smartQuestions`, `interviewPrep`, `sources`).
   - Route handler `POST /api/agent/research` updating `jobs.company_research`, logging runs and logs, and emitting PostHog `company_researched` events.
-  - Interactive `CompanyResearchCard.tsx` rendering empty preview, animated loading progress, and full verified dossier views with refresh support.
+  - Interactive `CompanyResearchCard.tsx` rendering empty preview, animated loading progress, and full verified dossier views with refresh confirmation safety and unmount lifecycle cleanup.
+- **Search Bug Resolution & Purge of Mock Data**:
+  - Identified root cause of searched jobs not showing up in the table: foreign key ordering constraint (`jobs_run_id_fkey`) in `lib/job-search/orchestrator.ts` where jobs were inserted before `agent_runs` existed for `run_id`.
+  - Fixed `orchestrator.ts` to insert `agent_runs` prior to inserting jobs, with safe upserts and fallback unique URL handling.
+  - Added coverage augmentation to provider cascade: when primary returns low count (< 5), automatically falls back and aggregates unique listings across Jooble and Adzuna.
+  - Removed all `MOCK_JOBS` fixtures from `FindJobsContainer.tsx`, `app/find-jobs/page.tsx`, `app/find-jobs/[id]/page.tsx`, and `app/api/agent/research/route.ts`. Real database jobs are now used exclusively.
 - **Phase 6 Addition (Internationalization & Bilingual Localization):**
   - Added Features 18, 19, and 20 to `context/build-plan.md` and `context/progress-tracker.md` to be implemented after Phase 5.
 - **Next up:**

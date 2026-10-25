@@ -55,7 +55,7 @@ async function FindJobsContent() {
             Find Jobs
           </h1>
           <p className="text-sm sm:text-base text-text-secondary mt-1">
-            Search across developer roles and find your best matches.
+            Search across career opportunities and find your best matches.
           </p>
         </div>
 

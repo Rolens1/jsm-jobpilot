@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { MOCK_JOBS } from "@/lib/mock-jobs";
 import { Job } from "@/types/database";
 import { SearchControls } from "@/components/find-jobs/SearchControls";
 import { JobFilters, type ScoreThreshold, type SortOption } from "@/components/find-jobs/JobFilters";
@@ -20,10 +19,8 @@ export function FindJobsContainer({
   defaultJobTitle = "Frontend Engineer",
   defaultLocation = "Montreal, QC",
 }: FindJobsContainerProps) {
-  // Use DB jobs if present, fallback to MOCK_JOBS for initial preview
-  const [jobs, setJobs] = useState<Job[]>(
-    initialJobs.length > 0 ? initialJobs : MOCK_JOBS
-  );
+  // Use real database jobs exclusively - no mock data fallback
+  const [jobs, setJobs] = useState<Job[]>(initialJobs);
 
   // Pagination page size state (defaults to 10, allows 20 per build-plan.md)
   const [pageSize, setPageSize] = useState<number>(10);
@@ -37,7 +34,7 @@ export function FindJobsContainer({
   const [bannerMessage, setBannerMessage] = useState(
     initialJobs.length > 0
       ? `Loaded ${initialJobs.length} saved jobs from your profile database.`
-      : "Found 8 jobs and saved 4 strong matches."
+      : ""
   );
 
   // Search caching and pagination tracking
@@ -59,9 +56,10 @@ export function FindJobsContainer({
 
     if (!cleanTitle) return;
 
-    // Same search guard: if unchanged, avoid external API calls
+    // Same search guard: if query is unchanged AND we already have active results, avoid re-fetching
     if (
       lastSearch &&
+      jobs.length > 0 &&
       lastSearch.title.toLowerCase() === cleanTitle.toLowerCase() &&
       lastSearch.location.toLowerCase() === cleanLocation.toLowerCase()
     ) {
@@ -79,7 +77,7 @@ export function FindJobsContainer({
           jobTitle: cleanTitle,
           location: cleanLocation,
           page: 1,
-          forceRefresh: false,
+          forceRefresh: true,
         }),
       });
 
@@ -88,7 +86,7 @@ export function FindJobsContainer({
         throw new Error(data.error || "Failed to search for jobs.");
       }
 
-      if (data.jobs && data.jobs.length > 0) {
+      if (Array.isArray(data.jobs)) {
         setJobs(data.jobs);
       }
 
@@ -96,10 +94,14 @@ export function FindJobsContainer({
       setSearchPage(1);
       setShowBanner(true);
 
-      if (data.fromCache) {
-        setBannerMessage(`Loaded ${data.jobsFound} saved jobs from the database matching '${cleanTitle}'.`);
+      if (data.jobs && data.jobs.length > 0) {
+        if (data.fromCache) {
+          setBannerMessage(`Loaded ${data.jobsFound} saved jobs from the database matching '${cleanTitle}'.`);
+        } else {
+          setBannerMessage(`Found ${data.jobsFound} jobs via ${data.providerUsed} and saved ${data.jobsSaved} strong matches.`);
+        }
       } else {
-        setBannerMessage(`Found ${data.jobsFound} jobs via ${data.providerUsed} and saved ${data.jobsSaved} strong matches.`);
+        setBannerMessage(`No opportunities found for '${cleanTitle}' in '${cleanLocation || "any location"}'. Try a different keyword or location.`);
       }
 
       setCurrentPage(1);

@@ -65,7 +65,7 @@ export async function searchAdzuna(
       salary: salaryStr,
       jobType,
       aboutRole: raw.description || "No description provided.",
-      sourceUrl: raw.redirect_url || "https://adzuna.com",
+      sourceUrl: raw.redirect_url || `https://adzuna.com/job/${raw.id || Math.random().toString(36).substring(2, 9)}`,
       externalApplyUrl: raw.redirect_url || null,
       employerLogo: null,
       postedAt: raw.created || null,

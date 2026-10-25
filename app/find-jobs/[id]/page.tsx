@@ -5,7 +5,6 @@ import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 import { createInsforgeServer } from "@/lib/insforge-server";
 import { Navbar } from "@/components/layout/Navbar";
-import { MOCK_JOBS } from "@/lib/mock-jobs";
 import { Job } from "@/types/database";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { JobDetailsHeader } from "@/components/find-jobs/details/JobDetailsHeader";
@@ -30,28 +29,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       .eq("id", id)
       .single();
 
-    const job = dbJob || MOCK_JOBS.find((j) => j.id === id);
-
-    if (!job) {
+    if (!dbJob) {
       return {
         title: "Job Details | JobPilot",
       };
     }
 
     return {
-      title: `${job.title} at ${job.company} | JobPilot`,
-      description: `Match Score ${job.match_score}% - ${
-        job.match_reason || "Role overview and requirements"
+      title: `${dbJob.title} at ${dbJob.company} | JobPilot`,
+      description: `Match Score ${dbJob.match_score}% - ${
+        dbJob.match_reason || "Role overview and requirements"
       }`,
     };
   } catch {
-    const mockJob = MOCK_JOBS.find((j) => j.id === id);
-    if (mockJob) {
-      return {
-        title: `${mockJob.title} at ${mockJob.company} | JobPilot`,
-        description: `Match Score ${mockJob.match_score}% - ${mockJob.match_reason}`,
-      };
-    }
     return {
       title: "Job Details | JobPilot",
     };
@@ -86,15 +76,7 @@ async function JobDetailsContent({ params }: Props) {
     console.warn("[JobDetails] Error querying job from database:", err);
   }
 
-  // 2. Fallback to mock jobs if not in DB (for development preview)
-  if (!job) {
-    const mockMatch = MOCK_JOBS.find((j) => j.id === id);
-    if (mockMatch) {
-      job = mockMatch;
-    }
-  }
-
-  // 3. If neither exists, trigger 404
+  // 2. If not found in database, trigger 404
   if (!job) {
     notFound();
   }

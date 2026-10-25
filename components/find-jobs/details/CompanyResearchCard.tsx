@@ -29,19 +29,34 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState<string>("Initializing research agent...");
   const [error, setError] = useState<string | null>(null);
+  const [confirmRefresh, setConfirmRefresh] = useState(false);
+
+  const isMountedRef = React.useRef(true);
+
+  React.useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const handleResearchCompany = async () => {
     setIsLoading(true);
     setError(null);
+    setConfirmRefresh(false);
     setLoadingStep("Deriving company website and public footprint...");
 
     // Simulated step indicators while background agent runs
     const timer1 = setTimeout(() => {
-      setLoadingStep("Extracting company product, tech stack, and mission...");
+      if (isMountedRef.current) {
+        setLoadingStep("Extracting company product, tech stack, and mission...");
+      }
     }, 1200);
 
     const timer2 = setTimeout(() => {
-      setLoadingStep("Synthesizing candidate specific interview briefing...");
+      if (isMountedRef.current) {
+        setLoadingStep("Synthesizing candidate specific interview briefing...");
+      }
     }, 2800);
 
     try {
@@ -57,17 +72,36 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
         throw new Error(data.error || "Failed to research company.");
       }
 
-      setDossier(data.dossier);
+      if (isMountedRef.current) {
+        setDossier(data.dossier);
+      }
     } catch (err) {
       console.error("[CompanyResearchCard] Research error:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to research company. Please try again."
-      );
+      if (isMountedRef.current) {
+        setError(
+          err instanceof Error ? err.message : "Failed to research company. Please try again."
+        );
+      }
     } finally {
       clearTimeout(timer1);
       clearTimeout(timer2);
-      setIsLoading(false);
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
     }
+  };
+
+  const handleRefreshClick = () => {
+    if (!confirmRefresh) {
+      setConfirmRefresh(true);
+      setTimeout(() => {
+        if (isMountedRef.current) {
+          setConfirmRefresh(false);
+        }
+      }, 4000);
+      return;
+    }
+    handleResearchCompany();
   };
 
   // 1. Loading State View
@@ -147,12 +181,16 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
           </div>
 
           <button
-            onClick={handleResearchCompany}
+            onClick={handleRefreshClick}
             aria-label="Refresh Research"
-            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border bg-surface hover:bg-surface-secondary text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary transition-all shadow-2xs cursor-pointer self-start sm:self-center shrink-0 active:scale-[0.99]"
+            className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs sm:text-sm font-medium transition-all shadow-2xs cursor-pointer self-start sm:self-center shrink-0 active:scale-[0.99] ${
+              confirmRefresh
+                ? "bg-accent/15 border-accent text-accent font-semibold"
+                : "border-border bg-surface hover:bg-surface-secondary text-text-secondary hover:text-text-primary"
+            }`}
           >
-            <RefreshCw className="w-3.5 h-3.5 text-accent" />
-            <span>Refresh Research</span>
+            <RefreshCw className={`w-3.5 h-3.5 ${confirmRefresh ? "text-accent animate-spin" : "text-accent"}`} />
+            <span>{confirmRefresh ? "Confirm Re-run?" : "Refresh Research"}</span>
           </button>
         </div>
 
