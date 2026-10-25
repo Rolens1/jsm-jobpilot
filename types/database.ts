@@ -69,14 +69,21 @@ export type JobType = "fulltime" | "parttime" | "contract";
 export type JobStatus = "saved" | "applied" | "interviewing" | "rejected";
 
 export type CompanyResearchDossier = {
+  companyOverview?: string;
+  techStack?: string[];
+  culture?: string[] | string;
+  whyThisRole?: string;
+  yourEdge?: string[];
+  gapsToAddress?: string[];
+  smartQuestions?: string[];
+  interviewPrep?: string[];
+  sources?: string[];
+  extractedAt?: string;
   overview?: string;
   mission?: string;
-  culture?: string;
   recentNews?: string[];
-  techStack?: string[];
   interviewTips?: string[];
   glassdoorRating?: number;
-  extractedAt?: string;
   [key: string]: unknown;
 };
 

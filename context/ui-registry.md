@@ -267,10 +267,19 @@ After building any component — update this file with the component name, file 
 
 ### `CompanyResearchCard`
 - **File**: `components/find-jobs/details/CompanyResearchCard.tsx`
-- **Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm relative overflow-hidden`
-- **Feature Badge**: `bg-accent/15 border border-accent/30 text-accent text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full`
-- **Research CTA Button**: `bg-accent/15 hover:bg-accent/20 border border-accent/30 text-accent font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm inline-flex items-center gap-2 cursor-not-allowed transition-all shrink-0 self-start sm:self-center shadow-2xs opacity-90`
-- **Preview Pillar Card**: `p-4 rounded-xl bg-surface-secondary/50 border border-border/80 flex flex-col justify-between gap-3`
+- **Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm relative overflow-hidden text-left space-y-8`
+- **Active Research CTA Button**: `bg-accent hover:bg-accent-dark text-accent-foreground font-semibold px-5 py-2.5 rounded-xl text-xs sm:text-sm inline-flex items-center gap-2 cursor-pointer transition-all shrink-0 shadow-sm active:scale-[0.99]`
+- **Refresh Research Action**: `inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border bg-surface hover:bg-surface-secondary text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary transition-all shadow-2xs cursor-pointer`
+- **Verified Dossier Badge**: `bg-success-lightest border border-success/30 text-success-dark text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full`
+- **Strategic Alignment Card**: `p-4 sm:p-5 rounded-xl bg-surface-secondary/70 border border-border flex items-start gap-3.5`
+- **Candidate Edge Card**: `p-5 rounded-xl bg-success-lightest border border-success/30 flex flex-col justify-between`
+- **Gap Strategy Card**: `p-5 rounded-xl bg-warning-lightest border border-warning/30 flex flex-col justify-between`
+- **Tech Stack Badges**: `bg-surface-secondary border border-border text-text-primary text-xs font-medium px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 shadow-2xs`
+- **Interview Prep Card**: `p-5 rounded-xl bg-surface-secondary/50 border border-border flex flex-col justify-between`
+- **Smart Questions Card**: `p-5 rounded-xl bg-surface-secondary/50 border border-border flex flex-col justify-between`
+- **Sources Consulted Footer**: `pt-4 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-text-muted`
+- **Loading State Box**: `bg-surface rounded-2xl border border-border p-8 sm:p-10 shadow-sm relative overflow-hidden text-left`
+- **Loading Spinner Box**: `w-16 h-16 rounded-2xl bg-accent-muted border border-border flex items-center justify-center text-accent mb-6 shadow-sm`
 
 ### `StickyApplyBar`
 - **File**: `components/find-jobs/details/StickyApplyBar.tsx`

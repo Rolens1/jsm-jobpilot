@@ -247,6 +247,8 @@ Build the complete job details page UI. Job data from DB is already available fr
 
 # Feature 13 — Company Research Agent (Updated)
 
+> Spec: [docs/specs/0008-company-research-agent/index.md](docs/specs/0008-company-research-agent/index.md)
+
 Agent researches the company using their public website and builds a structured dossier using a single Browserbase session. Three data sources fused together: company website content, job description from DB, user profile from DB.
 
 **Logic:**

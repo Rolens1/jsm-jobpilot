@@ -6,9 +6,9 @@ Update this file after every completed feature. Any AI agent reading this should
 
 ## Current Status
 
-**Phase:** Phase 4: Job Details Page
-**Last completed:** 12 Job Details Page: Full UI (Spec 0007 built, verified, and accepted)
-**Next:** 13 Company Research Agent (Ready for /architect or /develop)
+**Phase:** Phase 5: Dashboard
+**Last completed:** 13 Company Research Agent (Spec 0008 built, verified, and accepted)
+**Next:** 14 Dashboard Page: Full UI
 
 ---
 
@@ -37,7 +37,7 @@ Update this file after every completed feature. Any AI agent reading this should
 ### Phase 4 — Job Details Page
 
 - [x] 12 Job Details Page — Full UI
-- [ ] 13 Company Research Agent
+- [x] 13 Company Research Agent
 
 ### Phase 5 — Dashboard
 
@@ -70,6 +70,7 @@ Update this file after every completed feature. Any AI agent reading this should
 - **Multi Provider Job Discovery Engine (Spec 0006)**: Replaced single Adzuna dependency with a cascading multi provider search engine in `lib/job-search/` (JSearch on RapidAPI primary, Jooble secondary, Adzuna tertiary). Added query deduplication, same search guard (prevents external API calls if search terms are unchanged), on demand pagination ("Load 10 More from Web"), and single batch GPT-4o structured JSON scoring.
 - **Real Database Filter, Sort, and Dynamic Pagination (Feature 11)**: Connected `/find-jobs` UI controls to live InsForge PostgreSQL database results. Implemented All Matches, High Match (`match_score >= 70`), and Low Match (`match_score < 70`) filter tabs, case-insensitive substring searching across role title, company, location, and matched skills, and sorting by match score (descending), newest date found (descending), and oldest date found (ascending). Added dynamic page size selector (10 and 20 per page) with reactive pagination bounds and reset to page 1 semantics on filter changes.
 - **Job Details Page Modular UI and Database Architecture (Spec 0007)**: Decomposed `/find-jobs/[id]` into six focused presentation subcomponents (`JobDetailsHeader`, `JobMetricsGrid`, `JobMatchAnalysisCard`, `JobDescriptionCard`, `CompanyResearchCard`, `StickyApplyBar`) orchestrated by an authenticated Next.js 16 Server Component page. Implemented InsForge PostgreSQL database query priority with graceful fallback to mock fixtures for preview IDs, color coded match score badges, AI reasoning narrative, and scroll aware floating sticky bottom application bar.
+- **Company Research Agent Architecture (Spec 0008)**: Engineered multi tier company intelligence engine in `lib/agent/research.ts` and route handler `POST /api/agent/research`. Follows HTTP redirects natively to derive genuine employer domains while filtering aggregator links, extracts public web footprints via lightweight parsing with automatic fallback to job requirements, and synthesizes candidate specific 9 field dossiers with strict career strategist rules. Persists directly into `jobs.company_research` JSONB, logs execution to `agent_runs` and `agent_logs`, and emits `company_researched` PostHog telemetry. Transformed `CompanyResearchCard.tsx` into an interactive dossier surface with loading state, candidate edge highlights, gap framing strategies, tech badges, and refresh controls.
 
 
 
