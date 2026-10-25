@@ -224,6 +224,7 @@ After building any component — update this file with the component name, file 
 ### `JobsPagination`
 - **File**: `components/find-jobs/JobsPagination.tsx`
 - **Bar Container**: `w-full bg-surface rounded-2xl border border-border px-5 py-3.5 sm:px-6 sm:py-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4`
+- **Page Size Select**: `bg-surface-secondary/70 border border-border rounded-lg px-2 py-1 text-xs font-medium text-text-secondary hover:text-text-primary focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent cursor-pointer transition-all`
 - **Navigation Buttons**: `px-3 py-1.5 rounded-xl border border-border text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer`
 - **Active Page Number Button**: `w-8 h-8 rounded-xl flex items-center justify-center text-xs sm:text-sm border-2 border-accent text-accent bg-accent-muted font-bold shadow-xs`
 - **Inactive Page Number Button**: `w-8 h-8 rounded-xl flex items-center justify-center text-xs sm:text-sm border border-border text-text-secondary hover:text-text-primary hover:bg-surface-secondary font-medium`
@@ -233,4 +234,19 @@ After building any component — update this file with the component name, file 
 - **Layout Container**: `w-full space-y-6`
 - **Load More Button**: `inline-flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-medium rounded-lg text-text-primary bg-surface border border-border hover:bg-surface-hover hover:border-accent/40 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm`
 - **Coordination**: Connects `/api/agent/find` route handler, same search guard, on demand pagination from web, live database state synchronization with profile defaults, and client filtering across company, title, location, and skills.
+
+### `JobDetailsLayout`
+- **File**: `app/find-jobs/[id]/page.tsx`
+- **Main Container**: `flex-1 max-w-[1200px] mx-auto w-full px-4 sm:px-6 md:px-8 py-8`
+- **Back Navigation Link**: `inline-flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-accent transition-colors mb-6 group`
+- **Header Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm mb-6`
+- **Company Monogram**: `w-14 h-14 rounded-2xl bg-accent-muted border border-border flex items-center justify-center font-bold text-xl text-accent shrink-0`
+- **Match Score Badge (High)**: `px-4 py-2 rounded-2xl border flex items-center gap-2 bg-success-lightest border-success/30 text-success-dark`
+- **Match Score Badge (Medium)**: `px-4 py-2 rounded-2xl border flex items-center gap-2 bg-info-lightest border-info/30 text-info-dark`
+- **External Apply CTA**: `bg-accent text-accent-foreground font-semibold px-5 py-2.5 rounded-xl hover:bg-accent-dark transition-colors flex items-center gap-2 shadow-sm text-sm`
+- **Quick Metrics Grid**: `grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-border`
+- **Analysis Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm mb-6`
+- **Skill Pill (Matched)**: `bg-success-lightest border border-success/20 text-success-foreground text-xs font-semibold px-3 py-1 rounded-full`
+- **Skill Pill (Missing / Growth)**: `bg-accent-muted border border-border text-accent text-xs font-semibold px-3 py-1 rounded-full`
+- **Role Details Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm`
 
