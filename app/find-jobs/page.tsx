@@ -21,6 +21,28 @@ async function FindJobsContent() {
     redirect("/login?next=/find-jobs");
   }
 
+  const { data: dbJobs } = await insforge.database
+    .from("jobs")
+    .select("*")
+    .eq("user_id", data.user.id)
+    .order("found_at", { ascending: false });
+
+  const { data: profile } = await insforge.database
+    .from("profiles")
+    .select("job_titles_seeking, preferred_locations, location, current_title")
+    .eq("id", data.user.id)
+    .single();
+
+  const defaultTitle =
+    profile?.job_titles_seeking?.[0] ||
+    profile?.current_title ||
+    "Frontend Engineer";
+
+  const defaultLocation =
+    profile?.preferred_locations?.[0] ||
+    profile?.location ||
+    "Montreal, QC";
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Top Navigation */}
@@ -37,7 +59,11 @@ async function FindJobsContent() {
           </p>
         </div>
 
-        <FindJobsContainer />
+        <FindJobsContainer
+          initialJobs={dbJobs || []}
+          defaultJobTitle={defaultTitle}
+          defaultLocation={defaultLocation}
+        />
       </main>
     </div>
   );

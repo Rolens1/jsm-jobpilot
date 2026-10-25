@@ -1,7 +1,7 @@
 # 0006. Multi Provider Job Discovery Agent
 
 **Date**: 2026-10-25  
-**Status**: Proposed  
+**Status**: Accepted  
 
 ## Summary
 
@@ -125,15 +125,15 @@ Uses existing tables defined in [0001-database-schema.md](file:///d:/Ai%20Projec
 
 ## Build plan
 
-- [ ] **Task 1: Provider Clients and Unified Schema** (Satisfies AC-3, AC-4):
+- [x] **Task 1: Provider Clients and Unified Schema** (Satisfies AC-3, AC-4):
   Create `lib/job-search/types.ts` defining `UnifiedJob` and provider interfaces. Implement `lib/job-search/jsearch.ts`, `lib/job-search/jooble.ts`, and `lib/job-search/adzuna.ts`.
-- [ ] **Task 2: Cascading Search Orchestrator** (Satisfies AC-2, AC-3, AC-4, AC-5):
+- [x] **Task 2: Cascading Search Orchestrator** (Satisfies AC-2, AC-3, AC-4, AC-5):
   Implement `lib/job-search/orchestrator.ts` handling same search database checks, provider fallback cascade, and deduplication against the InsForge `jobs` table.
-- [ ] **Task 3: Batch AI Scoring Pipeline** (Satisfies AC-6):
+- [x] **Task 3: Batch AI Scoring Pipeline** (Satisfies AC-6):
   Implement `lib/job-search/scorer.ts` using OpenAI GPT-4o to score an array of job listings against user profile skills and experience in a single prompt.
-- [ ] **Task 4: Route Handler Implementation** (Satisfies AC-1, AC-7):
+- [x] **Task 4: Route Handler Implementation** (Satisfies AC-1, AC-7):
   Build `app/api/agent/find/route.ts` handling session authentication, input validation, run lifecycle tracking in `agent_runs`, database persistence in `jobs`, and logging in `agent_logs`.
-- [ ] **Task 5: UI Integration and On Demand Pagination** (Satisfies AC-8):
+- [x] **Task 5: UI Integration and On Demand Pagination** (Satisfies AC-8):
   Wire `components/find-jobs/FindJobsContainer.tsx` to call `/api/agent/find`, display live database records, show feedback banners, and add the on demand "Load More from Web" button.
 
 ## Consequences
