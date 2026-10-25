@@ -1,7 +1,7 @@
 # 0007. Job Details Page Full UI
 
 **Date**: 2026-10-25
-**Status**: Proposed
+**Status**: Accepted
 
 ## Summary
 
@@ -106,11 +106,11 @@ None. Uses existing InsForge database credentials and session cookies.
 
 ## Build plan
 
-1. Create modular presentation subcomponents in `components/find-jobs/details/` (`JobDetailsHeader.tsx`, `JobMetricsGrid.tsx`, `JobMatchAnalysisCard.tsx`, `JobDescriptionCard.tsx`, `CompanyResearchCard.tsx`, `StickyApplyBar.tsx`), satisfies **AC-3**, **AC-4**, **AC-5**, **AC-6**, **AC-7**, **AC-8**.
-2. Wire `app/find-jobs/[id]/page.tsx` with server side authentication and database query fetching against InsForge PostgreSQL, with graceful fallback to mock data, satisfies **AC-2**, **AC-9**.
-3. Integrate top back navigation and responsive container layout matching design system tokens, satisfies **AC-1**.
-4. Implement sticky floating bottom bar with scroll threshold detection, satisfies **AC-8**.
-5. Verify TypeScript compilation and runtime rendering across real database rows and preview items, satisfies **AC-2**, **AC-3**, **AC-5**, **AC-7**.
+- [x] 1. Create modular presentation subcomponents in `components/find-jobs/details/` (`JobDetailsHeader.tsx`, `JobMetricsGrid.tsx`, `JobMatchAnalysisCard.tsx`, `JobDescriptionCard.tsx`, `CompanyResearchCard.tsx`, `StickyApplyBar.tsx`), satisfies **AC-3**, **AC-4**, **AC-5**, **AC-6**, **AC-7**, **AC-8**.
+- [x] 2. Wire `app/find-jobs/[id]/page.tsx` with server side authentication and database query fetching against InsForge PostgreSQL, with graceful fallback to mock data, satisfies **AC-2**, **AC-9**.
+- [x] 3. Integrate top back navigation and responsive container layout matching design system tokens, satisfies **AC-1**.
+- [x] 4. Implement sticky floating bottom bar with scroll threshold detection, satisfies **AC-8**.
+- [x] 5. Verify TypeScript compilation and runtime rendering across real database rows and preview items, satisfies **AC-2**, **AC-3**, **AC-5**, **AC-7**.
 
 ## Consequences
 

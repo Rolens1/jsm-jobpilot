@@ -235,18 +235,45 @@ After building any component — update this file with the component name, file 
 - **Load More Button**: `inline-flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-medium rounded-lg text-text-primary bg-surface border border-border hover:bg-surface-hover hover:border-accent/40 active:scale-[0.99] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm`
 - **Coordination**: Connects `/api/agent/find` route handler, same search guard, on demand pagination from web, live database state synchronization with profile defaults, and client filtering across company, title, location, and skills.
 
-### `JobDetailsLayout`
-- **File**: `app/find-jobs/[id]/page.tsx`
-- **Main Container**: `flex-1 max-w-[1200px] mx-auto w-full px-4 sm:px-6 md:px-8 py-8`
-- **Back Navigation Link**: `inline-flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-accent transition-colors mb-6 group`
-- **Header Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm mb-6`
-- **Company Monogram**: `w-14 h-14 rounded-2xl bg-accent-muted border border-border flex items-center justify-center font-bold text-xl text-accent shrink-0`
-- **Match Score Badge (High)**: `px-4 py-2 rounded-2xl border flex items-center gap-2 bg-success-lightest border-success/30 text-success-dark`
-- **Match Score Badge (Medium)**: `px-4 py-2 rounded-2xl border flex items-center gap-2 bg-info-lightest border-info/30 text-info-dark`
-- **External Apply CTA**: `bg-accent text-accent-foreground font-semibold px-5 py-2.5 rounded-xl hover:bg-accent-dark transition-colors flex items-center gap-2 shadow-sm text-sm`
-- **Quick Metrics Grid**: `grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-border`
-- **Analysis Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm mb-6`
-- **Skill Pill (Matched)**: `bg-success-lightest border border-success/20 text-success-foreground text-xs font-semibold px-3 py-1 rounded-full`
-- **Skill Pill (Missing / Growth)**: `bg-accent-muted border border-border text-accent text-xs font-semibold px-3 py-1 rounded-full`
-- **Role Details Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm`
+### `JobDetailsHeader`
+- **File**: `components/find-jobs/details/JobDetailsHeader.tsx`
+- **Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm`
+- **Monogram Box**: `w-14 h-14 rounded-2xl bg-accent-muted border border-border flex items-center justify-center font-bold text-xl text-accent shrink-0 shadow-2xs`
+- **Match Score Badge (High)**: `px-4 py-2 rounded-2xl border flex items-center gap-2 shadow-2xs bg-success-lightest border-success/30 text-success-dark`
+- **Match Score Badge (Medium)**: `px-4 py-2 rounded-2xl border flex items-center gap-2 shadow-2xs bg-info-lightest border-info/30 text-info-dark`
+- **Match Score Badge (Low)**: `px-4 py-2 rounded-2xl border flex items-center gap-2 shadow-2xs bg-warning-lightest border-warning/30 text-warning-dark`
+- **Apply CTA Button**: `bg-accent text-accent-foreground font-semibold px-5 py-2.5 rounded-xl hover:bg-accent-dark active:scale-[0.99] transition-all flex items-center gap-2 shadow-sm text-sm shrink-0`
+
+### `JobMetricsGrid`
+- **File**: `components/find-jobs/details/JobMetricsGrid.tsx`
+- **Card**: `bg-surface rounded-2xl border border-border p-5 sm:p-6 shadow-sm`
+- **Grid Layout**: `grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6`
+- **Metric Icon Box**: `w-10 h-10 rounded-xl bg-surface-secondary border border-border flex items-center justify-center text-text-secondary shrink-0`
+- **Metric Label**: `text-[11px] sm:text-xs text-text-muted font-semibold uppercase tracking-wider block`
+- **Metric Value**: `text-sm sm:text-base font-bold text-text-primary mt-0.5 block truncate`
+
+### `JobMatchAnalysisCard`
+- **File**: `components/find-jobs/details/JobMatchAnalysisCard.tsx`
+- **Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm`
+- **Reason Container**: `p-4 sm:p-5 rounded-xl bg-surface-secondary/60 border border-border mb-6`
+- **Matched Skill Pill**: `bg-success-lightest border border-success/30 text-success-dark text-xs font-semibold px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 shadow-2xs`
+- **Growth Area Skill Pill**: `bg-warning-lightest border border-warning/30 text-warning-dark text-xs font-semibold px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 shadow-2xs`
+
+### `JobDescriptionCard`
+- **File**: `components/find-jobs/details/JobDescriptionCard.tsx`
+- **Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm space-y-8`
+- **Checkmark Bullet Box**: `w-5 h-5 rounded-md bg-accent-muted flex items-center justify-center text-accent shrink-0 mt-0.5`
+- **Bottom Call to Action Banner**: `p-6 rounded-2xl bg-hero-gradient border border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4`
+
+### `CompanyResearchCard`
+- **File**: `components/find-jobs/details/CompanyResearchCard.tsx`
+- **Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm relative overflow-hidden`
+- **Feature Badge**: `bg-accent/15 border border-accent/30 text-accent text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full`
+- **Research CTA Button**: `bg-accent/15 hover:bg-accent/20 border border-accent/30 text-accent font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm inline-flex items-center gap-2 cursor-not-allowed transition-all shrink-0 self-start sm:self-center shadow-2xs opacity-90`
+- **Preview Pillar Card**: `p-4 rounded-xl bg-surface-secondary/50 border border-border/80 flex flex-col justify-between gap-3`
+
+### `StickyApplyBar`
+- **File**: `components/find-jobs/details/StickyApplyBar.tsx`
+- **Bar Container**: `fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-border py-3.5 px-4 sm:px-8 shadow-2xl transition-all duration-300 ease-in-out`
+- **Apply Action**: `bg-accent text-accent-foreground font-semibold px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl hover:bg-accent-dark active:scale-[0.99] transition-all flex items-center gap-2 shadow-sm text-xs sm:text-sm shrink-0`
 
