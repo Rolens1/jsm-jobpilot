@@ -21,10 +21,13 @@ After building any component — update this file with the component name, file 
 ### `Navbar`
 - **File**: `components/layout/Navbar.tsx`
 - **Classes**: `h-16 w-full bg-surface border-b border-border sticky top-0 z-50`
-- **Container**: `max-w-[1440px] mx-auto h-full px-6 flex items-center justify-between`
+- **Container**: `max-w-[1440px] mx-auto h-full px-4 sm:px-6 flex items-center justify-between`
 - **Authenticated App Nav Items**: `Dashboard`, `Find Jobs`, `Profile` with Lucide icons (`LayoutDashboard`, `Search`, `User`)
 - **Active App Nav Item**: `h-full flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium transition-colors border-b-2 border-accent text-accent`
 - **Inactive App Nav Item**: `h-full flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium transition-colors border-b-2 border-transparent text-text-secondary hover:text-text-primary`
+- **Authenticated User Actions Container**: `flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-border h-8`
+- **User Email Text**: `text-xs text-text-secondary hidden xl:inline-block max-w-[160px] truncate`
+- **Sign Out Button**: `inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg text-text-secondary hover:text-text-primary border border-border bg-surface hover:bg-surface-secondary transition-colors cursor-pointer`
 - **Unauthenticated Nav Action Button**: `bg-text-darkest text-surface rounded-lg px-4 py-2 text-sm font-medium hover:opacity-90 transition-opacity`
 
 ### `Footer`
