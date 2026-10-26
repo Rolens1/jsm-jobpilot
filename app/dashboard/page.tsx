@@ -7,7 +7,6 @@ import { PostHogUserIdentity } from "@/components/auth/SignOutButton";
 import { Navbar } from "@/components/layout/Navbar";
 import { ProfileAttentionBanner } from "@/components/profile/ProfileAttentionBanner";
 import { DashboardContainer } from "@/components/dashboard/DashboardContainer";
-import { EventTrackingCard } from "@/components/dashboard/EventTrackingCard";
 import { Loader2 } from "lucide-react";
 import { calculateDashboardStats, type JobStatRecord } from "@/lib/dashboard-stats";
 import {
@@ -90,11 +89,6 @@ async function DashboardContent() {
           initialActivity={activities}
           initialChartsData={chartsData}
         />
-
-        {/* Developer Diagnostics & PostHog Event Verification Tool */}
-        <div className="pt-4">
-          <EventTrackingCard userId={user.id} />
-        </div>
       </main>
     </>
   );
