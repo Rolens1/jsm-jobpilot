@@ -8,7 +8,7 @@ Update this file after every completed feature. Any AI agent reading this should
 
 **Phase:** Phase 5: Dashboard
 **Last completed:** 13 Company Research Agent (Spec 0008 built, verified, and accepted)
-**Next:** 14 Dashboard Page: Full UI
+**Next:** 14 Dashboard Page: Full UI (Spec 0009 architected and accepted, ready to develop)
 
 ---
 

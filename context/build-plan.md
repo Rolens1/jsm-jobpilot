@@ -397,15 +397,18 @@ The Company Research card on the job details page must render all 9 fields:
 
 ### 14 Dashboard Page — Full UI
 
-Build the complete dashboard UI with mock data.
+> Spec: [docs/specs/0009-dashboard-page-ui/index.md](docs/specs/0009-dashboard-page-ui/index.md)
+
+Build the complete dashboard UI with mock data matching `context/designs/dashboard.png`.
 **UI:**
 
-- Four stat cards: Total Jobs Found, Avg. Match Rate, Companies Researched, Cover Letters Generated — all showing mock numbers with trend indicators
-- Recent Activity card — list of 5 activity entries with colored dots and timestamps
-- Resume Tailoring Activity — bar chart (mock data, days of week)
-- Jobs Found Over Time — line chart (mock data, days of week)
-- Match Score Distribution — bar chart (mock data, score ranges 50-60%, 60-70%, 70-80%, 80-90%, 90-100%)
-- Incomplete profile banner at top if profile not complete
+- Four stat cards: Total Jobs Found, Avg. Match Rate, Companies Researched, Jobs This Week — with trend indicators and subtitles matching `context/designs/dashboard.png`
+- Recent Activity card — list of 5 activity entries with double ring colored dots, titles, and relative timestamps
+- Company Research Activity — responsive SVG bar chart (daily counts Monday through Sunday)
+- Jobs Found Over Time — responsive SVG area chart with smooth purple spline curve and gradient fill
+- Match Score Distribution — responsive SVG bar chart (score ranges 50-60%, 60-70%, 70-80%, 80-90%, 90-100%)
+- Incomplete profile banner at top if profile not complete (`ProfileAttentionBanner`)
+
 
 ---
 
