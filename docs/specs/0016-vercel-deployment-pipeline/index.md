@@ -55,6 +55,7 @@ Reasoning and alternatives: see [rationale.md](docs/specs/0016-vercel-deployment
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)*.md' ':(exclude)docs' ':(exclude)context'",
   "functions": {
     "app/api/agent/find/route.ts": {
       "maxDuration": 60,
@@ -68,7 +69,13 @@ Reasoning and alternatives: see [rationale.md](docs/specs/0016-vercel-deployment
       "maxDuration": 30,
       "memory": 1024
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-rate-limits",
+      "schedule": "0 3 * * *"
+    }
+  ]
 }
 ```
 
