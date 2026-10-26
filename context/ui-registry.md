@@ -88,32 +88,6 @@ After building any component — update this file with the component name, file 
 - **File**: `components/auth/SignOutButton.tsx`
 - **Button**: `inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg text-text-secondary hover:text-text-primary border border-border bg-surface hover:bg-surface-secondary transition-colors cursor-pointer disabled:opacity-50`
 
-### `DashboardPlaceholder`
-- **File**: `app/dashboard/page.tsx`
-- **Card**: `w-full bg-surface rounded-2xl border border-border p-8 sm:p-12 shadow-sm flex flex-col items-center text-center`
-- **Status Badge**: `inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 text-accent text-xs font-semibold`
-- **Primary Action**: `bg-text-darkest text-surface rounded-lg px-5 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity`
-
-### `ProfilePlaceholder`
-- **File**: `app/profile/page.tsx`
-- **Card**: `w-full bg-surface rounded-2xl border border-border p-8 sm:p-12 shadow-sm flex flex-col items-center text-center`
-- **Verified Badge**: `inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-success/10 text-success text-xs font-semibold`
-- **Detail List**: `w-full max-w-md p-5 rounded-xl bg-surface-secondary border border-border text-left space-y-3`
-
-### `EventTrackingCard`
-- **File**: `components/dashboard/EventTrackingCard.tsx`
-- **Card**: `w-full bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm text-left mt-8`
-- **Header**: `flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border`
-- **Channel Switcher**: `flex items-center bg-surface-secondary p-1 rounded-lg border border-border text-xs`
-- **Active Channel Button**: `bg-surface text-accent shadow-xs font-semibold`
-- **Event Action Button**: `p-4 rounded-xl border border-border bg-surface hover:bg-surface-secondary transition-all text-left flex flex-col justify-between group cursor-pointer disabled:opacity-50`
-- **Status Toast**: `mt-4 p-3 rounded-lg bg-success-lightest border border-success-light flex items-center gap-2 text-xs text-success-dark`
-- **Feed Row**: `p-3 rounded-lg bg-surface-secondary border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs`
-
-### `ProfileCompleteTracker`
-- **File**: `components/profile/ProfileCompleteTracker.tsx`
-- **Container**: `mt-6 w-full max-w-md p-4 rounded-xl border border-border bg-surface-secondary flex items-center justify-between text-xs text-left`
-- **Trigger Button**: `px-3 py-1.5 rounded-lg bg-accent text-accent-foreground font-medium hover:opacity-90 transition-opacity flex items-center gap-1.5 cursor-pointer disabled:opacity-60 shrink-0`
 
 ### `PostHogProvider`
 - **File**: `components/providers/PostHogProvider.tsx`

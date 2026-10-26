@@ -60,7 +60,7 @@ export function calculateDashboardStats(
     const dateMs = new Date(dateStr).getTime();
     const diffMs = nowMs - dateMs;
 
-    if (diffMs >= 0 && diffMs <= sevenDaysMs) {
+    if (diffMs >= -60000 && diffMs <= sevenDaysMs) {
       thisWeekJobs.push(job);
     } else if (diffMs > sevenDaysMs && diffMs <= fourteenDaysMs) {
       priorWeekJobs.push(job);
