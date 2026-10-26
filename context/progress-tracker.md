@@ -8,7 +8,7 @@ Update this file after every completed feature. Any AI agent reading this should
 
 **Phase:** Phase 7: Deployment & Production Launch  
 **Last completed:** 21 Production Environment & Secrets Architecture (Spec 0014 built, verified, and accepted)  
-**Next:** 22 Build Hardening, Security Headers, Rate Limiting & Runtime Compatibility  
+**Next:** 22 Build Hardening, Security Headers, Rate Limiting & Runtime Compatibility (Spec 0015 ready to build)  
 
 ---
 
