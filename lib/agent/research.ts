@@ -39,7 +39,20 @@ function cleanRootDomain(rawUrl: string): string {
     }
 
     // Strip common subdomains: jobs.stripe.com -> stripe.com
-    const filteredParts = hostParts.filter((part) => !["jobs", "careers", "about", "www", "app", "board", "boards"].includes(part));
+    const filteredParts = hostParts.filter(
+      (part) => !["jobs", "careers", "about", "www", "app", "board", "boards"].includes(part)
+    );
+
+    // Multi-part TLD suffixes (e.g. .co.uk, .com.au, .qc.ca)
+    const secondLevelSuffixes = new Set(["co", "com", "org", "net", "gov", "edu", "qc", "on", "bc", "ab"]);
+    if (filteredParts.length >= 3) {
+      const penultimate = filteredParts[filteredParts.length - 2];
+      const last = filteredParts[filteredParts.length - 1];
+      if (secondLevelSuffixes.has(penultimate) && last.length === 2) {
+        return `https://${filteredParts.slice(-3).join(".")}`;
+      }
+    }
+
     if (filteredParts.length >= 2) {
       return `https://${filteredParts.slice(-2).join(".")}`;
     }
@@ -176,37 +189,35 @@ export async function extractCompanyWebFootprint(
 function generateFallbackDossier(job: Job, profile: Profile, sources: string[]): CompanyResearchDossier {
   const candidateSkills = Array.isArray(profile.skills) ? profile.skills : [];
   const matched = job.matched_skills && job.matched_skills.length > 0 ? job.matched_skills : candidateSkills.slice(0, 4);
-  const missing = job.missing_skills && job.missing_skills.length > 0 ? job.missing_skills : ["System Architecture", "Cloud Optimization"];
+  const missing = job.missing_skills && job.missing_skills.length > 0 ? job.missing_skills : ["Strategic Execution", "Cross-Functional Leadership"];
 
   return {
-    companyOverview: `${job.company} is an active industry player focused on delivering modern solutions in its sector. Based on active job requirements, the team is scaling engineering and product operations with a focus on scalable architecture.`,
+    companyOverview: `${job.company} is an active industry leader focused on delivering modern solutions in its sector. Based on active job requirements, the team is expanding operations with a focus on strong execution and strategic growth.`,
     techStack: [
       ...matched,
-      "TypeScript",
-      "Cloud Infrastructure",
-      "REST APIs",
+      ...candidateSkills,
     ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 6),
     culture: [
       "High ownership culture valuing direct impact and end to end delivery.",
-      "Collaborative technical environment partnering closely with cross functional teams.",
-      "Continuous learning orientation with openness to modern engineering methodologies.",
+      "Collaborative professional environment partnering closely with cross functional teams.",
+      "Continuous improvement orientation focused on measurable operational excellence.",
     ],
-    whyThisRole: `This ${job.title} role at ${job.company} aligns with your background in ${matched.slice(0, 2).join(" and ") || "core technologies"}, offering immediate technical ownership while expanding your domain reach.`,
+    whyThisRole: `This ${job.title} role at ${job.company} aligns with your background in ${matched.slice(0, 2).join(" and ") || "core domain competencies"}, offering immediate ownership while expanding your professional scope.`,
     yourEdge: [
-      `Direct proven experience with ${matched.slice(0, 3).join(", ") || "core technologies"} enables you to contribute quickly without extended ramp up time.`,
-      `Your background as a ${profile.current_title || "software engineer"} provides practical perspective on solving role specific problems.`,
+      `Direct proven experience with ${matched.slice(0, 3).join(", ") || "core competencies"} enables you to contribute quickly without extended ramp up time.`,
+      `Your background as a ${profile.current_title || "experienced professional"} provides practical perspective on solving role specific problems.`,
     ],
     gapsToAddress: missing.map(
       (m) => `Acknowledge ${m} as a targeted growth area while demonstrating how your foundation in ${matched[0] || "adjacent tools"} accelerates your mastery.`
     ),
     smartQuestions: [
-      `How does the engineering team at ${job.company} balance shipping new feature velocity with long term technical architecture?`,
+      `How does the team at ${job.company} balance immediate operational priorities with long term strategic goals?`,
       `What does success look like for this ${job.title} position in the first 90 days?`,
-      `What are the most exciting technical challenges the team plans to tackle in the upcoming quarters?`,
+      `What are the most exciting strategic challenges the team plans to tackle in the upcoming quarters?`,
     ],
     interviewPrep: [
-      `Prepare a concise walkthrough of your past projects demonstrating hands on application of ${matched[0] || "key technical skills"}.`,
-      `Be ready to discuss how you collaborate with product managers and engineers when designing technical solutions.`,
+      `Prepare a concise walkthrough of your past projects demonstrating hands on application of ${matched[0] || "key core competencies"}.`,
+      `Be ready to discuss how you collaborate with key department stakeholders to deliver impactful outcomes.`,
     ],
     sources: sources.length > 0 ? sources : [`https://www.${job.company.toLowerCase().replace(/[^a-z0-9]/g, "")}.com`],
     extractedAt: new Date().toISOString(),

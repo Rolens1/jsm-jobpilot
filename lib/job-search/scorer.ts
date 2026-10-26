@@ -30,14 +30,15 @@ function heuristicScoreJob(job: UnifiedJob, profile: Profile): ScoredJobMatch {
     }
   }
 
-  // Common tech skills to check for missing skills
-  const commonTech = [
-    "react", "typescript", "node.js", "next.js", "python",
-    "sql", "aws", "docker", "graphql", "tailwind", "system design"
-  ];
-  for (const tech of commonTech) {
-    if (roleText.includes(tech) && !profileSkills.some((s) => s.toLowerCase() === tech)) {
-      potentialMissing.push(tech.charAt(0).toUpperCase() + tech.slice(1));
+  // Check for role-specific skills based on job content
+  const isSoftwareRole = /developer|engineer|software|frontend|backend|fullstack|devops/i.test(`${job.title} ${candidateTitle}`);
+  const domainSkills = isSoftwareRole
+    ? ["react", "typescript", "node.js", "next.js", "python", "sql", "aws", "docker", "graphql", "system design"]
+    : ["excel", "financial modeling", "budgeting", "forecasting", "variance analysis", "reporting", "sap", "power bi", "kpi tracking", "process optimization"];
+
+  for (const skill of domainSkills) {
+    if (roleText.includes(skill) && !profileSkills.some((s) => s.toLowerCase() === skill)) {
+      potentialMissing.push(skill.charAt(0).toUpperCase() + skill.slice(1));
     }
   }
 
@@ -54,20 +55,20 @@ function heuristicScoreJob(job: UnifiedJob, profile: Profile): ScoredJobMatch {
 
   if (isJunior && (isHighSeniority || isHighSalary)) {
     score = Math.min(score, 58);
-    const reason = `Shows foundational skill alignment in ${matchedSkills.slice(0, 3).join(", ") || "core areas"}, but role scope and compensation reflect advanced architectural ownership.`;
+    const reason = `Shows foundational skill alignment in ${matchedSkills.slice(0, 3).join(", ") || "core areas"}, but role scope and compensation reflect advanced strategic ownership and seniority.`;
     return {
       job,
       matchScore: score,
       matchReason: reason,
       matchedSkills,
-      missingSkills: ["Senior Architecture Experience", "Production Leadership", ...potentialMissing].slice(0, 3),
+      missingSkills: ["Senior Strategic Ownership", "Team Leadership", ...potentialMissing].slice(0, 3),
     };
   }
 
   score = Math.min(Math.max(score, 30), 92);
   const matchReason = matchedSkills.length > 0
     ? `Matches background in ${matchedSkills.slice(0, 3).join(", ")} with relevant demonstrated competency.`
-    : `Aligns with general developer profile in ${job.location || "target market"}.`;
+    : `Aligns with ${candidateTitle || "candidate"} profile in ${job.location || "target market"}.`;
 
   return {
     job,

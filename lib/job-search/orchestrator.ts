@@ -155,44 +155,60 @@ export async function executeJobSearch(
     }
   }
 
-  // 4. Load Profile for AI Scoring
-  const { data: profileData } = await insforge.database
-    .from("profiles")
-    .select("*")
-    .eq("id", userId)
-    .single();
+  // 4. Load Profile and Score only if there are new unique jobs
+  let scoredMatches: any[] = [];
+  if (uniqueJobsToSave.length > 0) {
+    const { data: profileData } = await insforge.database
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
 
-  const userProfile: Profile = profileData || {
-    id: userId,
-    full_name: "Candidate",
-    email: "",
-    phone: null,
-    location: location || "Montreal, QC",
-    current_title: jobTitle,
-    experience_level: "mid",
-    years_experience: 3,
-    skills: ["JavaScript", "TypeScript", "React", "Next.js"],
-    industries: ["Technology", "Software"],
-    work_experience: [],
-    education: [],
-    job_titles_seeking: [jobTitle],
-    remote_preference: "any",
-    preferred_locations: [location],
-    salary_expectation: null,
-    cover_letter_tone: "enthusiastic",
-    linkedin_url: null,
-    portfolio_url: null,
-    work_authorization: "citizen",
-    resume_pdf_url: null,
-    is_complete: true,
-    created_at: startTime,
-    updated_at: startTime,
-  };
+    const userProfile: Profile = profileData || {
+      id: userId,
+      full_name: "Candidate",
+      email: "",
+      phone: null,
+      location: location || "Montreal, QC",
+      current_title: jobTitle,
+      experience_level: "mid",
+      years_experience: 3,
+      skills: ["JavaScript", "TypeScript", "React", "Next.js"],
+      industries: ["Technology", "Software"],
+      work_experience: [],
+      education: [],
+      job_titles_seeking: [jobTitle],
+      remote_preference: "any",
+      preferred_locations: [location],
+      salary_expectation: null,
+      cover_letter_tone: "enthusiastic",
+      linkedin_url: null,
+      portfolio_url: null,
+      work_authorization: "citizen",
+      resume_pdf_url: null,
+      is_complete: true,
+      created_at: startTime,
+      updated_at: startTime,
+    };
 
-  // 5. Score only new unique jobs in a single batch
-  const scoredMatches = await batchScoreJobs(uniqueJobsToSave, userProfile);
+    // 5. Score only new unique jobs in a single batch
+    scoredMatches = await batchScoreJobs(uniqueJobsToSave, userProfile);
+  }
 
   // 6. Persist to InsForge DB
+  // Ensure initial agent_runs row exists to satisfy foreign key constraint jobs_run_id_fkey
+  await insforge.database.from("agent_runs").upsert([
+    {
+      id: runId,
+      user_id: userId,
+      status: "running",
+      job_title_searched: jobTitle,
+      location_searched: location || null,
+      jobs_found: rawJobs.length,
+      started_at: startTime,
+    },
+  ], { onConflict: "id" });
+
   if (scoredMatches.length > 0) {
     const recordsToInsert = scoredMatches.map((item) => ({
       user_id: userId,
@@ -214,27 +230,6 @@ export async function executeJobSearch(
       company_research: null,
       found_at: new Date().toISOString(),
     }));
-
-    // Ensure initial agent_runs row exists to satisfy foreign key constraint
-    const { data: existingRun } = await insforge.database
-      .from("agent_runs")
-      .select("id")
-      .eq("id", runId)
-      .single();
-
-    if (!existingRun) {
-      await insforge.database.from("agent_runs").insert([
-        {
-          id: runId,
-          user_id: userId,
-          status: "running",
-          job_title_searched: jobTitle,
-          location_searched: location || null,
-          jobs_found: rawJobs.length,
-          started_at: startTime,
-        },
-      ]);
-    }
 
     const { error: insertError } = await insforge.database
       .from("jobs")
@@ -281,12 +276,13 @@ export async function executeJobSearch(
     },
   ]);
 
-  // Return all user jobs from database ordered by newest found
+  // Return user jobs from database ordered by newest found (bounded to 100)
   const { data: updatedJobs } = await insforge.database
     .from("jobs")
     .select("*")
     .eq("user_id", userId)
-    .order("found_at", { ascending: false });
+    .order("found_at", { ascending: false })
+    .limit(100);
 
   return {
     runId,

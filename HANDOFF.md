@@ -32,7 +32,12 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
   - Identified root cause of searched jobs not showing up in the table: foreign key ordering constraint (`jobs_run_id_fkey`) in `lib/job-search/orchestrator.ts` where jobs were inserted before `agent_runs` existed for `run_id`.
   - Fixed `orchestrator.ts` to insert `agent_runs` prior to inserting jobs, with safe upserts and fallback unique URL handling.
   - Added coverage augmentation to provider cascade: when primary returns low count (< 5), automatically falls back and aggregates unique listings across Jooble and Adzuna.
-  - Removed all `MOCK_JOBS` fixtures from `FindJobsContainer.tsx`, `app/find-jobs/page.tsx`, `app/find-jobs/[id]/page.tsx`, and `app/api/agent/research/route.ts`. Real database jobs are now used exclusively.
+  - Removed all `MOCK_JOBS` fixtures from `FindJobsContainer.tsx`, `app/find-jobs/page.tsx`, `app/find-jobs/[id]/page.tsx`, and `app/api/agent/research/route.ts`. Deleted the dead code file `lib/mock-jobs.ts`. Real database jobs are now used exclusively.
+- **Review Recommendations Applied**:
+  - Fix 1: JSearch upgraded to `/search-v2` with dynamic country parameters and unique fallback URLs to prevent collisions on `(user_id, source_url)`.
+  - Fix 2: Multi-part TLD support added to `cleanRootDomain` in `lib/agent/research.ts` (`.co.uk`, `.qc.ca`, `.com.au`).
+  - Fix 3: Domain-aware heuristic fallback scoring in `lib/job-search/scorer.ts` and dossier generation in `lib/agent/research.ts` that adapts to candidate profile and role domain (financial, operational, technical).
+  - Orchestrator efficiency: skips scoring if zero new unique jobs discovered, uses single `agent_runs` upsert, and caps jobs fetch to 100 records.
 - **Phase 6 Addition (Internationalization & Bilingual Localization):**
   - Added Features 18, 19, and 20 to `context/build-plan.md` and `context/progress-tracker.md` to be implemented after Phase 5.
 - **Next up:**

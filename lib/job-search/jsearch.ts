@@ -12,11 +12,12 @@ export async function searchJSearch(
   }
 
   const query = location ? `${jobTitle} in ${location}` : jobTitle;
+  const targetCountry = location.toLowerCase().includes("us") || location.toLowerCase().includes("united states") ? "us" : "ca";
   const params = new URLSearchParams({
     query,
     page: String(page),
     num_pages: "1",
-    country: "ca",
+    country: targetCountry,
     date_posted: "month",
   });
 
@@ -84,6 +85,7 @@ export async function searchJSearch(
       salaryStr = `From $${Math.round(raw.job_min_salary / 1000)}k`;
     }
 
+    const country = location.toLowerCase().includes("us") || location.toLowerCase().includes("united states") ? "us" : "ca";
     return {
       id: raw.job_id || `jsearch-${Math.random().toString(36).substring(2, 9)}`,
       provider: "jsearch",
@@ -93,7 +95,10 @@ export async function searchJSearch(
       salary: salaryStr,
       jobType,
       aboutRole: raw.job_description || "No description provided.",
-      sourceUrl: raw.job_google_link || raw.job_apply_link || "https://google.com",
+      sourceUrl:
+        raw.job_google_link ||
+        raw.job_apply_link ||
+        `https://careers.google.com/jobs/${raw.job_id || Math.random().toString(36).substring(2, 9)}`,
       externalApplyUrl: raw.job_apply_link || null,
       employerLogo: raw.employer_logo || null,
       postedAt: raw.job_posted_at_datetime_utc || null,
