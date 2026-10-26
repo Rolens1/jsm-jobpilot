@@ -511,12 +511,12 @@ Configure and validate production environment variables, security contracts, and
 - Create local `scripts/sync-env.mjs` helper for Vercel CLI sync while protecting credentials via `.gitignore`.
 
 **Build Milestones:**
-- [ ] Milestone 1: Zod schema & validator in `lib/env.ts` (satisfies AC-1, AC-2, AC-3)
-- [ ] Milestone 2: Comprehensive `.env.example` documentation across 7 functional domains (satisfies AC-4)
-- [ ] Milestone 3: Entry point integration in `next.config.ts` (satisfies AC-2, AC-7)
-- [ ] Milestone 4: Local sync script `scripts/sync-env.mjs` and `.gitignore` update (satisfies AC-6)
-- [ ] Milestone 5: InsForge production setup documentation in `docs/deployment/insforge-setup.md` (satisfies AC-5)
-- [ ] Milestone 6: Build verification with `npm run build` and `tsc --noEmit` (satisfies AC-1, AC-2, AC-3)
+- [x] Milestone 1: Zod schema & validator in `lib/env.ts` (satisfies AC-1, AC-2, AC-3)
+- [x] Milestone 2: Comprehensive `.env.example` documentation across 7 functional domains (satisfies AC-4)
+- [x] Milestone 3: Entry point integration in `next.config.ts` (satisfies AC-2, AC-7)
+- [x] Milestone 4: Local sync script `scripts/sync-env.mjs` and `.gitignore` update (satisfies AC-6)
+- [x] Milestone 5: InsForge production setup documentation in `docs/deployment/insforge-setup.md` (satisfies AC-5)
+- [x] Milestone 6: Build verification with `npm run build` and `tsc --noEmit` (satisfies AC-1, AC-2, AC-3)
 
 ---
 

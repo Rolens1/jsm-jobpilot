@@ -1,7 +1,7 @@
 # 0014. Production Environment and Secrets Architecture
 
 **Date**: 2026-10-26  
-**Status**: Proposed  
+**Status**: In Progress  
 
 ## Summary
 
@@ -190,12 +190,12 @@ A developer utility that reads `.env.local` and optionally pushes keys to Vercel
 
 ## Build Plan
 
-1. Create `lib/env.ts` with Zod schema and `validateEnv()` export for client and server environment variables, satisfies **AC-1**, **AC-2**, **AC-3**.
-2. Expand `.env.example` into a comprehensive documentation template covering all 16 variables across all 7 functional domains, satisfies **AC-4**.
-3. Integrate `validateEnv()` into `next.config.ts` so production builds fail fast on missing core infrastructure keys, satisfies **AC-2**, **AC-7**.
-4. Create the local sync script `scripts/sync-env.mjs` and update `.gitignore` to guarantee local sync tooling and production credentials remain out of GitHub, satisfies **AC-6**.
-5. Document InsForge production dashboard settings for domain whitelisting, OAuth callbacks, and CORS origins in `docs/deployment/insforge-setup.md`, satisfies **AC-5**.
-6. Run build verification (`npm run build` and `npx tsc --noEmit`) to confirm clean compilation under validated environment contracts, satisfies **AC-1**, **AC-2**, **AC-3**.
+1. [x] Create `lib/env.ts` with Zod schema and `validateEnv()` export for client and server environment variables, satisfies **AC-1**, **AC-2**, **AC-3**.
+2. [x] Expand `.env.example` into a comprehensive documentation template covering all 16 variables across all 7 functional domains, satisfies **AC-4**.
+3. [x] Integrate `validateEnv()` into `next.config.ts` so production builds fail fast on missing core infrastructure keys, satisfies **AC-2**, **AC-7**.
+4. [x] Create the local sync script `scripts/sync-env.mjs` and update `.gitignore` to guarantee local sync tooling and production credentials remain out of GitHub, satisfies **AC-6**.
+5. [x] Document InsForge production dashboard settings for domain whitelisting, OAuth callbacks, and CORS origins in `docs/deployment/insforge-setup.md`, satisfies **AC-5**.
+6. [x] Run build verification (`npm run build` and `npx tsc --noEmit`) to confirm clean compilation under validated environment contracts, satisfies **AC-1**, **AC-2**, **AC-3**.
 
 ## Consequences
 

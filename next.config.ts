@@ -1,4 +1,10 @@
 import type { NextConfig } from "next";
+import { validateEnv } from "./lib/env";
+
+// Execute environment validation on build evaluation or in production
+if (process.env.NODE_ENV === "production" || process.env.CI) {
+  validateEnv();
+}
 
 const nextConfig: NextConfig = {
   /* config options here */
