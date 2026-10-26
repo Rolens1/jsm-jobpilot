@@ -724,3 +724,74 @@ export async function POST(req: NextRequest) {
 - `pdfData.text` is raw unformatted text — GPT-4o handles the structure extraction
 - Always handle parse errors — some PDFs are image-based and return empty text
 - If `pdfData.text` is empty or very short — return error to user: "Could not extract text from this PDF. Please try a different file."
+
+---
+
+## Vercel Deployment and Runtime Integration
+
+**Check first:** Check AGENTS.md for installed Vercel skills (`deploy-to-vercel`, `vercel-cli-with-tokens`).
+
+### Overview and Deployment Strategy
+
+JobPilot is deployed on Vercel using Next.js 16 App Router with Partial Prerendering and Turbopack. The preferred deployment workflow is GitHub git push integration, where pushes to `master` trigger production releases and pull requests produce isolated preview environments.
+
+### Environment Variables Matrix
+
+All production environment variables must be configured in Vercel Project Settings (Settings -> Environment Variables). Never commit `.env.local` to version control.
+
+| Variable Name | Exposure | Purpose |
+|---|---|---|
+| `NEXT_PUBLIC_APP_URL` | Public (Client + Server) | Canonical production domain (e.g. `https://jobpilot.vercel.app`) |
+| `NEXT_PUBLIC_INSFORGE_URL` | Public (Client + Server) | InsForge BaaS API endpoint |
+| `NEXT_PUBLIC_INSFORGE_ANON_KEY` | Public (Client + Server) | InsForge public anonymous access key |
+| `INSFORGE_API_KEY` | Secret (Server only) | InsForge server admin key for storage and server actions |
+| `NEXT_PUBLIC_POSTHOG_KEY` | Public (Client + Server) | PostHog public project ingest token |
+| `NEXT_PUBLIC_POSTHOG_HOST` | Public (Client + Server) | PostHog host endpoint (e.g. `https://us.i.posthog.com`) |
+| `GROQ_API_KEY` | Secret (Server only) | Groq ultra fast Llama 3.3 inference gateway |
+| `GEMINI_API_KEY` | Secret (Server only) | Google Gemini 2.0 Flash fallback |
+| `CEREBRAS_API_KEY` | Secret (Server only) | Cerebras inference fallback |
+| `MISTRAL_API_KEY` | Secret (Server only) | Mistral Small and Large fallback |
+| `OPENROUTER_API_KEY` | Secret (Server only) | OpenRouter community model access |
+| `OPENAI_API_KEY` | Secret (Server only) | OpenAI GPT-4o fallback gateway |
+| `RAPIDAPI_KEY` | Secret (Server only) | JSearch primary job discovery aggregator |
+| `JOOBLE_API_KEY` | Secret (Server only) | Jooble secondary job discovery fallback |
+| `ADZUNA_APP_ID` | Secret (Server only) | Adzuna tertiary job discovery application ID |
+| `ADZUNA_APP_KEY` | Secret (Server only) | Adzuna tertiary job discovery application key |
+
+### vercel.json Serverless Function Limits
+
+Multi provider job discovery cascades and web research synthesis can require extended execution time. Configure `maxDuration` in `vercel.json` for long running route handlers:
+
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "app/api/agent/find/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "app/api/agent/research/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "app/api/resume/route.ts": {
+      "maxDuration": 30,
+      "memory": 1024
+    }
+  }
+}
+```
+
+### Next.js 16 Partial Prerendering on Vercel
+
+1. **Root Layout Static Invariant**: Root layout (`app/layout.tsx`) must never invoke dynamic `cookies()` or `headers()` outside a Suspense boundary. Locale initialization occurs cleanly on client mount in `LanguageProvider.tsx`.
+2. **Server Action Streaming**: PDF generation and server action calls return streaming buffers directly to private InsForge storage without local filesystem writes.
+3. **Response Headers**: Security headers (Content Security Policy, X-Frame-Options, X-Content-Type-Options, Strict-Transport-Security, Referrer-Policy) are configured in `next.config.ts` using the `async headers()` configuration.
+
+### InsForge Production Configuration
+
+Before launching production traffic on Vercel:
+1. **Allowed Origins**: In InsForge console under Authentication Settings, add your Vercel domains (`https://<project-name>.vercel.app` and custom domain) to Allowed Web Origins.
+2. **OAuth Redirect URLs**: Add `https://<project-name>.vercel.app/callback` to the permitted redirect URI whitelist for Google and GitHub authentication.
+3. **Cookie Security**: Ensure session and locale cookies (`insforge_access_token`, `NEXT_LOCALE`) operate with `SameSite=Lax` and secure transport on HTTPS.
+
