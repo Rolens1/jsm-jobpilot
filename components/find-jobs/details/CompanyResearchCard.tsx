@@ -16,6 +16,7 @@ import {
   HelpCircle,
   ExternalLink,
   AlertTriangle,
+  ShieldAlert,
 } from "lucide-react";
 import { useTranslation } from "@/components/providers/LanguageProvider";
 
@@ -71,7 +72,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
       const data = await response.json();
 
       if (!response.ok || !data.success) {
-        throw new Error(data.error || "Failed to research company.");
+        throw new Error(data.message || data.error || "Failed to research company.");
       }
 
       if (isMountedRef.current) {
@@ -417,21 +418,43 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
         </button>
       </div>
 
-      {/* Error Banner */}
-      {error && (
-        <div className="mb-6 p-4 rounded-xl bg-error/10 border border-error/20 text-error text-xs sm:text-sm font-medium flex items-center justify-between gap-3 relative z-10 animate-in fade-in duration-200">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 shrink-0" />
-            <span>{error}</span>
-          </div>
-          <button
-            onClick={handleResearchCompany}
-            className="underline hover:opacity-80 cursor-pointer font-semibold"
+      {/* Error or Rate Limit Banner */}
+      {error && (() => {
+        const isRateLimited = error.toLowerCase().includes("rate limit");
+        return (
+          <div
+            className={`mb-6 p-4 rounded-xl border flex items-start sm:items-center justify-between gap-3 relative z-10 animate-in fade-in duration-200 ${
+              isRateLimited
+                ? "bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs sm:text-sm font-medium"
+                : "bg-error/10 border-error/20 text-error text-xs sm:text-sm font-medium"
+            }`}
           >
-            {dict.common.retry}
-          </button>
-        </div>
-      )}
+            <div className="flex items-start sm:items-center gap-2.5">
+              {isRateLimited ? (
+                <ShieldAlert className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0" />
+              ) : (
+                <AlertTriangle className="w-4 h-4 text-error shrink-0 mt-0.5 sm:mt-0" />
+              )}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                {isRateLimited && (
+                  <span className="inline-block self-start text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300">
+                    Demo Quota Guard
+                  </span>
+                )}
+                <span>{error}</span>
+              </div>
+            </div>
+            {!isRateLimited && (
+              <button
+                onClick={handleResearchCompany}
+                className="underline hover:opacity-80 cursor-pointer font-semibold shrink-0"
+              >
+                {dict.common.retry}
+              </button>
+            )}
+          </div>
+        );
+      })()}
 
       {/* 4 Preview Pillars Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">

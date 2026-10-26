@@ -55,13 +55,14 @@ Update this file after every completed feature. Any AI agent reading this should
 ### Phase 7: Deployment & Production Launch
 
 - [x] 21 Production Environment & Secrets Architecture
-- [ ] 22 Build Hardening, Security Headers, Rate Limiting & Runtime Compatibility
+- [x] 22 Build Hardening, Security Headers, Rate Limiting & Runtime Compatibility
 - [ ] 23 Vercel Project Architecture, CI/CD Pipeline & Live Deployment
 
 ---
 
 ## Decisions Made During Build
 
+- **Security Headers, Rate Limiting & Runtime Hardening (Feature 22)**: Designed atomic PostgreSQL rate limiter in `lib/rate-limit.ts` and `migrations/0002_rate_limits.sql` executed on remote InsForge database. Configured tight recruiter demonstration quotas (2 searches, 2 researches, 1 resume extraction per 10 minutes) with row locking (`FOR UPDATE`) and fail open resilience. Protected `/api/agent/find`, `/api/agent/research`, and `actions/resume.ts` returning HTTP 429 status with `Retry-After` headers and styled amber Demo Quota Guard banners in `SearchControls.tsx`, `CompanyResearchCard.tsx`, and `ProfileContainer.tsx`. Migrated Next.js edge routing from deprecated `middleware.ts` to `proxy.ts`, eliminating deprecation warnings. Configured production security headers in `next.config.ts` (Content-Security-Policy with PostHog and blob PDF allowances, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy). Verified zero TypeScript errors and zero build warnings across all 13 routes.
 - **Production Environment & Secrets Architecture (Feature 21)**: Created type safe Zod schema in `lib/env.ts` with fail fast validation on missing InsForge credentials and non blocking degradation warnings on missing optional AI or job aggregator keys. Wired `validateEnv()` gatekeeper into `next.config.ts` during build evaluation. Established comprehensive `.env.example` documenting all 16 variables across 7 functional domains. Documented InsForge production dashboard settings (`docs/deployment/insforge-setup.md`) enforcing canonical redirect URL and CORS whitelisting. Created Vercel sync script `scripts/sync-env.mjs` and updated `.gitignore` to quarantine sync tooling and secret files from GitHub.
 - **Bilingual AI & Document Intelligence (Feature 20)**: Calibrated LLM system prompts in `lib/job-search/scorer.ts`, `lib/agent/research.ts`, and `lib/ai.ts` to inspect candidate active locale preference (via `getLocale()` or `profile.preferred_language`) and generate qualitative match reasons, company dossiers, and tailored executive resume bullet points in French or English. Updated ATS PDF generator (`lib/pdf/ClassicMonochromeTemplate.tsx`) to render localized section headings (Profil Professionnel, Expérience Professionnelle, Formation, Compétences & Expertises) and date formats based on candidate locale.
 - **Client vs Server Architecture**: Used `@insforge/sdk` for browser client (`lib/insforge-client.ts`) and `@insforge/sdk/ssr` for server client (`lib/insforge-server.ts`).
@@ -97,4 +98,4 @@ Update this file after every completed feature. Any AI agent reading this should
 
 - InsForge SDK uses PKCE flow for OAuth with code verifier automatically stored in browser storage.
 - Backend OAuth providers verified active: Google and GitHub (`https://pprn26i7.us-east.insforge.app`).
-- Next.js 16 logs a deprecation notice for `middleware.ts` in favor of `proxy.ts`, but `middleware.ts` remains fully functional and tested.
+- Next.js 16 canonical edge routing migrated to `proxy.ts`, resolving middleware deprecation warnings cleanly with verified production builds.

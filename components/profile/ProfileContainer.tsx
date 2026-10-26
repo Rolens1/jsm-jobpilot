@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, AlertCircle, X } from "lucide-react";
+import { Sparkles, AlertCircle, X, ShieldAlert } from "lucide-react";
 import { ProfileAttentionBanner } from "@/components/profile/ProfileAttentionBanner";
 import { ResumeSection } from "@/components/profile/ResumeSection";
 import { ExtractedResumeReview } from "@/components/profile/ExtractedResumeReview";
@@ -142,33 +142,48 @@ export function ProfileContainer({
       />
 
       {/* 2. Resume Extraction Alert (if triggered) */}
-      {extractionAlert && (
-        <div
-          role="alert"
-          className={`p-4 rounded-xl border flex items-center justify-between gap-3 text-xs sm:text-sm font-medium transition-all ${
-            extractionAlert.type === "success"
-              ? "bg-accent/10 border-accent/30 text-text-primary"
-              : "bg-error/10 border-error/20 text-error"
-          }`}
-        >
-          <div className="flex items-center gap-2.5">
-            {extractionAlert.type === "success" ? (
-              <Sparkles className="w-4 h-4 text-accent shrink-0" />
-            ) : (
-              <AlertCircle className="w-4 h-4 text-error shrink-0" />
-            )}
-            <span>{extractionAlert.message}</span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setExtractionAlert(null)}
-            className="text-text-muted hover:text-text-primary transition-colors cursor-pointer p-0.5"
-            title="Dismiss alert"
+      {extractionAlert && (() => {
+        const isRateLimited = extractionAlert.message.toLowerCase().includes("rate limit");
+
+        return (
+          <div
+            role="alert"
+            className={`p-4 rounded-xl border flex items-start sm:items-center justify-between gap-3 text-xs sm:text-sm font-medium transition-all ${
+              isRateLimited
+                ? "bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-200"
+                : extractionAlert.type === "success"
+                ? "bg-accent/10 border-accent/30 text-text-primary"
+                : "bg-error/10 border-error/20 text-error"
+            }`}
           >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+            <div className="flex items-start sm:items-center gap-2.5">
+              {isRateLimited ? (
+                <ShieldAlert className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0" />
+              ) : extractionAlert.type === "success" ? (
+                <Sparkles className="w-4 h-4 text-accent shrink-0 mt-0.5 sm:mt-0" />
+              ) : (
+                <AlertCircle className="w-4 h-4 text-error shrink-0 mt-0.5 sm:mt-0" />
+              )}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                {isRateLimited && (
+                  <span className="inline-block self-start text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300">
+                    Demo Quota Guard
+                  </span>
+                )}
+                <span>{extractionAlert.message}</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setExtractionAlert(null)}
+              className="text-text-muted hover:text-text-primary transition-colors cursor-pointer p-0.5 shrink-0"
+              title="Dismiss alert"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        );
+      })()}
 
       {/* 3. Resume Upload and AI Extraction Section */}
       <ResumeSection

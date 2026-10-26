@@ -13,6 +13,7 @@ import type {
   RemotePreference,
   WorkAuthorization,
 } from "@/types/database";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 // Pre-initialize PDFParse worker data to prevent SSR/Turbopack chunk resolution errors
 try {
@@ -85,6 +86,15 @@ export async function extractResumeProfile(formData?: FormData): Promise<Extract
     }
 
     const userId = authData.user.id;
+
+    // Rate limiting check
+    const rateLimit = await checkRateLimit("resume_extract", userId);
+    if (!rateLimit.allowed) {
+      return {
+        success: false,
+        error: rateLimit.message,
+      };
+    }
 
     // 2. Obtain PDF Buffer (from uploaded file or stored resume in InsForge storage)
     let buffer: Buffer | null = null;

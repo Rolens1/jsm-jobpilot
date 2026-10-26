@@ -3,7 +3,7 @@ import { updateSession, getAccessTokenCookieName } from "@insforge/sdk/ssr/middl
 
 const protectedPrefixes = ["/dashboard", "/profile", "/find-jobs"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isProtected = protectedPrefixes.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
     accessToken = sessionResult.accessToken;
   } catch (err) {
     // If updateSession encounters an error, fallback to checking cookie directly
-    console.debug("[middleware] updateSession fallback:", err);
+    console.debug("[proxy] updateSession fallback:", err);
   }
 
   if (!accessToken) {
@@ -57,6 +57,8 @@ export async function middleware(request: NextRequest) {
 
   return response;
 }
+
+export default proxy;
 
 export const config = {
   matcher: [

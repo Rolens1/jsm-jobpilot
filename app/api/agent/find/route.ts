@@ -3,6 +3,7 @@ import { createInsforgeServer } from "@/lib/insforge-server";
 import { executeJobSearch } from "@/lib/job-search/orchestrator";
 import { captureServerEvent } from "@/lib/posthog-server";
 import { getLocale } from "@/lib/i18n";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,6 +14,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { success: false, error: "Unauthorized. Please sign in." },
         { status: 401 }
+      );
+    }
+
+    // Rate limiting check
+    const rateLimit = await checkRateLimit("job_search", authData.user.id);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Rate limit reached",
+          message: rateLimit.message,
+          retryAfter: rateLimit.retryAfter,
+          limit: rateLimit.limit,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(rateLimit.retryAfter),
+            "X-RateLimit-Limit": String(rateLimit.limit),
+            "X-RateLimit-Remaining": String(rateLimit.remaining),
+            "X-RateLimit-Reset": String(rateLimit.resetSeconds),
+          },
+        }
       );
     }
 

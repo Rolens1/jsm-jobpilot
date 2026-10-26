@@ -1,7 +1,7 @@
 # 0015. Build Hardening, Security Headers, Rate Limiting and Runtime Compatibility
 
 **Date**: 2026-10-26  
-**Status**: Proposed  
+**Status**: Completed  
 
 ## Summary
 
@@ -18,7 +18,7 @@ This specification defines the production hardening and abuse prevention archite
 **Acceptance criteria**:
 - **AC-1**: An InsForge PostgreSQL table `rate_limits` stores window counters uniquely identified by candidate user ID (or client IP address for unauthenticated requests) and target endpoint.
 - **AC-2**: An atomic PostgreSQL function `check_rate_limit(p_identifier, p_endpoint, p_limit, p_window_seconds)` increments and validates quotas in a single round trip, preventing concurrency race conditions.
-- **AC-3**: A TypeScript helper `lib/rate-limit.ts` wraps the RPC call and enforces demo calibrated quotas across a 10 minute window (600 seconds): 5 job discovery searches, 3 company research requests, and 2 resume AI extractions per candidate (or per unauthenticated IP), allowing recruiters and visitors to experience the rate limiting guard while ensuring resets occur in minutes.
+- **AC-3**: A TypeScript helper `lib/rate-limit.ts` wraps the RPC call and enforces demo calibrated quotas across a 10 minute window (600 seconds): 2 job discovery searches, 2 company research requests, and 1 resume AI extraction per candidate (or per unauthenticated IP), allowing recruiters and visitors to experience the rate limiting guard while ensuring resets occur in minutes.
 - **AC-4**: When a candidate reaches their quota limit, API routes (`/api/agent/find`, `/api/agent/research`, and `actions/resume.ts`) return HTTP 429 Too Many Requests status codes with standard `Retry-After` headers and localized candidate friendly notification alert payloads rendered as an elegant warning banner and toast with live countdown timer.
 - **AC-5**: If the InsForge rate limit check experiences a transient database error, the limiter fails open with an explanatory server log warning, ensuring database hiccups do not block legitimate candidates.
 - **AC-6**: `middleware.ts` is migrated to `proxy.ts` adhering to the Next.js 16 standard, preserving all existing authentication session synchronization and cookie forwarding while eliminating deprecation warnings.
@@ -38,7 +38,7 @@ We choose to implement rate limiting directly in our existing InsForge PostgreSQ
 |---|---|---|---|
 | `identifier` | Rate Limit Key | Candidate `user.id` from InsForge session | Client IP address from `x-forwarded-for` or `x-real-ip` headers |
 | `endpoint` | Rate Limit Bucket | Route identifier (`job_search`, `company_research`, `resume_extract`) | Explicit parameter in route handler call |
-| `p_limit` | Quota Threshold | Hardcoded constant in `lib/rate-limit.ts` (5 for search, 3 for research, 2 for resume) | Configurable default |
+| `p_limit` | Quota Threshold | Hardcoded constant in `lib/rate-limit.ts` (2 for search, 2 for research, 1 for resume) | Configurable default |
 | `p_window_seconds` | Window Duration | Hardcoded constant in `lib/rate-limit.ts` (600 seconds = 10 minutes) | 600 seconds |
 | `allowed` | Decision Boolean | Returned by `check_rate_limit` RPC | `true` if database call throws (fail open) |
 | `retryAfter` | Reset Duration | Calculated by `check_rate_limit` RPC | 60 seconds default |

@@ -8,6 +8,7 @@ import {
   synthesizeCompanyDossier,
 } from "@/lib/agent/research";
 import { getLocale } from "@/lib/i18n";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,6 +22,31 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const userId = authData.user.id;
+
+    // Rate limiting check
+    const rateLimit = await checkRateLimit("company_research", userId);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Rate limit reached",
+          message: rateLimit.message,
+          retryAfter: rateLimit.retryAfter,
+          limit: rateLimit.limit,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(rateLimit.retryAfter),
+            "X-RateLimit-Limit": String(rateLimit.limit),
+            "X-RateLimit-Remaining": String(rateLimit.remaining),
+            "X-RateLimit-Reset": String(rateLimit.resetSeconds),
+          },
+        }
+      );
+    }
+
     const body = await req.json();
     const { jobId } = body;
 
@@ -30,8 +56,6 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
-    const userId = authData.user.id;
 
     // 1. Retrieve target job from database
     let job: Job | null = null;

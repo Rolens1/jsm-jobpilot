@@ -85,7 +85,7 @@ export function FindJobsContainer({
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Failed to search for jobs.");
+        throw new Error(data.message || data.error || "Failed to search for jobs.");
       }
 
       if (Array.isArray(data.jobs)) {
@@ -139,7 +139,7 @@ export function FindJobsContainer({
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Failed to load more jobs.");
+        throw new Error(data.message || data.error || "Failed to load more jobs.");
       }
 
       if (data.jobs && data.jobs.length > 0) {

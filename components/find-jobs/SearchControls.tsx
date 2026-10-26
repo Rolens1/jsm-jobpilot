@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Search, MapPin, Loader2, CheckCircle2, X, Sparkles } from "lucide-react";
+import { Search, MapPin, Loader2, CheckCircle2, X, Sparkles, ShieldAlert, AlertTriangle } from "lucide-react";
 import { useTranslation } from "@/components/providers/LanguageProvider";
 
 type Props = {
@@ -87,28 +87,52 @@ export function SearchControls({
         </button>
       </form>
 
-      {/* Success Notification Banner */}
-      {showBanner && (
-        <div
-          role="status"
-          className="mt-4 bg-success-lightest border border-success/30 text-success-dark font-medium rounded-xl p-3.5 flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-1 duration-200"
-        >
-          <div className="flex items-center gap-2.5">
-            <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
-            <span className="text-sm font-medium">{bannerMessage}</span>
+      {/* Feedback Banner */}
+      {showBanner && (() => {
+        const isRateLimited = bannerMessage.toLowerCase().includes("rate limit");
+        const isError = bannerMessage.toLowerCase().includes("failed") || bannerMessage.toLowerCase().includes("error");
+
+        return (
+          <div
+            role="status"
+            className={`mt-4 rounded-xl p-3.5 sm:p-4 flex items-start sm:items-center justify-between gap-3 animate-in fade-in slide-in-from-top-1 duration-200 ${
+              isRateLimited
+                ? "bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200"
+                : isError
+                ? "bg-error/10 border border-error/20 text-error"
+                : "bg-success-lightest border border-success/30 text-success-dark font-medium"
+            }`}
+          >
+            <div className="flex items-start sm:items-center gap-2.5">
+              {isRateLimited ? (
+                <ShieldAlert className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0" />
+              ) : isError ? (
+                <AlertTriangle className="w-5 h-5 text-error shrink-0 mt-0.5 sm:mt-0" />
+              ) : (
+                <CheckCircle2 className="w-5 h-5 text-success shrink-0 mt-0.5 sm:mt-0" />
+              )}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                {isRateLimited && (
+                  <span className="inline-block self-start text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300">
+                    Demo Quota Guard
+                  </span>
+                )}
+                <span className="text-xs sm:text-sm font-medium">{bannerMessage}</span>
+              </div>
+            </div>
+            {onDismissBanner && (
+              <button
+                type="button"
+                onClick={onDismissBanner}
+                aria-label="Dismiss notification"
+                className="opacity-70 hover:opacity-100 p-1 rounded-lg transition-opacity cursor-pointer shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
-          {onDismissBanner && (
-            <button
-              type="button"
-              onClick={onDismissBanner}
-              aria-label="Dismiss notification"
-              className="text-success-dark/70 hover:text-success-dark p-1 rounded-lg transition-colors cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

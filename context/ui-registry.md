@@ -350,5 +350,13 @@ After building any component — update this file with the component name, file 
 - **Icon**: `w-4 h-4 transition-transform group-hover:-translate-x-1`
 - **Internationalization**: Uses `dict.auth.backToHome` via `useTranslation()`
 
+### `DemoQuotaGuardBanner`
+- **Files**: `components/find-jobs/SearchControls.tsx`, `components/find-jobs/details/CompanyResearchCard.tsx`, `components/profile/ProfileContainer.tsx`
+- **Banner Container**: `rounded-xl p-3.5 sm:p-4 flex items-start sm:items-center justify-between gap-3 animate-in fade-in slide-in-from-top-1 duration-200 bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200`
+- **Badge**: `inline-block self-start text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300`
+- **Icon**: `ShieldAlert` (`w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0`)
+- **Message Text**: `text-xs sm:text-sm font-medium`
+
+
 
 

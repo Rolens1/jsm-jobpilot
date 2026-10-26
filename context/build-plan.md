@@ -535,12 +535,12 @@ Ensure the Next.js 16 application is fully hardened for production edge and serv
 - Verify bundle optimization, static page caching, and Partial Prerendering compliance under production flags.
 
 **Build Milestones:**
-- [ ] Milestone 1: Create migration `migrations/0002_rate_limits.sql` and apply to InsForge database (satisfies AC-1, AC-2)
-- [ ] Milestone 2: Implement rate limiting service in `lib/rate-limit.ts` (satisfies AC-3, AC-5)
-- [ ] Milestone 3: Integrate rate limiter into API routes and server actions (satisfies AC-4)
-- [ ] Milestone 4: Migrate `middleware.ts` to `proxy.ts` conforming to Next.js 16 conventions (satisfies AC-6)
-- [ ] Milestone 5: Configure HTTP security headers and CSP in `next.config.ts` (satisfies AC-7)
-- [ ] Milestone 6: Build verification with `npm run build` and `tsc --noEmit` (satisfies AC-6, AC-7)
+- [x] Milestone 1: Create migration `migrations/0002_rate_limits.sql` and apply to InsForge database (satisfies AC-1, AC-2)
+- [x] Milestone 2: Implement rate limiting service in `lib/rate-limit.ts` (satisfies AC-3, AC-5)
+- [x] Milestone 3: Integrate rate limiter into API routes and server actions (satisfies AC-4)
+- [x] Milestone 4: Migrate `middleware.ts` to `proxy.ts` conforming to Next.js 16 conventions (satisfies AC-6)
+- [x] Milestone 5: Configure HTTP security headers and CSP in `next.config.ts` (satisfies AC-7)
+- [x] Milestone 6: Build verification with `npm run build` and `tsc --noEmit` (satisfies AC-6, AC-7)
 
 ---
 
