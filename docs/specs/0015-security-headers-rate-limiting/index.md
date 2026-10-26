@@ -18,8 +18,8 @@ This specification defines the production hardening and abuse prevention archite
 **Acceptance criteria**:
 - **AC-1**: An InsForge PostgreSQL table `rate_limits` stores window counters uniquely identified by candidate user ID (or client IP address for unauthenticated requests) and target endpoint.
 - **AC-2**: An atomic PostgreSQL function `check_rate_limit(p_identifier, p_endpoint, p_limit, p_window_seconds)` increments and validates quotas in a single round trip, preventing concurrency race conditions.
-- **AC-3**: A TypeScript helper `lib/rate-limit.ts` wraps the RPC call and enforces generous quotas: 25 job discovery searches per hour, 25 company research requests per hour, and 10 resume AI extractions per hour per candidate, with unauthenticated IP fallback limits.
-- **AC-4**: When a candidate reaches their quota limit, API routes (`/api/agent/find`, `/api/agent/research`, and `actions/resume.ts`) return HTTP 429 Too Many Requests status codes with standard `Retry-After` headers and localized candidate friendly notification alert payloads.
+- **AC-3**: A TypeScript helper `lib/rate-limit.ts` wraps the RPC call and enforces demo calibrated quotas across a 10 minute window (600 seconds): 5 job discovery searches, 3 company research requests, and 2 resume AI extractions per candidate (or per unauthenticated IP), allowing recruiters and visitors to experience the rate limiting guard while ensuring resets occur in minutes.
+- **AC-4**: When a candidate reaches their quota limit, API routes (`/api/agent/find`, `/api/agent/research`, and `actions/resume.ts`) return HTTP 429 Too Many Requests status codes with standard `Retry-After` headers and localized candidate friendly notification alert payloads rendered as an elegant warning banner and toast with live countdown timer.
 - **AC-5**: If the InsForge rate limit check experiences a transient database error, the limiter fails open with an explanatory server log warning, ensuring database hiccups do not block legitimate candidates.
 - **AC-6**: `middleware.ts` is migrated to `proxy.ts` adhering to the Next.js 16 standard, preserving all existing authentication session synchronization and cookie forwarding while eliminating deprecation warnings.
 - **AC-7**: `next.config.ts` configures comprehensive production security headers including Content-Security-Policy (with explicit allowances for PostHog analytics and blob iframe resume rendering), Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy.
@@ -38,8 +38,8 @@ We choose to implement rate limiting directly in our existing InsForge PostgreSQ
 |---|---|---|---|
 | `identifier` | Rate Limit Key | Candidate `user.id` from InsForge session | Client IP address from `x-forwarded-for` or `x-real-ip` headers |
 | `endpoint` | Rate Limit Bucket | Route identifier (`job_search`, `company_research`, `resume_extract`) | Explicit parameter in route handler call |
-| `p_limit` | Quota Threshold | Hardcoded constant in `lib/rate-limit.ts` (25 for search/research, 10 for resume) | Configurable default |
-| `p_window_seconds` | Window Duration | Hardcoded constant in `lib/rate-limit.ts` (3600 seconds = 1 hour) | 3600 seconds |
+| `p_limit` | Quota Threshold | Hardcoded constant in `lib/rate-limit.ts` (5 for search, 3 for research, 2 for resume) | Configurable default |
+| `p_window_seconds` | Window Duration | Hardcoded constant in `lib/rate-limit.ts` (600 seconds = 10 minutes) | 600 seconds |
 | `allowed` | Decision Boolean | Returned by `check_rate_limit` RPC | `true` if database call throws (fail open) |
 | `retryAfter` | Reset Duration | Calculated by `check_rate_limit` RPC | 60 seconds default |
 
@@ -139,9 +139,9 @@ interface RateLimitConfig {
 }
 
 const ENDPOINT_CONFIGS: Record<RateLimitEndpoint, RateLimitConfig> = {
-  job_search: { limit: 25, windowSeconds: 3600 },
-  company_research: { limit: 25, windowSeconds: 3600 },
-  resume_extract: { limit: 10, windowSeconds: 3600 },
+  job_search: { limit: 5, windowSeconds: 600 },
+  company_research: { limit: 3, windowSeconds: 600 },
+  resume_extract: { limit: 2, windowSeconds: 600 },
 };
 
 export async function checkRateLimit(endpoint: RateLimitEndpoint, userId?: string | null) {
@@ -239,7 +239,7 @@ const securityHeaders = [
 ### 5. Critical Test Scenarios
 
 - Happy path: An authenticated candidate makes a job search request; `checkRateLimit` increments counter and permits execution, satisfies **AC-1**, **AC-2**, **AC-3**.
-- Quota exceeded case: Making more than 25 search requests within one hour returns HTTP 429 with `Retry-After` header and candidate alert, satisfies **AC-4**.
+- Quota exceeded case: Making more than 5 search requests within 10 minutes returns HTTP 429 with `Retry-After` header and candidate alert, satisfies **AC-4**.
 - Fail open case: If database RPC call throws or times out, request is allowed through with a warning log, satisfies **AC-5**.
 - Proxy execution: Next.js 16 build evaluates `proxy.ts` without any middleware deprecation notices, satisfies **AC-6**.
 - Security headers check: `curl -I` or browser response verification confirms CSP, HSTS, and X-Content-Type-Options headers on all page requests, satisfies **AC-7**.
@@ -260,9 +260,10 @@ const securityHeaders = [
 - Resolves Next.js 16 deprecation warnings cleanly before production release.
 - Hardens browser client against cross site scripting, clickjacking, and injection.
 - Zero extra third party subscriptions or credentials required.
+- Easy for recruiters and evaluators to trigger and see production rate limiting in action within 3 to 5 clicks.
 
 **Negative / tradeoffs**:
-- Extremely active candidates searching more than 25 times an hour must wait for their hourly window reset.
+- Candidates making more than 5 searches or 3 company researches in 10 minutes must wait for their window to reset.
 
 **Neutral**:
 - Rate limit records accumulate over time; a lightweight cleanup query or table truncate can be run periodically if desired.
