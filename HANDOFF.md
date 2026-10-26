@@ -1,8 +1,8 @@
 # Handoff / Session Memory
 
-> Generated: 2026-10-25T16:15:00-04:00  
+> Generated: 2026-10-26T02:45:00-04:00  
 > Project: JobPilot (`d:/Ai Projects/job-pilot`)  
-> Session summary: Completed Feature 13 (Company Research Agent) with Spec 0008. Multi tier web extraction engine in `lib/agent/research.ts` derives genuine company domains, parses public web content with automatic fallback to role requirements, and synthesizes 9 field candidate specific dossiers. Wired `POST /api/agent/research` route handler and interactive `CompanyResearchCard.tsx` with loading states, candidate edge highlights, gap framing, verified tech stack tags, and refresh controls. Phase 4 is now completely delivered with zero TypeScript errors. Next is Phase 5 (Feature 14 Dashboard Page Full UI).
+> Session summary: Applied all three code review recommendations and completed dead mock data removal. Upgraded JSearch to `/search-v2` with dynamic country parameters and unique fallback source URLs to avoid PostgreSQL collisions. Added multi-part domain suffix handling to `cleanRootDomain`. Integrated domain-aware heuristic scoring and fallback company research dossiers supporting finance, operational, and technical roles. Purged `lib/mock-jobs.ts` completely and updated orchestrator database upserts. TypeScript compilation is clean with zero errors. Ready for Phase 5 Feature 14 (Dashboard Page Full UI).
 
 ## Goal
 
@@ -50,7 +50,10 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
 | [docs/specs/0008-company-research-agent/index.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0008-company-research-agent/index.md) | Governing build specification for Feature 13 |
 | [docs/specs/0008-company-research-agent/rationale.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0008-company-research-agent/rationale.md) | Architectural rationale and tradeoffs for Feature 13 |
 | [docs/specs/0008-company-research-agent/verify.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0008-company-research-agent/verify.md) | Verification checklist and manual scenarios for Feature 13 |
-| [lib/agent/research.ts](file:///d:/Ai%20Projects/job-pilot/lib/agent/research.ts) | Domain derivation, web extraction, and LLM synthesis engine |
+| [lib/agent/research.ts](file:///d:/Ai%20Projects/job-pilot/lib/agent/research.ts) | Domain derivation, multi-part TLD handling, web extraction, and dossier synthesis |
+| [lib/job-search/jsearch.ts](file:///d:/Ai%20Projects/job-pilot/lib/job-search/jsearch.ts) | RapidAPI JSearch-v2 query integration with dynamic country and fallback URL |
+| [lib/job-search/scorer.ts](file:///d:/Ai%20Projects/job-pilot/lib/job-search/scorer.ts) | Domain-aware heuristic scoring for technical, financial, and operational roles |
+| [lib/job-search/orchestrator.ts](file:///d:/Ai%20Projects/job-pilot/lib/job-search/orchestrator.ts) | Discovery orchestration, agent runs foreign key upsert, and bounded job querying |
 | [app/api/agent/research/route.ts](file:///d:/Ai%20Projects/job-pilot/app/api/agent/research/route.ts) | Route handler executing research pipeline and PostHog events |
 | [components/find-jobs/details/CompanyResearchCard.tsx](file:///d:/Ai%20Projects/job-pilot/components/find-jobs/details/CompanyResearchCard.tsx) | Interactive intelligence dossier card with loading and refresh states |
 | [types/database.ts](file:///d:/Ai%20Projects/job-pilot/types/database.ts) | Database types updated with full 9 field dossier properties |
