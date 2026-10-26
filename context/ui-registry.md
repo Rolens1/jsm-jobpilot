@@ -341,6 +341,7 @@ After building any component — update this file with the component name, file 
 
 ### `DashboardContainer`
 - **File**: `components/dashboard/DashboardContainer.tsx`
+- **Props**: `initialData?: DashboardData`, `initialStats?: StatMetric[]`
 - **Wrapper**: `w-full space-y-6`
 - **Middle Row Grid**: `grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch`
 - **Bottom Row Grid**: `grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch`

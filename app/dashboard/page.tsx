@@ -9,6 +9,7 @@ import { ProfileAttentionBanner } from "@/components/profile/ProfileAttentionBan
 import { DashboardContainer } from "@/components/dashboard/DashboardContainer";
 import { EventTrackingCard } from "@/components/dashboard/EventTrackingCard";
 import { Loader2 } from "lucide-react";
+import { calculateDashboardStats, type JobStatRecord } from "@/lib/dashboard-stats";
 import type { Profile } from "@/types/database";
 
 async function DashboardContent() {
@@ -23,17 +24,24 @@ async function DashboardContent() {
   const user = authData.user;
   const userEmail = user.email ?? "Authenticated User";
 
-  // Fetch candidate profile to determine completion state
-  const { data: profileData } = await insforge.database
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .maybeSingle();
+  // Fetch candidate profile and jobs in parallel
+  const [profileResult, jobsResult] = await Promise.all([
+    insforge.database
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .maybeSingle(),
+    insforge.database
+      .from("jobs")
+      .select("id, match_score, company_research, found_at, created_at")
+      .eq("user_id", user.id),
+  ]);
 
-  const profile = profileData as Profile | null;
-
+  const profile = profileResult.data as Profile | null;
+  const jobs = (jobsResult.data ?? []) as JobStatRecord[];
 
   const completion = calculateProfileCompletion(profile, profile?.resume_pdf_url);
+  const stats = calculateDashboardStats(jobs);
 
   return (
     <>
@@ -53,7 +61,7 @@ async function DashboardContent() {
         )}
 
         {/* Dashboard Core: Stats, Recent Activity Feed, and Analytics Charts */}
-        <DashboardContainer />
+        <DashboardContainer initialStats={stats} />
 
         {/* Developer Diagnostics & PostHog Event Verification Tool */}
         <div className="pt-4">
