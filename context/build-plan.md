@@ -499,12 +499,24 @@ Make AI generation, scoring explanations, and document generation respect the ca
 
 ### 21 Production Environment & Secrets Architecture
 
+> Spec: [docs/specs/0014-production-environment/index.md](docs/specs/0014-production-environment/index.md)
+
 Configure and validate production environment variables, security contracts, and InsForge database network settings for Vercel deployment.
 
 **Scope & Logic:**
-- Audit all required runtime and build-time environment variables across authentication, database, analytics, AI gateways, and job aggregators.
+- Audit all required runtime and build time environment variables across authentication, database, analytics, AI gateways, and job aggregators.
 - Produce a hardened `.env.example` defining exact expected keys, defaults, and documentation for deployment.
+- Implement type safe validation schema in `lib/env.ts` using Zod, executing fail fast validation at build entry points.
 - Verify InsForge BaaS production domain whitelisting, OAuth redirect URLs for Vercel production domain, and database connection pooling.
+- Create local `scripts/sync-env.mjs` helper for Vercel CLI sync while protecting credentials via `.gitignore`.
+
+**Build Milestones:**
+- [ ] Milestone 1: Zod schema & validator in `lib/env.ts` (satisfies AC-1, AC-2, AC-3)
+- [ ] Milestone 2: Comprehensive `.env.example` documentation across 7 functional domains (satisfies AC-4)
+- [ ] Milestone 3: Entry point integration in `next.config.ts` (satisfies AC-2, AC-7)
+- [ ] Milestone 4: Local sync script `scripts/sync-env.mjs` and `.gitignore` update (satisfies AC-6)
+- [ ] Milestone 5: InsForge production setup documentation in `docs/deployment/insforge-setup.md` (satisfies AC-5)
+- [ ] Milestone 6: Build verification with `npm run build` and `tsc --noEmit` (satisfies AC-1, AC-2, AC-3)
 
 ---
 
