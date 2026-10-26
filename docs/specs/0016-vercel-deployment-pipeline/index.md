@@ -1,7 +1,7 @@
 # 0016. Vercel Deployment Architecture, CI/CD Pipeline and Live Release
 
 **Date**: 2026-10-26  
-**Status**: In Progress  
+**Status**: Completed  
 
 ## Summary
 
@@ -92,12 +92,12 @@ ADZUNA_APP_KEY
 
 ### 3. Build Milestones
 
-- [ ] Milestone 1: Create `vercel.json` with serverless function limits (satisfies AC-1)
-- [ ] Milestone 2: Execute pre-flight verification gates (`npx tsc --noEmit` and `npm run build`) (satisfies AC-5, AC-6)
-- [ ] Milestone 3: Guide Vercel project connection via Git repository or CLI (satisfies AC-2)
-- [ ] Milestone 4: Synchronize environment secrets to Vercel dashboard/project (satisfies AC-3)
-- [ ] Milestone 5: Validate InsForge production CORS and OAuth redirect configuration (satisfies AC-4)
-- [ ] Milestone 6: Trigger live deployment release and run post release smoke test checklist (satisfies AC-6, AC-7)
+- [x] Milestone 1: Create `vercel.json` with serverless function limits (satisfies AC-1)
+- [x] Milestone 2: Execute pre-flight verification gates (`npx tsc --noEmit` and `npm run build`) (satisfies AC-5, AC-6)
+- [x] Milestone 3: Guide Vercel project connection via Git repository or CLI (satisfies AC-2)
+- [x] Milestone 4: Synchronize environment secrets to Vercel dashboard/project (satisfies AC-3)
+- [x] Milestone 5: Validate InsForge production CORS and OAuth redirect configuration (satisfies AC-4)
+- [x] Milestone 6: Trigger live deployment release and run post release smoke test checklist (satisfies AC-6, AC-7)
 
 ---
 

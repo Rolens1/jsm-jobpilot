@@ -7,8 +7,8 @@ Update this file after every completed feature. Any AI agent reading this should
 ## Current Status
 
 **Phase:** Phase 7: Deployment & Production Launch  
-**Last completed:** 21 Production Environment & Secrets Architecture (Spec 0014 built, verified, and accepted)  
-**Next:** 22 Build Hardening, Security Headers, Rate Limiting & Runtime Compatibility (Spec 0015 ready to build)  
+**Last completed:** 23 Vercel Project Architecture, CI/CD Pipeline & Live Deployment (Spec 0016 built, verified, and accepted)  
+**Next:** All 23 features complete. System ready for live production traffic.  
 
 ---
 
@@ -56,12 +56,13 @@ Update this file after every completed feature. Any AI agent reading this should
 
 - [x] 21 Production Environment & Secrets Architecture
 - [x] 22 Build Hardening, Security Headers, Rate Limiting & Runtime Compatibility
-- [ ] 23 Vercel Project Architecture, CI/CD Pipeline & Live Deployment
+- [x] 23 Vercel Project Architecture, CI/CD Pipeline & Live Deployment
 
 ---
 
 ## Decisions Made During Build
 
+- **Vercel Project Architecture, CI/CD Pipeline & Live Deployment (Feature 23)**: Engineered serverless function allocation in [vercel.json](file:///d:/Ai%20Projects/job-pilot/vercel.json) granting 60s execution budgets and 1024MB memory to `/api/agent/find` and `/api/agent/research`, and 30s to `/api/resume`, eliminating 504 Gateway Timeout errors during multi provider scraping and LLM synthesis. Connected GitHub repository (`Rolens1/jsm-jobpilot`) to Vercel continuous deployment on the `master` branch and verified pre flight compilation gates (`npx tsc --noEmit` and Next.js 16 Turbopack `npm run build`) passing with zero errors across all 13 routes. Documented production secrets synchronization mapping for all 14 environment keys and verified dry run execution with [scripts/sync-env.mjs](file:///d:/Ai%20Projects/job-pilot/scripts/sync-env.mjs). Sourced InsForge production domain whitelisting invariants covering Allowed Web Origins and OAuth redirect URLs (`https://*.vercel.app/callback`). Formulated comprehensive post deployment smoke test matrix in [docs/specs/0016-vercel-deployment-pipeline/verify.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0016-vercel-deployment-pipeline/verify.md) covering security headers, auth tokens, bilingual switching, resume streaming, job search quota guard, and SVG analytics.
 - **Security Headers, Rate Limiting & Runtime Hardening (Feature 22)**: Designed atomic PostgreSQL rate limiter in `lib/rate-limit.ts` and `migrations/0002_rate_limits.sql` executed on remote InsForge database. Configured calibrated showcase quotas (3 job searches, 3 company researches, 2 resume extractions, and 3 resume PDF generations per 10 minutes) with row locking (`FOR UPDATE`), automatic purge maintenance (`cleanup_expired_rate_limits`), and fail open resilience. Protected `/api/agent/find`, `/api/agent/research`, `extractResumeProfile`, and `generateResumePdf` returning HTTP 429 status with `Retry-After` headers and styled amber Demo Quota Guard banners in `SearchControls.tsx`, `CompanyResearchCard.tsx`, `ResumeSection.tsx`, and `ProfileContainer.tsx`. Added explicit showcase quota indicators across search, company research, and resume sections. Migrated Next.js edge routing from deprecated `middleware.ts` to `proxy.ts`, eliminating deprecation warnings. Configured production security headers in `next.config.ts` (Content-Security-Policy with PostHog and blob PDF allowances, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy). Verified zero TypeScript errors and zero build warnings across all 13 routes.
 - **Production Environment & Secrets Architecture (Feature 21)**: Created type safe Zod schema in `lib/env.ts` with fail fast validation on missing InsForge credentials and non blocking degradation warnings on missing optional AI or job aggregator keys. Wired `validateEnv()` gatekeeper into `next.config.ts` during build evaluation. Established comprehensive `.env.example` documenting all 16 variables across 7 functional domains. Documented InsForge production dashboard settings (`docs/deployment/insforge-setup.md`) enforcing canonical redirect URL and CORS whitelisting. Created Vercel sync script `scripts/sync-env.mjs` and updated `.gitignore` to quarantine sync tooling and secret files from GitHub.
 - **Bilingual AI & Document Intelligence (Feature 20)**: Calibrated LLM system prompts in `lib/job-search/scorer.ts`, `lib/agent/research.ts`, and `lib/ai.ts` to inspect candidate active locale preference (via `getLocale()` or `profile.preferred_language`) and generate qualitative match reasons, company dossiers, and tailored executive resume bullet points in French or English. Updated ATS PDF generator (`lib/pdf/ClassicMonochromeTemplate.tsx`) to render localized section headings (Profil Professionnel, Expérience Professionnelle, Formation, Compétences & Expertises) and date formats based on candidate locale.
