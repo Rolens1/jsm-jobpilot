@@ -546,6 +546,8 @@ Ensure the Next.js 16 application is fully hardened for production edge and serv
 
 ### 23 Vercel Project Architecture, CI/CD Pipeline & Live Deployment
 
+> Spec: [docs/specs/0016-vercel-deployment-pipeline/index.md](docs/specs/0016-vercel-deployment-pipeline/index.md)
+
 Link the project to Vercel, configure automated deployment triggers, and perform the live production release.
 
 **Scope & Logic:**
@@ -553,6 +555,14 @@ Link the project to Vercel, configure automated deployment triggers, and perform
 - Link repository via Vercel CLI / GitHub integration with preview and production deployment workflows.
 - Run pre-flight verification checks (`tsc --noEmit`, `next build`) and trigger deployment.
 - Perform end-to-end smoke verification on live `.vercel.app` URL covering auth, database queries, AI scoring, bilingual toggle, and resume PDF generation.
+
+**Build Milestones:**
+- [ ] Milestone 1: Create `vercel.json` with serverless function limits (satisfies AC-1)
+- [ ] Milestone 2: Execute pre-flight verification gates (`npx tsc --noEmit` and `npm run build`) (satisfies AC-5, AC-6)
+- [ ] Milestone 3: Guide Vercel project connection via Git repository or CLI (satisfies AC-2)
+- [ ] Milestone 4: Synchronize environment secrets to Vercel dashboard/project (satisfies AC-3)
+- [ ] Milestone 5: Validate InsForge production CORS and OAuth redirect configuration (satisfies AC-4)
+- [ ] Milestone 6: Trigger live deployment release and run post release smoke test checklist (satisfies AC-6, AC-7)
 
 ---
 
