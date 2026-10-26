@@ -48,7 +48,7 @@ export function CompanyResearchChart({ data }: Props) {
                   x={marginLeft - 10}
                   y={y + 4}
                   textAnchor="end"
-                  className="fill-[#9CA3AF] text-[12px] font-normal"
+                  className="fill-text-muted text-[12px] font-normal"
                 >
                   {tick}
                 </text>
@@ -57,7 +57,7 @@ export function CompanyResearchChart({ data }: Props) {
                   y1={y}
                   x2={svgWidth - marginRight}
                   y2={y}
-                  stroke="#E7EAF3"
+                  stroke="var(--color-border)"
                   strokeWidth="1"
                   strokeDasharray="4 4"
                 />
@@ -80,7 +80,7 @@ export function CompanyResearchChart({ data }: Props) {
                   width={barWidth}
                   height={barHeight}
                   rx={4}
-                  className="fill-[#61A8FF] hover:fill-[#2B7FFF] transition-colors"
+                  className="fill-info hover:fill-info-medium transition-colors"
                 >
                   <title>{`${item.day}: ${item.count} companies researched`}</title>
                 </rect>
@@ -90,7 +90,7 @@ export function CompanyResearchChart({ data }: Props) {
                   x={centerX}
                   y={svgHeight - 8}
                   textAnchor="middle"
-                  className="fill-[#9CA3AF] text-[12px] font-normal"
+                  className="fill-text-muted text-[12px] font-normal"
                 >
                   {item.day}
                 </text>

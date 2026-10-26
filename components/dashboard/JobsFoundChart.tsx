@@ -72,8 +72,8 @@ export function JobsFoundChart({ data }: Props) {
         >
           <defs>
             <linearGradient id="purpleSplineGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#7C5CFC" stopOpacity="0.22" />
-              <stop offset="100%" stopColor="#7C5CFC" stopOpacity="0.0" />
+              <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0.0" />
             </linearGradient>
           </defs>
 
@@ -86,7 +86,7 @@ export function JobsFoundChart({ data }: Props) {
                   x={marginLeft - 10}
                   y={y + 4}
                   textAnchor="end"
-                  className="fill-[#9CA3AF] text-[12px] font-normal"
+                  className="fill-text-muted text-[12px] font-normal"
                 >
                   {tick}
                 </text>
@@ -95,7 +95,7 @@ export function JobsFoundChart({ data }: Props) {
                   y1={y}
                   x2={svgWidth - marginRight}
                   y2={y}
-                  stroke="#E7EAF3"
+                  stroke="var(--color-border)"
                   strokeWidth="1"
                   strokeDasharray="4 4"
                 />
@@ -117,7 +117,7 @@ export function JobsFoundChart({ data }: Props) {
             <path
               d={pathD}
               fill="none"
-              stroke="#7C5CFC"
+              stroke="var(--color-accent)"
               strokeWidth="3"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -142,7 +142,7 @@ export function JobsFoundChart({ data }: Props) {
                 cx={pt.x}
                 cy={pt.y}
                 r={4}
-                className="fill-surface stroke-[#7C5CFC] stroke-[2] opacity-0 group-hover:opacity-100 transition-opacity"
+                className="fill-surface stroke-accent stroke-[2] opacity-0 group-hover:opacity-100 transition-opacity"
               />
 
               {/* Day Label */}
@@ -150,7 +150,7 @@ export function JobsFoundChart({ data }: Props) {
                 x={pt.x}
                 y={svgHeight - 8}
                 textAnchor="middle"
-                className="fill-[#9CA3AF] text-[12px] font-normal"
+                className="fill-text-muted text-[12px] font-normal"
               >
                 {pt.day}
               </text>

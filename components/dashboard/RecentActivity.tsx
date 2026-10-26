@@ -42,7 +42,7 @@ export function RecentActivity({ activities }: Props) {
               <div key={item.id} className="flex items-start gap-3.5 group">
                 {/* Double ring indicator dot */}
                 <div
-                  className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 z-10 bg-surface ${outerDotClasses}`}
+                  className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 z-10 ${outerDotClasses}`}
                 >
                   <div className={`w-2 h-2 rounded-full ${innerDotClasses}`} />
                 </div>
