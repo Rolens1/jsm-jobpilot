@@ -16,10 +16,12 @@ export function CompanyResearchChart({ data }: Props) {
   const plotWidth = svgWidth - marginLeft - marginRight;
   const plotHeight = svgHeight - marginTop - marginBottom;
 
-  const yTicks = [12, 9, 6, 3, 0];
-  const maxY = 12;
+  const maxCount = Math.max(0, ...(data || []).map((d) => d.count));
+  const maxY = Math.max(12, Math.ceil(maxCount / 3) * 3);
+  const step = maxY / 4;
+  const yTicks = [maxY, Math.round(step * 3), Math.round(step * 2), Math.round(step), 0];
 
-  const stepX = plotWidth / data.length;
+  const stepX = plotWidth / (data?.length || 1);
   const barWidth = 28;
 
   return (

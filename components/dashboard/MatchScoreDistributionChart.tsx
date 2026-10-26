@@ -16,10 +16,26 @@ export function MatchScoreDistributionChart({ data }: Props) {
   const plotWidth = svgWidth - marginLeft - marginRight;
   const plotHeight = svgHeight - marginTop - marginBottom;
 
-  const yTicks = [100, 75, 50, 25, 0];
-  const maxY = 100;
+  const maxCount = Math.max(0, ...(data || []).map((d) => d.count));
+  const maxY =
+    maxCount === 0
+      ? 100
+      : maxCount <= 10
+      ? 10
+      : maxCount <= 25
+      ? 25
+      : maxCount <= 50
+      ? 50
+      : Math.max(100, Math.ceil(maxCount / 25) * 25);
 
-  const stepX = plotWidth / data.length;
+  const yTicks =
+    maxY === 10
+      ? [10, 8, 6, 4, 2, 0]
+      : maxY === 25
+      ? [25, 20, 15, 10, 5, 0]
+      : [maxY, Math.round((maxY / 4) * 3), Math.round((maxY / 4) * 2), Math.round(maxY / 4), 0];
+
+  const stepX = plotWidth / (data?.length || 1);
   const barWidth = 26;
 
   return (

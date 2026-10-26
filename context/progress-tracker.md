@@ -6,9 +6,9 @@ Update this file after every completed feature. Any AI agent reading this should
 
 ## Current Status
 
-**Phase:** Phase 5: Dashboard
-**Last completed:** 16 Recent Activity: Real Data (Spec 0011 built, verified, and accepted)
-**Next:** 17 Analytics Charts: PostHog Data (Spec 0012)
+**Phase:** Phase 6: Internationalization (French and English)  
+**Last completed:** 17 Analytics Charts: Real Data (Spec 0012 built, verified, and accepted)  
+**Next:** 18 Language Architecture, Dictionaries, and Onboarding Preference (Spec 0013)  
 
 ---
 
@@ -44,7 +44,7 @@ Update this file after every completed feature. Any AI agent reading this should
 - [x] 14 Dashboard Page — Full UI
 - [x] 15 Stats Bar — Real Data
 - [x] 16 Recent Activity — Real Data
-- [ ] 17 Analytics Charts — PostHog Data
+- [x] 17 Analytics Charts — PostHog Data
 
 ### Phase 6: Internationalization (French and English)
 
@@ -77,6 +77,7 @@ Update this file after every completed feature. Any AI agent reading this should
 - **Dashboard Page Modular UI and Native SVG Architecture (Spec 0009)**: Built full visual dashboard matching `context/designs/dashboard.png` with six modular components (`StatsBar`, `RecentActivity`, `CompanyResearchChart`, `JobsFoundChart`, `MatchScoreDistributionChart`, `DashboardContainer`). Implemented three custom responsive SVG charts with zero external charting library dependencies to eliminate bundle bloat and React 19 App Router hydration errors. Integrated conditional `ProfileAttentionBanner` query via server-side `insforge.database.from("profiles")` while retaining the PostHog diagnostics dispatch tool. Verified with Next.js 16 Partial Prerendering and zero TypeScript errors.
 - **Stats Bar Real Data Integration (Spec 0010)**: Connected the four performance metric cards to live InsForge PostgreSQL jobs data in `app/dashboard/page.tsx` using `Promise.all` parallel fetching with profile query. Built pure statistical calculation engine in `lib/dashboard-stats.ts` computing total jobs found, arithmetic mean match score percentage, count of jobs with completed company research, and count of new jobs discovered within the past seven days. Implemented dynamic trend calculations comparing the last seven days against the preceding seven days, with clean empty state handling for new candidates.
 - **Recent Activity Real Data Timeline Integration (Spec 0011)**: Connected the Recent Activity feed to live database events collected from `agent_runs` and `jobs.company_research` in `app/dashboard/page.tsx`. Built chronological event merger and deduplicator in `lib/dashboard-activity.ts` that handles job search queries, formats company research dossiers, deduplicates overlapping research agent runs within ten minute windows, formats human readable relative timestamps (`Just now`, `X minutes ago`, `Yesterday`) using `lib/date-utils.ts`, and gracefully handles empty states with an inviting search prompt.
+- **Analytics Charts Real Data and Dynamic Scaling Architecture (Spec 0012)**: Connected the three native SVG analytics charts on the dashboard to live candidate metrics. Built pure statistical transformation engine in `lib/dashboard-charts.ts` that aggregates daily company research counts and job discovery volume across the current week (Monday through Sunday) and buckets candidate match scores into five standard tiers (`50-60%`, `60-70%`, `70-80%`, `80-90%`, `90-100%`). Engineered dynamic tiered Y axis scaling (`maxY` 10, 25, 50, 100+) across all three SVG charts so small candidate counts produce prominent visual bars and curves. Added resilient empty state handling rendering zero counts cleanly without NaN or division by zero errors.
 
 
 

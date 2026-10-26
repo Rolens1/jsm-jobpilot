@@ -317,31 +317,34 @@ After building any component — update this file with the component name, file 
 - **Header**: `text-base sm:text-lg font-bold text-text-primary tracking-tight`
 - **Subtitle**: `text-xs text-text-muted mt-0.5`
 - **Grid Lines**: `stroke-border stroke-dasharray="3 3"`
-- **Daily Bars**: `fill-[#61A8FF] rx-1.5`
+- **Daily Bars**: `fill-info rx-1.5`
 - **Axis Text**: `text-[11px] fill-text-muted`
+- **Dynamic Y Axis**: Dynamic tiered scaling (`maxY` 10, 25, 50, 100+) with responsive reference ticks
 
 ### `JobsFoundChart`
 - **File**: `components/dashboard/JobsFoundChart.tsx`
 - **Card**: `bg-surface rounded-2xl border border-border p-6 shadow-sm flex flex-col justify-between h-full`
 - **Header**: `text-base sm:text-lg font-bold text-text-primary tracking-tight`
 - **Subtitle**: `text-xs text-text-muted mt-0.5`
-- **Curve Path**: `stroke-[#7C5CFC] stroke-[2.5]`
+- **Curve Path**: `stroke-accent stroke-[2.5]`
 - **Gradient Fill**: `url(#jobsFoundGradient)`
-- **Data Marker**: `fill-[#7C5CFC] stroke-surface stroke-2`
+- **Data Marker**: `fill-accent stroke-surface stroke-2`
 - **Grid Lines**: `stroke-border stroke-dasharray="3 3"`
+- **Dynamic Y Axis**: Dynamic tiered scaling (`maxY` 10, 25, 50, 100+) with responsive reference ticks
 
 ### `MatchScoreDistributionChart`
 - **File**: `components/dashboard/MatchScoreDistributionChart.tsx`
 - **Card**: `bg-surface rounded-2xl border border-border p-6 shadow-sm flex flex-col justify-between h-full`
 - **Header**: `text-base sm:text-lg font-bold text-text-primary tracking-tight`
 - **Subtitle**: `text-xs text-text-muted mt-0.5`
-- **Distribution Bars**: `fill-[#10B981] rx-2`
+- **Distribution Bars**: `fill-success rx-2`
 - **Grid Lines**: `stroke-border stroke-dasharray="3 3"`
 - **Axis Text**: `text-[11px] fill-text-muted`
+- **Dynamic Y Axis**: Dynamic tiered scaling (`maxY` 10, 25, 50, 100+) with responsive reference ticks
 
 ### `DashboardContainer`
 - **File**: `components/dashboard/DashboardContainer.tsx`
-- **Props**: `initialData?: DashboardData`, `initialStats?: StatMetric[]`, `initialActivity?: ActivityEvent[]`
+- **Props**: `initialData?: DashboardData`, `initialStats?: StatMetric[]`, `initialActivity?: ActivityEvent[]`, `initialChartsData?: DashboardChartsData`
 - **Wrapper**: `w-full space-y-6`
 - **Middle Row Grid**: `grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch`
 - **Bottom Row Grid**: `grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch`

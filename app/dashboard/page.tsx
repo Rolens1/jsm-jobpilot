@@ -15,6 +15,11 @@ import {
   type AgentRunRecord,
   type ResearchedJobRecord,
 } from "@/lib/dashboard-activity";
+import {
+  calculateDashboardCharts,
+  type JobChartRecord,
+  type AgentRunChartRecord,
+} from "@/lib/dashboard-charts";
 import type { Profile } from "@/types/database";
 
 async function DashboardContent() {
@@ -53,11 +58,14 @@ async function DashboardContent() {
   const rawJobs = jobsResult.data ?? [];
   const statJobs = rawJobs as unknown as JobStatRecord[];
   const researchedJobs = rawJobs as unknown as ResearchedJobRecord[];
+  const chartJobs = rawJobs as unknown as JobChartRecord[];
   const agentRuns = (agentRunsResult.data ?? []) as AgentRunRecord[];
+  const chartRuns = agentRuns as unknown as AgentRunChartRecord[];
 
   const completion = calculateProfileCompletion(profile, profile?.resume_pdf_url);
   const stats = calculateDashboardStats(statJobs);
   const activities = formatRecentActivities(agentRuns, researchedJobs, 5);
+  const chartsData = calculateDashboardCharts(chartJobs, chartRuns);
 
   return (
     <>
@@ -77,7 +85,11 @@ async function DashboardContent() {
         )}
 
         {/* Dashboard Core: Stats, Recent Activity Feed, and Analytics Charts */}
-        <DashboardContainer initialStats={stats} initialActivity={activities} />
+        <DashboardContainer
+          initialStats={stats}
+          initialActivity={activities}
+          initialChartsData={chartsData}
+        />
 
         {/* Developer Diagnostics & PostHog Event Verification Tool */}
         <div className="pt-4">

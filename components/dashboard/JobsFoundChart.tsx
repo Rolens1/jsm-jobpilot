@@ -16,8 +16,21 @@ export function JobsFoundChart({ data }: Props) {
   const plotWidth = svgWidth - marginLeft - marginRight;
   const plotHeight = svgHeight - marginTop - marginBottom;
 
-  const yTicks = [100, 75, 50, 25, 0];
-  const maxY = 100;
+  const maxCount = Math.max(0, ...(data || []).map((d) => d.count));
+  const maxY =
+    maxCount === 0
+      ? 100
+      : maxCount <= 15
+      ? 15
+      : maxCount <= 50
+      ? 50
+      : Math.max(100, Math.ceil(maxCount / 25) * 25);
+
+  const yTicks =
+    maxY === 15
+      ? [15, 12, 9, 6, 3, 0]
+      : [maxY, Math.round((maxY / 4) * 3), Math.round((maxY / 4) * 2), Math.round(maxY / 4), 0];
+
   const baselineY = marginTop + plotHeight;
 
   // Compute coordinate points
