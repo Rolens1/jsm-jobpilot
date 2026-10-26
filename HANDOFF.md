@@ -29,14 +29,16 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
   - Feature 12: Job details modular page with metrics grid, AI fit analysis, and floating sticky apply bar (Spec 0007).
   - Feature 13: Company research agent deriving employer domains, web footprint extraction, 9-field strategic dossier synthesis, and PostHog telemetry (Spec 0008).
 - **Phase 5: Dashboard (Features 14-17 Complete)**
-  - Feature 14: Full dashboard layout matching `context/designs/dashboard.png` with 4 stat metric cards, recent activity feed, three responsive SVG charts, and interactive diagnostics tool (Spec 0009).
+  - Feature 14: Full dashboard layout matching `context/designs/dashboard.png` with 4 stat metric cards, recent activity feed, and three responsive SVG charts (Spec 0009).
   - Feature 15: Stats bar connected to live PostgreSQL jobs data computing total jobs, arithmetic mean match score, researched count, and 7-day velocity with comparative trends (Spec 0010).
   - Feature 16: Recent activity timeline connected to live database runs and researched jobs with 10-minute sliding window deduplication and relative timestamps (Spec 0011).
   - Feature 17: Three native SVG analytics charts connected to live candidate metrics with pure aggregation engine in `lib/dashboard-charts.ts`, dynamic tiered Y axis scaling (10, 15, 25, 50, 100+), 10-minute event deduplication, and zero state handling (Spec 0012).
-- **Code Reviews and Hardening**:
+- **Code Reviews, Simplification, and Dead Code Removal**:
   - Full five-axis code reviews executed after Feature 14, 16, and 17.
+  - Purged unreferenced developer diagnostics cards: `components/dashboard/EventTrackingCard.tsx` and `components/profile/ProfileCompleteTracker.tsx`.
+  - Cleaned `context/ui-registry.md` removing obsolete placeholder entries.
   - Research event deduplication resolved double-counting between `jobs.company_research` and `agent_runs`.
-  - Clock skew tolerance added for instant real-time query accuracy (`diffMs >= -60000`).
+  - Clock skew tolerance added for instant real-time query accuracy across stats and charts (`diffMs >= -60000`).
   - Zero-division defensive guard in `JobsFoundChart.tsx` points calculation.
   - Token compliance: 100% of charts use CSS variable fills and semantic tokens.
   - TypeScript check (`npx tsc --noEmit`) and Next.js 16 production build (`npm run build`) pass cleanly with code 0.
