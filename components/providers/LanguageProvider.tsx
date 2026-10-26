@@ -28,15 +28,17 @@ export function LanguageProvider({ children, initialLocale = DEFAULT_LOCALE }: L
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
   const [isPending, startTransition] = useTransition();
 
+  // On client mount only: sync initial state from cookie if present
   useEffect(() => {
     if (typeof document !== "undefined") {
       const match = document.cookie.match(new RegExp(`(?:^|; )${LOCALE_COOKIE}=([^;]*)`));
       const cookieVal = match ? decodeURIComponent(match[1]) : null;
-      if (isValidLocale(cookieVal) && cookieVal !== locale) {
+      if (isValidLocale(cookieVal)) {
         setLocaleState(cookieVal);
+        document.documentElement.lang = cookieVal;
       }
     }
-  }, [locale]);
+  }, []); // Run only once on mount to avoid stale-cookie reversion
 
   useEffect(() => {
     if (typeof document !== "undefined") {
@@ -47,9 +49,16 @@ export function LanguageProvider({ children, initialLocale = DEFAULT_LOCALE }: L
   const dict = locale === "fr" ? fr : en;
 
   const setLocale = async (newLocale: Locale) => {
-    if (newLocale === locale) return;
-    setLocaleState(newLocale);
+    if (newLocale === locale || !isValidLocale(newLocale)) return;
 
+    // 1. Immediately update client state, document lang, and client cookie synchronously
+    setLocaleState(newLocale);
+    if (typeof document !== "undefined") {
+      document.cookie = `${LOCALE_COOKIE}=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+      document.documentElement.lang = newLocale;
+    }
+
+    // 2. Persist to server cookies and refresh any Server Component views
     startTransition(async () => {
       await setLocaleAction(newLocale);
       router.refresh();
@@ -57,7 +66,12 @@ export function LanguageProvider({ children, initialLocale = DEFAULT_LOCALE }: L
   };
 
   const syncLocale = (newLocale: Locale) => {
+    if (!isValidLocale(newLocale)) return;
     setLocaleState(newLocale);
+    if (typeof document !== "undefined") {
+      document.cookie = `${LOCALE_COOKIE}=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+      document.documentElement.lang = newLocale;
+    }
   };
 
   const t = <T extends keyof Dictionary>(section: T, key: keyof Dictionary[T]): string => {
