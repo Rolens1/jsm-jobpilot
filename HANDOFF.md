@@ -1,8 +1,8 @@
 # Handoff / Session Memory
 
-> Generated: 2026-10-26T03:35:00-04:00  
+> Generated: 2026-10-26T10:20:00-04:00  
 > Project: JobPilot (`d:/Ai Projects/job-pilot`)  
-> Session summary: Phase 5 (Dashboard) is 100% complete and fully verified. Features 14 (Full UI), 15 (Stats Bar Real Data), 16 (Recent Activity Real Data), and 17 (Analytics Charts Real Data) are implemented, tested, audited via code review, and committed. All three native SVG charts (Company Research, Jobs Found Timeline, Match Score Distribution) are connected to live InsForge PostgreSQL metrics with dynamic tiered Y axis scaling, clock skew tolerance, and sliding window event deduplication. Next.js 16 production build compiles with Partial Prerendering (`◐`) on `/dashboard` with zero TypeScript errors. Ready for Phase 6 (Internationalization in French and English), starting with Feature 18.
+> Session summary: Phase 5 (Dashboard) is 100% complete and fully verified. Features 14 through 17 are implemented, tested, audited via code review, and committed. Completed pre-Phase-6 dead code cleanup: removed unreferenced developer testing cards (`EventTrackingCard.tsx` and `ProfileCompleteTracker.tsx`, removing 468 lines) and purged obsolete placeholder entries from `context/ui-registry.md`. Standardized 60-second clock skew tolerance across stats and charts calculations and guarded area chart math against division by zero. All 13 Next.js 16 routes compile with Partial Prerendering (`◐`) with zero TypeScript errors. Ready for Phase 6 (Internationalization in French and English), starting with Feature 18.
 
 ## Goal
 
@@ -79,6 +79,10 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
    - *Attempted*: Summing counts from `jobs.company_research` and `agent_runs` independently.
    - *Failure Reason*: Researching a company generates both an agent run and a job record update within milliseconds, producing double counts (e.g. 2 instead of 1).
    - *Working Alternative*: 10-minute sliding window deduplication across both sources in `lib/dashboard-charts.ts` matching `lib/dashboard-activity.ts`.
+4. **Developer Diagnostics UI on Production Dashboard**:
+   - *Attempted*: Retaining interactive testing buttons (`EventTrackingCard.tsx` and `ProfileCompleteTracker.tsx`) on production pages.
+   - *Failure Reason*: Distracted from real dashboard metrics and created unnecessary client JavaScript payload.
+   - *Working Alternative*: Purged test cards; analytics events are now dispatched automatically during actual workflow actions (`actions/analytics.ts`, `actions/job-search.ts`, `app/api/agent/research/route.ts`).
 
 ## Current Best Theory (Phase 6 Internationalization)
 
