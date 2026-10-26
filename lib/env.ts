@@ -61,6 +61,9 @@ export const serverEnvSchema = z.object({
   // Browserbase optional research agent
   BROWSERBASE_API_KEY: z.string().optional(),
   BROWSERBASE_PROJECT_ID: z.string().optional(),
+
+  // Scheduled Maintenance Crons
+  CRON_SECRET: z.string().optional(),
 });
 
 export type ClientEnv = z.infer<typeof clientEnvSchema>;

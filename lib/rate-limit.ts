@@ -49,9 +49,16 @@ export async function checkRateLimit(
     let clientIp = "127.0.0.1";
     try {
       const headerList = await headers();
+      const vercelForwarded = headerList.get("x-vercel-forwarded-for");
+      const cloudflareIp = headerList.get("cf-connecting-ip");
       const forwardedFor = headerList.get("x-forwarded-for");
       const realIp = headerList.get("x-real-ip");
-      if (forwardedFor) {
+
+      if (vercelForwarded) {
+        clientIp = vercelForwarded.split(",")[0].trim();
+      } else if (cloudflareIp) {
+        clientIp = cloudflareIp.trim();
+      } else if (forwardedFor) {
         clientIp = forwardedFor.split(",")[0].trim();
       } else if (realIp) {
         clientIp = realIp.trim();

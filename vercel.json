@@ -14,5 +14,11 @@
       "maxDuration": 30,
       "memory": 1024
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-rate-limits",
+      "schedule": "0 3 * * *"
+    }
+  ]
 }
