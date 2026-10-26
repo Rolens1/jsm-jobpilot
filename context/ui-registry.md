@@ -269,7 +269,10 @@ After building any component — update this file with the component name, file 
 - **File**: `components/find-jobs/details/CompanyResearchCard.tsx`
 - **Card**: `bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm relative overflow-hidden text-left space-y-8`
 - **Active Research CTA Button**: `bg-accent hover:bg-accent-dark text-accent-foreground font-semibold px-5 py-2.5 rounded-xl text-xs sm:text-sm inline-flex items-center gap-2 cursor-pointer transition-all shrink-0 shadow-sm active:scale-[0.99]`
-- **Refresh Research Action**: `inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border bg-surface hover:bg-surface-secondary text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary transition-all shadow-2xs cursor-pointer`
+- **Refresh Research Action (Idle)**: `inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border bg-surface hover:bg-surface-secondary text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary transition-all shadow-2xs cursor-pointer self-start sm:self-center shrink-0 active:scale-[0.99]`
+- **Refresh Research Action (Confirming Re-run)**: `inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border bg-accent/15 border-accent text-accent font-semibold text-xs sm:text-sm transition-all shadow-2xs cursor-pointer self-start sm:self-center shrink-0 active:scale-[0.99]`
+- **Error Banner**: `mb-6 p-4 rounded-xl bg-error/10 border border-error/20 text-error text-xs sm:text-sm font-medium flex items-center justify-between gap-3 relative z-10 animate-in fade-in duration-200`
+- **Retry Action Button**: `underline hover:opacity-80 cursor-pointer font-semibold text-error`
 - **Verified Dossier Badge**: `bg-success-lightest border border-success/30 text-success-dark text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full`
 - **Strategic Alignment Card**: `p-4 sm:p-5 rounded-xl bg-surface-secondary/70 border border-border flex items-start gap-3.5`
 - **Candidate Edge Card**: `p-5 rounded-xl bg-success-lightest border border-success/30 flex flex-col justify-between`
