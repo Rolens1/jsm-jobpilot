@@ -11,6 +11,7 @@ interface LanguageContextValue {
   locale: Locale;
   dict: Dictionary;
   setLocale: (locale: Locale) => Promise<void>;
+  syncLocale: (locale: Locale) => void;
   isPending: boolean;
   t: <T extends keyof Dictionary>(section: T, key: keyof Dictionary[T]) => string;
 }
@@ -55,6 +56,10 @@ export function LanguageProvider({ children, initialLocale = DEFAULT_LOCALE }: L
     });
   };
 
+  const syncLocale = (newLocale: Locale) => {
+    setLocaleState(newLocale);
+  };
+
   const t = <T extends keyof Dictionary>(section: T, key: keyof Dictionary[T]): string => {
     const sectionObj = dict[section];
     if (sectionObj && key in sectionObj) {
@@ -68,7 +73,7 @@ export function LanguageProvider({ children, initialLocale = DEFAULT_LOCALE }: L
   };
 
   return (
-    <LanguageContext.Provider value={{ locale, dict, setLocale, isPending, t }}>
+    <LanguageContext.Provider value={{ locale, dict, setLocale, syncLocale, isPending, t }}>
       {children}
     </LanguageContext.Provider>
   );

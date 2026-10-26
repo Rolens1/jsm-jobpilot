@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Globe, X, Check } from "lucide-react";
 import { useTranslation } from "@/components/providers/LanguageProvider";
 import { dismissLanguagePromptAction } from "@/actions/locale";
@@ -11,18 +12,35 @@ interface Props {
 }
 
 export function LanguageOnboardingModal({ initialPrompted = false }: Props) {
-  const { locale, setLocale, dict } = useTranslation();
+  const router = useRouter();
+  const { locale, syncLocale, dict } = useTranslation();
   const [isOpen, setIsOpen] = useState(!initialPrompted);
   const [selectedLocale, setSelectedLocale] = useState<Locale>(locale);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        handleDismiss();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const handleConfirm = async () => {
     setIsSubmitting(true);
     try {
-      await setLocale(selectedLocale);
+      syncLocale(selectedLocale);
       await dismissLanguagePromptAction(selectedLocale);
+      router.refresh();
       setIsOpen(false);
     } catch (err) {
       console.error("[LanguageOnboardingModal] Failed to confirm language:", err);
@@ -48,8 +66,12 @@ export function LanguageOnboardingModal({ initialPrompted = false }: Props) {
       aria-modal="true"
       aria-labelledby="language-modal-title"
       className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 transition-all"
+      onClick={handleDismiss}
     >
-      <div className="bg-surface border border-border rounded-2xl max-w-md w-full p-6 shadow-xl relative animate-in fade-in zoom-in-95 duration-200">
+      <div
+        className="bg-surface border border-border rounded-2xl max-w-md w-full p-6 shadow-xl relative animate-in fade-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Dismiss Button */}
         <button
           type="button"
