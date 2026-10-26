@@ -7,8 +7,8 @@ Update this file after every completed feature. Any AI agent reading this should
 ## Current Status
 
 **Phase:** Phase 7: Deployment & Production Launch  
-**Last completed:** 20 Bilingual AI and Document Intelligence (Built, verified, and accepted)  
-**Next:** 21 Production Environment & Secrets Architecture (Spec 0014 ready to build)  
+**Last completed:** 21 Production Environment & Secrets Architecture (Spec 0014 built, verified, and accepted)  
+**Next:** 22 Build Hardening, Security Headers, Rate Limiting & Runtime Compatibility  
 
 ---
 
@@ -54,7 +54,7 @@ Update this file after every completed feature. Any AI agent reading this should
 
 ### Phase 7: Deployment & Production Launch
 
-- [ ] 21 Production Environment & Secrets Architecture
+- [x] 21 Production Environment & Secrets Architecture
 - [ ] 22 Build Hardening, Security Headers, Rate Limiting & Runtime Compatibility
 - [ ] 23 Vercel Project Architecture, CI/CD Pipeline & Live Deployment
 
@@ -62,6 +62,7 @@ Update this file after every completed feature. Any AI agent reading this should
 
 ## Decisions Made During Build
 
+- **Production Environment & Secrets Architecture (Feature 21)**: Created type safe Zod schema in `lib/env.ts` with fail fast validation on missing InsForge credentials and non blocking degradation warnings on missing optional AI or job aggregator keys. Wired `validateEnv()` gatekeeper into `next.config.ts` during build evaluation. Established comprehensive `.env.example` documenting all 16 variables across 7 functional domains. Documented InsForge production dashboard settings (`docs/deployment/insforge-setup.md`) enforcing canonical redirect URL and CORS whitelisting. Created Vercel sync script `scripts/sync-env.mjs` and updated `.gitignore` to quarantine sync tooling and secret files from GitHub.
 - **Bilingual AI & Document Intelligence (Feature 20)**: Calibrated LLM system prompts in `lib/job-search/scorer.ts`, `lib/agent/research.ts`, and `lib/ai.ts` to inspect candidate active locale preference (via `getLocale()` or `profile.preferred_language`) and generate qualitative match reasons, company dossiers, and tailored executive resume bullet points in French or English. Updated ATS PDF generator (`lib/pdf/ClassicMonochromeTemplate.tsx`) to render localized section headings (Profil Professionnel, Expérience Professionnelle, Formation, Compétences & Expertises) and date formats based on candidate locale.
 - **Client vs Server Architecture**: Used `@insforge/sdk` for browser client (`lib/insforge-client.ts`) and `@insforge/sdk/ssr` for server client (`lib/insforge-server.ts`).
 - **Session Persistence**: Created `actions/auth.ts` server actions leveraging `@insforge/sdk/ssr/middleware` (`setAuthCookies`, `clearAuthCookies`) to synchronize tokens into HTTP-only cookies (`insforge_access_token`, `insforge_refresh_token`) on the Next.js host, allowing `middleware.ts` and Server Components to authenticate instantly.
