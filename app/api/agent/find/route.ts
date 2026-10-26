@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createInsforgeServer } from "@/lib/insforge-server";
 import { executeJobSearch } from "@/lib/job-search/orchestrator";
 import { captureServerEvent } from "@/lib/posthog-server";
+import { getLocale } from "@/lib/i18n";
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,6 +29,7 @@ export async function POST(req: NextRequest) {
     const userId = authData.user.id;
     const cleanTitle = jobTitle.trim();
     const cleanLocation = typeof location === "string" ? location.trim() : "";
+    const activeLocale = await getLocale();
 
     // Track search start
     await captureServerEvent(userId, "job_search_started", {
@@ -42,6 +44,7 @@ export async function POST(req: NextRequest) {
       location: cleanLocation,
       page: Number(page) || 1,
       forceRefresh: Boolean(forceRefresh),
+      locale: activeLocale,
     });
 
     // Track job found events for newly saved jobs

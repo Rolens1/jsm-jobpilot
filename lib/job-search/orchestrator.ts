@@ -191,8 +191,9 @@ export async function executeJobSearch(
       updated_at: startTime,
     };
 
-    // 5. Score only new unique jobs in a single batch
-    scoredMatches = await batchScoreJobs(uniqueJobsToSave, userProfile);
+    // 5. Score only new unique jobs in a single batch respecting candidate language
+    const candidateLocale = (options.locale || (userProfile.preferred_language === "fr" ? "fr" : "en")) as "en" | "fr";
+    scoredMatches = await batchScoreJobs(uniqueJobsToSave, userProfile, candidateLocale);
   }
 
   // 6. Persist to InsForge DB

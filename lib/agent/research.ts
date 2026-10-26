@@ -186,10 +186,52 @@ export async function extractCompanyWebFootprint(
 /**
  * Grounded heuristic fallback if LLM calls fail or keys are unconfigured.
  */
-function generateFallbackDossier(job: Job, profile: Profile, sources: string[]): CompanyResearchDossier {
+/**
+ * Grounded heuristic fallback if LLM calls fail or keys are unconfigured.
+ */
+function generateFallbackDossier(
+  job: Job,
+  profile: Profile,
+  sources: string[],
+  isFr = false
+): CompanyResearchDossier {
   const candidateSkills = Array.isArray(profile.skills) ? profile.skills : [];
   const matched = job.matched_skills && job.matched_skills.length > 0 ? job.matched_skills : candidateSkills.slice(0, 4);
   const missing = job.missing_skills && job.missing_skills.length > 0 ? job.missing_skills : ["Strategic Execution", "Cross-Functional Leadership"];
+
+  if (isFr) {
+    return {
+      companyOverview: `${job.company} est une entreprise active et reconnue dans son secteur. D'après les exigences du poste, l'équipe développe ses opérations avec un accent fort sur l'excellence d'exécution et la croissance stratégique.`,
+      techStack: [
+        ...matched,
+        ...candidateSkills,
+      ].filter((v, i, a) => a.indexOf(v) === i).slice(0, 6),
+      culture: [
+        "Culture de responsabilisation valorisant l'impact direct et la réalisation de bout en bout.",
+        "Environnement collaboratif travaillant en étroite synergie avec des équipes pluridisciplinaires.",
+        "Orientation vers l'amélioration continue axée sur des résultats opérationnels mesurables.",
+      ],
+      whyThisRole: `Ce poste de ${job.title} chez ${job.company} correspond à votre profil en ${matched.slice(0, 2).join(" et ") || "compétences clés"}, offrant une responsabilité immédiate tout en élargissant votre champ professionnel.`,
+      yourEdge: [
+        `Votre expérience pratique avec ${matched.slice(0, 3).join(", ") || "vos compétences maîtresses"} vous permet d'être opérationnel rapidement sans période d'adaptation prolongée.`,
+        `Votre parcours en tant que ${profile.current_title || "professionnel expérimenté"} apporte une perspective concrète pour résoudre les défis spécifiques du poste.`,
+      ],
+      gapsToAddress: missing.map(
+        (m) => `Présentez ${m} comme un axe d'apprentissage ciblé en montrant comment votre maîtrise de ${matched[0] || "technologies connexes"} accélère votre montée en compétence.`
+      ),
+      smartQuestions: [
+        `Comment l'équipe chez ${job.company} équilibre-t-elle les priorités opérationnelles immédiates et les objectifs stratégiques à long terme ?`,
+        `Quels sont les indicateurs clés de succès pour ce poste de ${job.title} au cours des 90 premiers jours ?`,
+        `Quels défis stratégiques majeurs l'équipe prévoit-elle de relever au cours des prochains trimestres ?`,
+      ],
+      interviewPrep: [
+        `Préparez une présentation concise de vos réalisations passées démontrant l'application concrète de ${matched[0] || "vos compétences clés"}.`,
+        `Soyez prêt à illustrer comment vous collaborez avec les parties prenantes pour produire des résultats mesurables.`,
+      ],
+      sources: sources.length > 0 ? sources : [`https://www.${job.company.toLowerCase().replace(/[^a-z0-9]/g, "")}.com`],
+      extractedAt: new Date().toISOString(),
+    };
+  }
 
   return {
     companyOverview: `${job.company} is an active industry leader focused on delivering modern solutions in its sector. Based on active job requirements, the team is expanding operations with a focus on strong execution and strategic growth.`,
@@ -232,11 +274,22 @@ export async function synthesizeCompanyDossier(params: {
   profile: Profile;
   webFootprint: string;
   sources: string[];
+  locale?: "en" | "fr";
 }): Promise<CompanyResearchDossier> {
-  const { job, profile, webFootprint, sources } = params;
+  const { job, profile, webFootprint, sources, locale } = params;
+  const activeLocale = locale || (profile.preferred_language === "fr" ? "fr" : "en");
+  const isFr = activeLocale === "fr";
 
   try {
     const ai = getAiClient();
+
+    const languageInstruction = isFr
+      ? `LANGUAGE REQUIREMENT (CRITICAL):
+- The candidate's chosen language is French ('fr').
+- You MUST generate all narrative sections ('companyOverview', 'culture', 'whyThisRole', 'yourEdge', 'gapsToAddress', 'smartQuestions', 'interviewPrep') entirely in fluent, elegant, and professional French.
+- Tech stack items should remain exact industry names (e.g. Next.js, Python, PostgreSQL, AWS).`
+      : `LANGUAGE REQUIREMENT:
+- The candidate's chosen language is English ('en'). Generate all narrative sections in clear, concise English.`;
 
     const systemPrompt = `You are a sharp career strategist preparing a candidate to apply for a specific role.
 You are given (a) research collected from the company's own website, (b) the job posting, and (c) the candidate's profile.
@@ -249,16 +302,18 @@ Rules:
 - Talking points and questions must reference real things from the research, the kind of detail that signals the candidate did their homework.
 - Keep every item tight: one or two sentences. No fluff.
 
+${languageInstruction}
+
 You must return ONLY a single valid JSON object matching this schema exactly:
 {
-  "companyOverview": "One or two concise paragraphs covering what the company does, who it is for, and scale",
+  "companyOverview": "${isFr ? "Un ou deux paragraphes concis expliquant les activités de l'entreprise..." : "One or two concise paragraphs covering what the company does, who it is for, and scale"}",
   "techStack": ["Technology 1", "Technology 2"],
-  "culture": ["Culture norm or working style 1", "Culture norm 2", "Culture norm 3"],
-  "whyThisRole": "Compelling strategic reason to pursue this role connecting role mission to company stage",
-  "yourEdge": ["Specific candidate advantage connecting your skills/work to their needs 1", "Edge 2"],
-  "gapsToAddress": ["Constructive strategy for addressing missing skill 1", "Gap strategy 2"],
-  "smartQuestions": ["Insightful question to ask interviewers 1", "Question 2", "Question 3"],
-  "interviewPrep": ["Actionable talking point or behavioral answer tip 1", "Prep tip 2"],
+  "culture": ["${isFr ? "Norme culturelle 1" : "Culture norm or working style 1"}", "${isFr ? "Norme 2" : "Culture norm 2"}"],
+  "whyThisRole": "${isFr ? "Raison stratégique convaincante de cibler ce poste..." : "Compelling strategic reason to pursue this role connecting role mission to company stage"}",
+  "yourEdge": ["${isFr ? "Avantage spécifique du candidat reliant ses compétences aux besoins de l'entreprise" : "Specific candidate advantage connecting your skills/work to their needs 1"}"],
+  "gapsToAddress": ["${isFr ? "Stratégie constructive pour aborder une compétence manquante" : "Constructive strategy for addressing missing skill 1"}"],
+  "smartQuestions": ["${isFr ? "Question pertinente à poser aux recruteurs" : "Insightful question to ask interviewers 1"}"],
+  "interviewPrep": ["${isFr ? "Point de discussion ou conseil pour l'entretien" : "Actionable talking point or behavioral answer tip 1"}"],
   "sources": ["source url 1"]
 }`;
 
@@ -289,7 +344,9 @@ You must return ONLY a single valid JSON object matching this schema exactly:
       aboutCompany: job.about_company,
     };
 
-    const userPrompt = `COMPANY RESEARCH (from their public website):
+    const userPrompt = `Target Candidate Language: ${isFr ? "fr (French)" : "en (English)"}
+
+COMPANY RESEARCH (from their public website):
 ${webFootprint ? webFootprint : "Direct website extraction was minimal or restricted. Synthesize from job posting requirements and candidate background."}
 
 JOB POSTING:
@@ -315,7 +372,7 @@ Generate the structured company research dossier now in JSON format.`;
 
     const content = response.choices[0]?.message?.content?.trim();
     if (!content) {
-      return generateFallbackDossier(job, profile, sources);
+      return generateFallbackDossier(job, profile, sources, isFr);
     }
 
     const parsed = JSON.parse(content) as Record<string, unknown>;
@@ -325,38 +382,58 @@ Generate the structured company research dossier now in JSON format.`;
       companyOverview:
         typeof parsed.companyOverview === "string" && parsed.companyOverview.trim()
           ? parsed.companyOverview.trim()
-          : `${job.company} is a leading enterprise in this sector.`,
+          : (isFr
+              ? `${job.company} est un acteur de premier plan dans son secteur d'activité.`
+              : `${job.company} is a leading enterprise in this sector.`),
       techStack: Array.isArray(parsed.techStack) && parsed.techStack.length > 0
         ? parsed.techStack.map(String)
         : job.matched_skills.slice(0, 6),
       culture: Array.isArray(parsed.culture) && parsed.culture.length > 0
         ? parsed.culture.map(String)
-        : [
-            "Values end to end technical ownership and autonomous delivery.",
-            "Promotes collaborative, cross functional problem solving.",
-          ],
+        : (isFr
+            ? [
+                "Valorise la responsabilité technique de bout en bout et l'autonomie.",
+                "Favorise la résolution collaborative et transversale des problèmes.",
+              ]
+            : [
+                "Values end to end technical ownership and autonomous delivery.",
+                "Promotes collaborative, cross functional problem solving.",
+              ]),
       whyThisRole:
         typeof parsed.whyThisRole === "string" && parsed.whyThisRole.trim()
           ? parsed.whyThisRole.trim()
-          : `This role offers high impact ownership and direct alignment with your technical capabilities.`,
+          : (isFr
+              ? `Ce poste offre un impact direct et un alignement étroit avec vos compétences techniques.`
+              : `This role offers high impact ownership and direct alignment with your technical capabilities.`),
       yourEdge: Array.isArray(parsed.yourEdge) && parsed.yourEdge.length > 0
         ? parsed.yourEdge.map(String)
         : [
-            `Strong alignment with core required skills in ${job.matched_skills.slice(0, 3).join(", ") || "the stack"}.`,
+            isFr
+              ? `Fort alignement avec les compétences clés en ${job.matched_skills.slice(0, 3).join(", ") || "le domaine requis"}.`
+              : `Strong alignment with core required skills in ${job.matched_skills.slice(0, 3).join(", ") || "the stack"}.`,
           ],
       gapsToAddress: Array.isArray(parsed.gapsToAddress) && parsed.gapsToAddress.length > 0
         ? parsed.gapsToAddress.map(String)
-        : (job.missing_skills || []).map((m) => `Frame ${m} as a targeted learning priority.`),
+        : (job.missing_skills || []).map((m) =>
+            isFr ? `Positionnez ${m} comme une priorité d'apprentissage ciblée.` : `Frame ${m} as a targeted learning priority.`
+          ),
       smartQuestions: Array.isArray(parsed.smartQuestions) && parsed.smartQuestions.length > 0
         ? parsed.smartQuestions.map(String)
-        : [
-            `What does high performance look like for this ${job.title} role in the first 90 days?`,
-            `What are the most challenging technical problems the team is solving this quarter?`,
-          ],
+        : (isFr
+            ? [
+                `Quels sont les objectifs prioritaires pour ce poste de ${job.title} lors des 90 premiers jours ?`,
+                `Quels sont les défis techniques majeurs que l'équipe relève ce trimestre ?`,
+              ]
+            : [
+                `What does high performance look like for this ${job.title} role in the first 90 days?`,
+                `What are the most challenging technical problems the team is solving this quarter?`,
+              ]),
       interviewPrep: Array.isArray(parsed.interviewPrep) && parsed.interviewPrep.length > 0
         ? parsed.interviewPrep.map(String)
         : [
-            `Highlight specific projects where you delivered scalable solutions using ${job.matched_skills[0] || "modern tools"}.`,
+            isFr
+              ? `Mettez en valeur les projets récents où vous avez conçu des solutions évolutives avec ${job.matched_skills[0] || "des technologies modernes"}.`
+              : `Highlight specific projects where you delivered scalable solutions using ${job.matched_skills[0] || "modern tools"}.`,
           ],
       sources: Array.isArray(parsed.sources) && parsed.sources.length > 0
         ? parsed.sources.map(String)
@@ -367,6 +444,6 @@ Generate the structured company research dossier now in JSON format.`;
     return dossier;
   } catch (err) {
     console.warn("[CompanyResearch] LLM synthesis failed or timed out, using grounded fallback:", err);
-    return generateFallbackDossier(job, profile, sources);
+    return generateFallbackDossier(job, profile, sources, isFr);
   }
 }

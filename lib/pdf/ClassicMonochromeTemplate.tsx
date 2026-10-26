@@ -164,7 +164,23 @@ const styles = StyleSheet.create({
   },
 });
 
-export const ClassicMonochromeTemplate: React.FC<{ data: ResumePdfData }> = ({ data }) => {
+export const ClassicMonochromeTemplate: React.FC<{
+  data: ResumePdfData;
+  locale?: "en" | "fr";
+}> = ({ data, locale = "en" }) => {
+  const isFr = locale === "fr";
+  const labels = {
+    documentTitle: isFr
+      ? `${data.fullName || "CV"} - Curriculum Vitae`
+      : `${data.fullName || "Resume"} - Resume`,
+    summaryTitle: isFr ? "Profil Professionnel" : "Professional Summary",
+    experienceTitle: isFr ? "Expérience Professionnelle" : "Work Experience",
+    present: isFr ? "Présent" : "Present",
+    educationTitle: isFr ? "Formation" : "Education",
+    skillsTitle: isFr ? "Compétences & Expertises" : "Skills & Competencies",
+    coreCompetencies: isFr ? "Compétences clés : " : "Core Competencies: ",
+  };
+
   // Collect contact line items
   const contactParts: string[] = [];
   if (data.email) contactParts.push(data.email);
@@ -190,11 +206,11 @@ export const ClassicMonochromeTemplate: React.FC<{ data: ResumePdfData }> = ({ d
   const validSkills = (data.skills || []).filter((s) => Boolean(s && s.trim())).slice(0, 12);
 
   return (
-    <Document title={`${data.fullName || "Resume"} - Resume`} author={data.fullName || "Candidate"}>
+    <Document title={labels.documentTitle} author={data.fullName || "Candidate"}>
       <Page size="LETTER" style={styles.page}>
         {/* Header Block */}
         <View style={styles.header}>
-          <Text style={styles.name}>{data.fullName || "Candidate Name"}</Text>
+          <Text style={styles.name}>{data.fullName || (isFr ? "Nom du Candidat" : "Candidate Name")}</Text>
           {data.currentTitle ? <Text style={styles.title}>{data.currentTitle}</Text> : null}
           {contactParts.length > 0 && (
             <View style={styles.contactRow}>
@@ -211,7 +227,7 @@ export const ClassicMonochromeTemplate: React.FC<{ data: ResumePdfData }> = ({ d
         {/* Professional Summary */}
         {data.summary && data.summary.trim() ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Professional Summary</Text>
+            <Text style={styles.sectionTitle}>{labels.summaryTitle}</Text>
             <Text style={styles.summaryText}>{data.summary.trim()}</Text>
           </View>
         ) : null}
@@ -219,16 +235,17 @@ export const ClassicMonochromeTemplate: React.FC<{ data: ResumePdfData }> = ({ d
         {/* Work Experience */}
         {validExperiences.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Work Experience</Text>
+            <Text style={styles.sectionTitle}>{labels.experienceTitle}</Text>
             {validExperiences.map((exp, idx) => {
-              const dateRange = [exp.startDate, exp.isCurrent ? "Present" : exp.endDate]
+              const currentText = exp.isCurrent ? labels.present : exp.endDate;
+              const dateRange = [exp.startDate, currentText]
                 .filter(Boolean)
                 .join(" - ");
 
               return (
                 <View key={idx} style={styles.jobRow}>
                   <View style={styles.jobHeader}>
-                    <Text style={styles.jobTitle}>{exp.title || "Role"}</Text>
+                    <Text style={styles.jobTitle}>{exp.title || (isFr ? "Rôle" : "Role")}</Text>
                     {dateRange ? <Text style={styles.jobDates}>{dateRange}</Text> : null}
                   </View>
                   <View style={styles.jobCompanyRow}>
@@ -255,7 +272,7 @@ export const ClassicMonochromeTemplate: React.FC<{ data: ResumePdfData }> = ({ d
         {/* Education */}
         {validEducations.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Education</Text>
+            <Text style={styles.sectionTitle}>{labels.educationTitle}</Text>
             {validEducations.map((edu, idx) => (
               <View key={idx} style={styles.eduRow}>
                 <View>
@@ -274,9 +291,9 @@ export const ClassicMonochromeTemplate: React.FC<{ data: ResumePdfData }> = ({ d
         {/* Skills */}
         {validSkills.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Skills & Competencies</Text>
+            <Text style={styles.sectionTitle}>{labels.skillsTitle}</Text>
             <Text style={styles.skillsText}>
-              <Text style={styles.skillsBold}>Core Competencies: </Text>
+              <Text style={styles.skillsBold}>{labels.coreCompetencies}</Text>
               {validSkills.join(" • ")}
             </Text>
           </View>

@@ -14,7 +14,11 @@ interface BatchMatchItem {
  * Deterministic fallback scoring if LLM calls fail or keys are unconfigured.
  * Matches profile skills, projects, and title against job description.
  */
-function heuristicScoreJob(job: UnifiedJob, profile: Profile): ScoredJobMatch {
+function heuristicScoreJob(
+  job: UnifiedJob,
+  profile: Profile,
+  isFr = false
+): ScoredJobMatch {
   const profileSkills = Array.isArray(profile.skills) ? profile.skills : [];
   const candidateTitle = profile.current_title || "";
   const roleText = `${job.title} ${job.aboutRole}`.toLowerCase();
@@ -55,20 +59,30 @@ function heuristicScoreJob(job: UnifiedJob, profile: Profile): ScoredJobMatch {
 
   if (isJunior && (isHighSeniority || isHighSalary)) {
     score = Math.min(score, 58);
-    const reason = `Shows foundational skill alignment in ${matchedSkills.slice(0, 3).join(", ") || "core areas"}, but role scope and compensation reflect advanced strategic ownership and seniority.`;
+    const reason = isFr
+      ? `Démontre un alignement solide des compétences en ${matchedSkills.slice(0, 3).join(", ") || "compétences clés"}, mais l'envergure du poste et le niveau salarial reflètent une séniorité et un leadership stratégique plus avancés.`
+      : `Shows foundational skill alignment in ${matchedSkills.slice(0, 3).join(", ") || "core areas"}, but role scope and compensation reflect advanced strategic ownership and seniority.`;
     return {
       job,
       matchScore: score,
       matchReason: reason,
       matchedSkills,
-      missingSkills: ["Senior Strategic Ownership", "Team Leadership", ...potentialMissing].slice(0, 3),
+      missingSkills: [
+        isFr ? "Leadership stratégique" : "Senior Strategic Ownership",
+        isFr ? "Gestion d'équipe" : "Team Leadership",
+        ...potentialMissing,
+      ].slice(0, 3),
     };
   }
 
   score = Math.min(Math.max(score, 30), 92);
-  const matchReason = matchedSkills.length > 0
-    ? `Matches background in ${matchedSkills.slice(0, 3).join(", ")} with relevant demonstrated competency.`
-    : `Aligns with ${candidateTitle || "candidate"} profile in ${job.location || "target market"}.`;
+  const matchReason = isFr
+    ? (matchedSkills.length > 0
+        ? `Correspond au profil avec des compétences démontrées en ${matchedSkills.slice(0, 3).join(", ")}.`
+        : `S'aligne avec le profil de ${candidateTitle || "candidat"} sur le marché cible.`)
+    : (matchedSkills.length > 0
+        ? `Matches background in ${matchedSkills.slice(0, 3).join(", ")} with relevant demonstrated competency.`
+        : `Aligns with ${candidateTitle || "candidate"} profile in ${job.location || "target market"}.`);
 
   return {
     job,
@@ -84,11 +98,15 @@ function heuristicScoreJob(job: UnifiedJob, profile: Profile): ScoredJobMatch {
  */
 export async function batchScoreJobs(
   jobs: UnifiedJob[],
-  profile: Profile
+  profile: Profile,
+  locale?: "en" | "fr"
 ): Promise<ScoredJobMatch[]> {
   if (!jobs || jobs.length === 0) {
     return [];
   }
+
+  const activeLocale = locale || (profile.preferred_language === "fr" ? "fr" : "en");
+  const isFr = activeLocale === "fr";
 
   const { client, model } = getAiClient();
 
@@ -97,7 +115,7 @@ export async function batchScoreJobs(
     ? profile.work_experience.slice(0, 3).map((w) => ({
         role: w.title,
         company: w.company,
-        duration: `${w.startDate} to ${w.current ? "Present" : w.endDate || ""}`,
+        duration: `${w.startDate} to ${w.current ? (isFr ? "Présent" : "Present") : w.endDate || ""}`,
         responsibilitiesAndProjects: w.responsibilities ? w.responsibilities.slice(0, 300) : "",
       }))
     : [];
@@ -126,6 +144,14 @@ export async function batchScoreJobs(
     descriptionExcerpt: j.aboutRole.slice(0, 900),
   }));
 
+  const languageRule = isFr
+    ? `5. Language Requirement (CRITICAL):
+   - The candidate's chosen language is French ('fr').
+   - You MUST generate all "matchReason" assessments strictly in professional, fluent French (e.g. "Excellente adéquation avec les compétences en...", "Bonne maîtrise des technologies requises...").
+   - For skills in "matchedSkills" and "missingSkills", preserve recognized technical industry names (e.g., Next.js, TypeScript, SQL, Docker) and use natural French for functional or strategic competencies (e.g., "Leadership technique", "Optimisation des processus", "Gestion de projet Agile").`
+    : `5. Language Requirement:
+   - The candidate's chosen language is English ('en'). Generate all matchReason assessments in clear professional English.`;
+
   const systemPrompt = `You are a world-class technical talent director and principal hiring evaluator for JobPilot.
 Your job is to produce grounded, realistic, and honest match evaluations between candidate profiles and job postings. Avoid fantasy scores where keyword overlap masks huge gaps in scope, seniority, or compensation expectations.
 
@@ -149,21 +175,25 @@ Evaluation Rules:
    - matchedSkills: Array of specific skills or transferable competencies the candidate demonstrably has.
    - missingSkills: Array of critical requirements, seniority levels, or tools the candidate lacks.
 
+${languageRule}
+
 Return strictly valid JSON with this exact schema:
 {
   "matches": [
     {
       "id": "job_id_string",
       "matchScore": 75,
-      "matchReason": "Strong project proof in Next.js and React...",
-      "matchedSkills": ["Next.js", "TypeScript", "Process Optimization"],
-      "missingSkills": ["Cloud Architecture at Scale", "5+ Years Leadership"]
+      "matchReason": "${isFr ? "Solide expérience de projet en Next.js et React..." : "Strong project proof in Next.js and React..."}",
+      "matchedSkills": ["Next.js", "TypeScript", "${isFr ? "Optimisation des processus" : "Process Optimization"}"],
+      "missingSkills": ["${isFr ? "Architecture Cloud à grande échelle" : "Cloud Architecture at Scale"}", "${isFr ? "Plus de 5 ans de leadership" : "5+ Years Leadership"}"]
     }
   ]
 }`;
 
   const userPrompt = `Candidate Profile:
 ${JSON.stringify(candidateSummary, null, 2)}
+
+Target Candidate Language: ${isFr ? "fr (French)" : "en (English)"}
 
 Job Postings to Evaluate:
 ${JSON.stringify(jobsPayload, null, 2)}`;
@@ -200,15 +230,19 @@ ${JSON.stringify(jobsPayload, null, 2)}`;
         return {
           job,
           matchScore: typeof matchData.matchScore === "number" ? Math.min(Math.max(matchData.matchScore, 0), 100) : 65,
-          matchReason: matchData.matchReason || `Evaluated against ${candidateSummary.currentTitle} profile.`,
+          matchReason:
+            matchData.matchReason ||
+            (isFr
+              ? `Évalué par rapport au profil de ${candidateSummary.currentTitle}.`
+              : `Evaluated against ${candidateSummary.currentTitle} profile.`),
           matchedSkills: Array.isArray(matchData.matchedSkills) ? matchData.matchedSkills : [],
           missingSkills: Array.isArray(matchData.missingSkills) ? matchData.missingSkills : [],
         };
       }
-      return heuristicScoreJob(job, profile);
+      return heuristicScoreJob(job, profile, isFr);
     });
   } catch (error) {
     console.warn("AI batch scoring error, applying grounded fallback:", error);
-    return jobs.map((job) => heuristicScoreJob(job, profile));
+    return jobs.map((job) => heuristicScoreJob(job, profile, isFr));
   }
 }

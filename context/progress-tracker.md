@@ -50,12 +50,13 @@ Update this file after every completed feature. Any AI agent reading this should
 
 - [x] 18 Language Architecture, Dictionaries, and Onboarding Preference
 - [x] 19 Full UI Copy Conversion Across All App Surfaces
-- [ ] 20 Bilingual AI and Document Intelligence
+- [x] 20 Bilingual AI and Document Intelligence
 
 ---
 
 ## Decisions Made During Build
 
+- **Bilingual AI & Document Intelligence (Feature 20)**: Calibrated LLM system prompts in `lib/job-search/scorer.ts`, `lib/agent/research.ts`, and `lib/ai.ts` to inspect candidate active locale preference (via `getLocale()` or `profile.preferred_language`) and generate qualitative match reasons, company dossiers, and tailored executive resume bullet points in French or English. Updated ATS PDF generator (`lib/pdf/ClassicMonochromeTemplate.tsx`) to render localized section headings (Profil Professionnel, Expérience Professionnelle, Formation, Compétences & Expertises) and date formats based on candidate locale.
 - **Client vs Server Architecture**: Used `@insforge/sdk` for browser client (`lib/insforge-client.ts`) and `@insforge/sdk/ssr` for server client (`lib/insforge-server.ts`).
 - **Session Persistence**: Created `actions/auth.ts` server actions leveraging `@insforge/sdk/ssr/middleware` (`setAuthCookies`, `clearAuthCookies`) to synchronize tokens into HTTP-only cookies (`insforge_access_token`, `insforge_refresh_token`) on the Next.js host, allowing `middleware.ts` and Server Components to authenticate instantly.
 - **Next.js 16 Partial Prerendering**: Wrapped dynamic parameters and session checks in `<Suspense>` boundaries in `/login` and `/callback` to ensure build-time prerendering succeeds with 0 errors.

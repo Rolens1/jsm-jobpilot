@@ -29,6 +29,7 @@ export interface SearchOrchestratorOptions {
   location: string;
   page?: number;
   forceRefresh?: boolean;
+  locale?: "en" | "fr";
 }
 
 export interface SearchOrchestratorResult {

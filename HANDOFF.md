@@ -1,8 +1,8 @@
 # Handoff / Session Memory
 
-> Generated: 2026-10-26T12:00:00-04:00  
+> Generated: 2026-10-26T12:30:00-04:00  
 > Project: JobPilot (`d:/Ai Projects/job-pilot`)  
-> Session summary: Feature 19 (Full UI Copy Conversion Across All App Surfaces) is 100% complete and fully verified. Converted all UI copy across Homepage, Auth, Candidate Profile, Find Jobs, Job Details, and Dashboard into native bilingual English and French. Complete dictionary parity achieved in `types/i18n.ts`, `dictionaries/en.ts`, and `dictionaries/fr.ts` (380 lines each). All Client Components wired to `useTranslation()` from `@/components/providers/LanguageProvider` and Server Components wired to `getLocale()` / `getDictionary()`. TypeScript check (`npx tsc --noEmit`) and production Next.js 16 build (`npm run build`) pass cleanly with code 0 across all 13 routes with Partial Prerendering (`◐`). Ready for Feature 20 (Bilingual AI and Document Intelligence).
+> Session summary: Feature 20 (Bilingual AI and Document Intelligence) is 100% complete and verified. All 20 features across Phases 1 through 6 are fully built and verified! Calibrated AI prompts in `lib/job-search/scorer.ts`, `lib/agent/research.ts`, and `lib/ai.ts` to inspect candidate active locale preference (via `getLocale()` or `profile.preferred_language`) and generate qualitative match reasons, company dossiers, and tailored executive resume bullet points in French or English. Updated ATS PDF generator (`lib/pdf/ClassicMonochromeTemplate.tsx`) to render localized section headings (Profil Professionnel, Expérience Professionnelle, Formation, Compétences & Expertises) and date formats based on candidate locale. Enhanced multilingual resume parser in `actions/resume.ts` and `lib/resume-heuristics.ts` to seamlessly handle French headings, titles, degrees, and dates. TypeScript check (`npx tsc --noEmit`) and production Next.js 16 build (`npm run build`) pass cleanly with code 0 across all 13 routes with Partial Prerendering (`◐`).
 
 ## Goal
 
@@ -10,7 +10,7 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
 
 ## Current State
 
-**Completed & Confirmed Working (Phases 1 through 5, and Phase 6 Features 18 & 19 Complete):**
+**Completed & Confirmed Working (All 6 Phases and All 20 Features Complete):**
 - **Phase 1: Foundation (Features 01-04)**
   - Feature 01: Homepage with modern responsive landing design and design tokens.
   - Feature 02: InsForge Auth with PKCE, session sync via cookies, and middleware protection.
@@ -33,45 +33,29 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
   - Feature 15: Stats bar connected to live PostgreSQL jobs data computing total jobs, arithmetic mean match score, researched count, and 7-day velocity with comparative trends (Spec 0010).
   - Feature 16: Recent activity timeline connected to live database runs and researched jobs with 10-minute sliding window deduplication and relative timestamps (Spec 0011).
   - Feature 17: Three native SVG analytics charts connected to live candidate metrics with pure aggregation engine in `lib/dashboard-charts.ts`, dynamic tiered Y axis scaling (10, 15, 25, 50, 100+), 10-minute event deduplication, and zero state handling (Spec 0012).
-- **Phase 6: Internationalization (Features 18 & 19 Complete)**
+- **Phase 6: Internationalization (Features 18, 19, & 20 Complete)**
   - Feature 18: Bilingual language architecture, type safe dictionaries, cookie state resolution, navbar segmented pill switcher, and first visit onboarding modal (Spec 0013).
   - Feature 19: Full UI copy conversion across all app surfaces (Navigation, Homepage, Footer, Auth, Profile, Find Jobs, Job Details, Dashboard) in English and French. Zero hardcoded UI strings. Full dictionary type safety.
+  - Feature 20: Bilingual AI and Document Intelligence. Calibrated LLM system prompts in `lib/job-search/scorer.ts`, `lib/agent/research.ts`, and `lib/ai.ts` to inspect candidate active locale preference (via `getLocale()` or `profile.preferred_language`) and generate qualitative match reasons, company dossiers, and tailored executive resume bullet points in French or English. Updated ATS PDF generator (`lib/pdf/ClassicMonochromeTemplate.tsx`) to render localized section headings and date formats based on candidate locale. Enhanced multilingual resume parser in `actions/resume.ts` and `lib/resume-heuristics.ts`.
 - **Code Reviews, Simplification, and Dead Code Removal**:
-  - Full five-axis code reviews executed after Feature 14, 16, 17, and 18.
-  - Feature 18 code review polish: eliminated duplicate server action round trip on onboarding confirm, added Escape key and backdrop dismissal handlers, and streamlined i18n import paths.
-  - Purged unreferenced developer diagnostics cards: `components/dashboard/EventTrackingCard.tsx` and `components/profile/ProfileCompleteTracker.tsx`.
-  - Cleaned `context/ui-registry.md` removing obsolete placeholder entries.
-  - Research event deduplication resolved double-counting between `jobs.company_research` and `agent_runs`.
-  - Clock skew tolerance added for instant real-time query accuracy across stats and charts (`diffMs >= -60000`).
-  - Zero-division defensive guard in `JobsFoundChart.tsx` points calculation.
-  - Token compliance: 100% of charts and i18n components use CSS variable fills and semantic tokens.
-  - TypeScript check (`npx tsc --noEmit`) and Next.js 16 production build (`npm run build`) pass cleanly with code 0.
-  - Clock skew tolerance added for instant real-time query accuracy across stats and charts (`diffMs >= -60000`).
-  - Zero-division defensive guard in `JobsFoundChart.tsx` points calculation.
-  - Token compliance: 100% of charts use CSS variable fills and semantic tokens.
+  - Full five-axis code reviews executed after Feature 14, 16, 17, 18, and 19.
+  - Language switcher double-click bug eliminated by making cookie check mount-only and synchronously updating client cookies and DOM before transition.
   - TypeScript check (`npx tsc --noEmit`) and Next.js 16 production build (`npm run build`) pass cleanly with code 0.
 
 ## Files in Play
 
 | File | Why It Matters |
 |------|---------------|
-| [docs/specs/0009-dashboard-page-ui/index.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0009-dashboard-page-ui/index.md) | Governing specification for Feature 14 (Dashboard Layout & Native SVG Charts) |
-| [docs/specs/0010-stats-bar-real-data/index.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0010-stats-bar-real-data/index.md) | Governing specification for Feature 15 (Stats Bar Real Data) |
-| [docs/specs/0011-recent-activity-real-data/index.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0011-recent-activity-real-data/index.md) | Governing specification for Feature 16 (Recent Activity Real Data) |
-| [docs/specs/0012-analytics-charts-data/index.md](file:///d:/Ai%20Projects/job-pilot/docs/specs/0012-analytics-charts-data/index.md) | Governing specification for Feature 17 (Analytics Charts Real Data) |
-| [lib/dashboard-charts.ts](file:///d:/Ai%20Projects/job-pilot/lib/dashboard-charts.ts) | Pure statistical calculation engine aggregating weekly research, jobs timeline, and score buckets |
-| [lib/dashboard-stats.ts](file:///d:/Ai%20Projects/job-pilot/lib/dashboard-stats.ts) | Pure statistical calculation engine computing 4 headline metrics and 7-day trends |
-| [lib/dashboard-activity.ts](file:///d:/Ai%20Projects/job-pilot/lib/dashboard-activity.ts) | Chronological event merger and deduplicator for candidate search runs and company research |
-| [app/dashboard/page.tsx](file:///d:/Ai%20Projects/job-pilot/app/dashboard/page.tsx) | Authenticated Next.js 16 Server Component streaming parallel query data to DashboardContainer |
-| [components/dashboard/DashboardContainer.tsx](file:///d:/Ai%20Projects/job-pilot/components/dashboard/DashboardContainer.tsx) | Client orchestration container organizing StatsBar, RecentActivity, and the three SVG charts |
-| [components/dashboard/CompanyResearchChart.tsx](file:///d:/Ai%20Projects/job-pilot/components/dashboard/CompanyResearchChart.tsx) | Responsive SVG bar chart with dynamic Y axis ticks and hover tooltips |
-| [components/dashboard/JobsFoundChart.tsx](file:///d:/Ai%20Projects/job-pilot/components/dashboard/JobsFoundChart.tsx) | Responsive SVG area curve chart with smooth cubic bezier paths and gradient fills |
-| [components/dashboard/MatchScoreDistributionChart.tsx](file:///d:/Ai%20Projects/job-pilot/components/dashboard/MatchScoreDistributionChart.tsx) | Responsive SVG distribution bar chart across 5 standard match score tiers |
-| [components/dashboard/StatsBar.tsx](file:///d:/Ai%20Projects/job-pilot/components/dashboard/StatsBar.tsx) | 4-card metric grid with color-coded trend indicators |
-| [components/dashboard/RecentActivity.tsx](file:///d:/Ai%20Projects/job-pilot/components/dashboard/RecentActivity.tsx) | Interactive activity feed with chronological timeline dots and empty state |
-| [context/build-plan.md](file:///d:/Ai%20Projects/job-pilot/context/build-plan.md) | Master build plan reflecting Phases 1-5 complete and Phase 6 planned |
-| [context/progress-tracker.md](file:///d:/Ai%20Projects/job-pilot/context/progress-tracker.md) | Current status tracker marking Feature 17 complete and Phase 6 as next milestone |
-| [context/ui-registry.md](file:///d:/Ai%20Projects/job-pilot/context/ui-registry.md) | UI registry updated with all Phase 5 dashboard component signatures and tokens |
+| [lib/job-search/scorer.ts](file:///d:/Ai%20Projects/job-pilot/lib/job-search/scorer.ts) | Grounded AI job match scoring engine with bilingual prompt calibration and French fallback reasons |
+| [lib/agent/research.ts](file:///d:/Ai%20Projects/job-pilot/lib/agent/research.ts) | Company research agent synthesizing 9-field dossiers in French or English based on candidate locale |
+| [lib/pdf/ClassicMonochromeTemplate.tsx](file:///d:/Ai%20Projects/job-pilot/lib/pdf/ClassicMonochromeTemplate.tsx) | ATS resume PDF renderer with dynamic French/English section titles, labels, and date formats |
+| [lib/ai.ts](file:///d:/Ai%20Projects/job-pilot/lib/ai.ts) | Multi-provider LLM gateway with bilingual resume tailoring and action verb localization |
+| [actions/resume.ts](file:///d:/Ai%20Projects/job-pilot/actions/resume.ts) | Server Actions for multilingual resume extraction and bilingual PDF compilation |
+| [lib/resume-heuristics.ts](file:///d:/Ai%20Projects/job-pilot/lib/resume-heuristics.ts) | Deterministic resume parser recognizing French tech titles, degrees, and date structures |
+| [components/providers/LanguageProvider.tsx](file:///d:/Ai%20Projects/job-pilot/components/providers/LanguageProvider.tsx) | Client React context providing locale state, dictionary lookups, and single-click switching |
+| [lib/i18n.ts](file:///d:/Ai%20Projects/job-pilot/lib/i18n.ts) | Authoritative server locale resolution from cookies and Accept-Language headers |
+| [context/build-plan.md](file:///d:/Ai%20Projects/job-pilot/context/build-plan.md) | Master build plan reflecting all 6 Phases and 20 features complete |
+| [context/progress-tracker.md](file:///d:/Ai%20Projects/job-pilot/context/progress-tracker.md) | Progress tracker reflecting 100% completion across all 20 features |
 
 ## What Has Been Tried (and Why It Failed)
 
@@ -94,26 +78,26 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
    - *Attempted*: Calling `await getLocale()` directly in `app/layout.tsx` to pass initial locale to `<html lang={locale}>`.
    - *Failure Reason*: Next.js 16 Partial Prerendering treats un-suspended `cookies()` at root layout as a dynamic blocker, triggering `HANGING_PROMISE_REJECTION` on static pages like `/_not-found`.
    - *Working Alternative*: Keep `RootLayout` static-compatible with `html lang="en"`, while `LanguageProvider` client context reads `NEXT_LOCALE` cookie on client mount and updates `document.documentElement.lang`. Server Components that need locale call `await getLocale()` within their existing Suspense/dynamic boundaries.
+6. **Effect-Driven Locale Cookie Synchronization in LanguageProvider**:
+   - *Attempted*: An effect watching `[locale]` that reads `document.cookie` and updates `localeState`.
+   - *Failure Reason*: Triggered a race condition where toggling language updated state immediately, but the asynchronous cookie update was still in-flight, so the effect read the stale cookie and reverted the state back, requiring two clicks.
+   - *Working Alternative*: Restrict cookie reading to mount only (`[]`) and write `document.cookie` synchronously inside `setLocale` before initiating server transitions.
 
-## Current Best Theory (Phase 6 Internationalization)
+## Current Best Theory (Project Completion)
 
-Phase 6 introduces bilingual localization across the entire application in French and English:
-- **Feature 18: Language Architecture, Dictionaries, and Onboarding Preference (Spec 0013 Accepted)**:
-  - Established lightweight type-safe translation dictionaries (`dictionaries/en.ts`, `dictionaries/fr.ts`).
-  - Added cookie based language state management (`NEXT_LOCALE`, `JOBPILOT_LANG_PROMPTED`) with effortless switching in navbar and first visit onboarding modal.
-  - Created client `LanguageProvider` with `useTranslation` / `useLocale` and server helper `getLocale()`.
-- **Feature 19: Full UI Copy Conversion Across All App Surfaces (Completed)**:
-  - Localized all static and dynamic text across Homepage, Auth, Profile, Find Jobs, Job Details, and Dashboard using `useTranslation()` and dictionaries. Complete type safety and 100% dictionary key parity.
-- **Feature 20: Bilingual AI and Document Intelligence**:
-  - Instruct AI prompts (resume extraction, resume generation, company research) to respect candidate language preference and produce tailored French or English outputs.
+All 20 features from the master roadmap across 6 phases are fully implemented, verified, and operational:
+- **Phase 1: Foundation (Features 01-04)**
+- **Phase 2: Profile Page (Features 05-08)**
+- **Phase 3: Find Jobs Page (Features 09-11)**
+- **Phase 4: Job Details Page (Features 12-13)**
+- **Phase 5: Dashboard (Features 14-17)**
+- **Phase 6: Internationalization (Features 18-20)**
 
 ## Next Steps
 
-When resuming in the next session:
-1. Proceed with Feature 20 (Bilingual AI and Document Intelligence).
-2. Update AI prompts in `lib/ai.ts`, `lib/job-search/scorer.ts`, and `lib/agent/research.ts` to inspect candidate locale preference.
-3. Localize generated ATS resume PDF templates and headers in `@react-pdf/renderer` Server Actions according to selected locale.
-4. Verify end to end bilingual intelligence flows and finalize Phase 6 Internationalization.
+1. Run final end-to-end verification and code review for Feature 20.
+2. Commit all Feature 20 changes with conventional commit message.
+3. Review deployment readiness on Vercel or hosting platform.
 
 ## Key Constraints and Context
 

@@ -7,6 +7,7 @@ import React from "react";
 import { revalidatePath } from "next/cache";
 import { createInsforgeServer } from "@/lib/insforge-server";
 import { getAiClient, tailorResumeContent } from "@/lib/ai";
+import { getLocale } from "@/lib/i18n";
 import type {
   ExperienceLevel,
   RemotePreference,
@@ -183,7 +184,9 @@ export async function extractResumeProfile(formData?: FormData): Promise<Extract
       try {
         const { client, model, provider } = getAiClient();
         console.log(`[actions/resume] Calling LLM model ${model} via ${provider}`);
-        const systemPrompt = `You are an expert AI resume parser. Extract structured candidate profile information from the supplied resume text.
+        const systemPrompt = `You are an expert AI resume parser with advanced multilingual intelligence.
+Extract structured candidate profile information from the supplied resume text.
+The input resume may be in English, French, or bilingual. Seamlessly understand French resume section headings (e.g., 'Expérience professionnelle', 'Expériences', 'Formation', 'Éducation', 'Compétences', 'Langues', 'Coordonnées', 'Profil', 'Projets') and French date formats (e.g., 'Janvier 2021 à Présent', 'En cours', '2020 - Aujourd\\'hui') and map them accurately to the standard English JSON schema fields.
 Return ONLY valid JSON matching this exact structure:
 {
   "fullName": string,
@@ -390,8 +393,10 @@ export async function generateResumePdf(): Promise<{
       };
     }
 
-    // 3. AI enhancement & tailoring to target job title (with instant fallback) (AC-4, AC-5)
-    const tailoredData = await tailorResumeContent(profile, userEmail);
+    // 3. AI enhancement & tailoring to target job title in candidate's language (with instant fallback)
+    const currentLocale = await getLocale();
+    const candidateLocale = (profile.preferred_language === "fr" || currentLocale === "fr" ? "fr" : "en") as "en" | "fr";
+    const tailoredData = await tailorResumeContent(profile, userEmail, candidateLocale);
 
     // 4. Render PDF buffer using @react-pdf/renderer (AC-6)
     const { renderToBuffer } = await import("@react-pdf/renderer");
@@ -400,6 +405,7 @@ export async function generateResumePdf(): Promise<{
     type DocumentElement = Parameters<typeof renderToBuffer>[0];
     const element = React.createElement(ClassicMonochromeTemplate, {
       data: tailoredData,
+      locale: candidateLocale,
     }) as unknown as DocumentElement;
 
     const pdfBuffer = await renderToBuffer(element);

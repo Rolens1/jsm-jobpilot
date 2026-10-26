@@ -220,9 +220,11 @@ export function getRawFallbackResumeData(
  */
 export async function tailorResumeContent(
   profile: RawProfileInput,
-  userEmail?: string | null
+  userEmail?: string | null,
+  locale: "en" | "fr" = "en"
 ): Promise<import("@/lib/pdf/ClassicMonochromeTemplate").ResumePdfData> {
   const fallbackData = getRawFallbackResumeData(profile, userEmail);
+  const isFr = locale === "fr";
 
   // Derive target job domain
   let targetTitle = profile.current_title?.trim() || "";
@@ -237,6 +239,13 @@ export async function tailorResumeContent(
     return fallbackData;
   }
 
+  const languageInstruction = isFr
+    ? `CRITICAL BILINGUAL INSTRUCTION: The candidate's target language is French ('fr').
+You MUST generate the executive "summary" and all "experience" bullet points entirely in fluent, professional, idiomatic French.
+Use strong French active verbs (e.g. Conçu, Développé, Optimisé, Piloté, Déployé, Automatisé).
+Keep skills and tools names accurate (e.g. Next.js, TypeScript, PostgreSQL).`
+    : `The candidate's target language is English ('en'). Use strong past-tense action verbs (e.g., Engineered, Architected, Spearheaded, Accelerated, Automated, Optimized).`;
+
   try {
     const aiPromise = client.chat.completions.create({
       model,
@@ -248,12 +257,15 @@ export async function tailorResumeContent(
           content: `You are an elite executive resume writer and ATS optimization expert.
 Your job is to tailor the candidate's profile into a cohesive, single-page resume layout focused on their target career direction.
 
-Target Job Direction: "${targetTitle || "Senior Professional"}"
+Target Job Direction: "${targetTitle || (isFr ? "Professionnel Expérimenté" : "Senior Professional")}"
+Language: ${isFr ? "Français (French)" : "English"}
+
+${languageInstruction}
 
 Instructions:
-1. "summary": Write a punchy 2-3 sentence executive summary highlighting their expertise, key technical strengths, and proven value relevant to the target role.
+1. "summary": Write a punchy 2-3 sentence executive summary highlighting their expertise, key technical strengths, and proven value relevant to the target role in ${isFr ? "French" : "English"}.
 2. "skills": Prioritize the candidate's provided skills, selecting the 8-10 most relevant to "${targetTitle}". Do not invent unmentioned technical domains.
-3. "experience": For each work experience entry, polish the responsibilities into 2-3 concise, high-impact bullet points. Start each bullet with a strong past-tense action verb (e.g., Engineered, Architected, Spearheaded, Accelerated, Automated, Optimized). Strictly preserve all factual dates, metrics, companies, and roles.
+3. "experience": For each work experience entry, polish the responsibilities into 2-3 concise, high-impact bullet points in ${isFr ? "French" : "English"}. Strictly preserve all factual dates, metrics, companies, and roles.
 
 Return ONLY valid JSON matching this exact structure:
 {
@@ -274,6 +286,7 @@ Return ONLY valid JSON matching this exact structure:
             fullName: profile.full_name,
             currentTitle: profile.current_title,
             targetJob: targetTitle,
+            language: isFr ? "fr" : "en",
             rawSkills: profile.skills || [],
             experiences: fallbackData.experience,
           }),

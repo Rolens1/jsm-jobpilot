@@ -46,6 +46,7 @@ export interface Profile {
   portfolio_url: string | null;
   work_authorization: WorkAuthorization;
   resume_pdf_url: string | null;
+  preferred_language?: string | null;
   is_complete: boolean;
   created_at: string;
   updated_at: string;

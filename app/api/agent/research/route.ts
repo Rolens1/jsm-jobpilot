@@ -7,6 +7,7 @@ import {
   extractCompanyWebFootprint,
   synthesizeCompanyDossier,
 } from "@/lib/agent/research";
+import { getLocale } from "@/lib/i18n";
 
 export async function POST(req: NextRequest) {
   try {
@@ -111,12 +112,15 @@ export async function POST(req: NextRequest) {
 
     const { text: webFootprint, sources } = await extractCompanyWebFootprint(domainUrl);
 
-    // 4. Synthesize comprehensive 9-field dossier
+    // 4. Synthesize comprehensive 9-field dossier respecting candidate language
+    const currentLocale = await getLocale();
+    const candidateLocale = (profile.preferred_language === "fr" || currentLocale === "fr" ? "fr" : "en") as "en" | "fr";
     const dossier = await synthesizeCompanyDossier({
       job,
       profile,
       webFootprint,
       sources,
+      locale: candidateLocale,
     });
 
     // 5. Persist dossier into jobs.company_research in PostgreSQL
