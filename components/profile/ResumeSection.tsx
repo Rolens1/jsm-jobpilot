@@ -12,6 +12,8 @@ import {
   Sparkles,
   Download,
   AlertCircle,
+  ShieldAlert,
+  ShieldCheck,
 } from "lucide-react";
 import { generateResumePdf } from "@/actions/resume";
 import { useTranslation } from "@/components/providers/LanguageProvider";
@@ -343,25 +345,44 @@ export function ResumeSection({
       </div>
 
       {/* Generation Error Alert */}
-      {generationError && (
-        <div
-          role="alert"
-          className="mt-4 p-3.5 rounded-xl bg-error/10 border border-error/20 text-error text-xs sm:text-sm font-medium flex items-center justify-between gap-2.5"
-        >
-          <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0 text-error" />
-            <span>{generationError}</span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setGenerationError(null)}
-            className="text-text-muted hover:text-text-primary p-0.5 cursor-pointer"
-            title="Dismiss alert"
+      {generationError && (() => {
+        const isRateLimited = generationError.toLowerCase().includes("rate limit");
+
+        return (
+          <div
+            role="alert"
+            className={`mt-4 p-3.5 sm:p-4 rounded-xl border flex items-start sm:items-center justify-between gap-3 text-xs sm:text-sm font-medium animate-in fade-in duration-200 ${
+              isRateLimited
+                ? "bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-200"
+                : "bg-error/10 border-error/20 text-error"
+            }`}
           >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+            <div className="flex items-start sm:items-center gap-2.5">
+              {isRateLimited ? (
+                <ShieldAlert className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0" />
+              ) : (
+                <AlertCircle className="w-4 h-4 shrink-0 text-error mt-0.5 sm:mt-0" />
+              )}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                {isRateLimited && (
+                  <span className="inline-block self-start text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 dark:text-amber-300">
+                    Demo Quota Guard
+                  </span>
+                )}
+                <span>{generationError}</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setGenerationError(null)}
+              className="opacity-70 hover:opacity-100 p-0.5 cursor-pointer shrink-0"
+              title="Dismiss alert"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        );
+      })()}
 
       {/* Footer Actions */}
       <div className="mt-6 pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-border/60">
@@ -372,6 +393,10 @@ export function ResumeSection({
           <span className="text-xs text-text-secondary block mt-0.5">
             {dict.profile.resumeSubtitle}
           </span>
+          <div className="flex items-center gap-1.5 text-[11px] text-text-muted mt-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-accent shrink-0" />
+            <span>Demo Quota: 3 PDF generations and 2 AI extractions per 10 minutes.</span>
+          </div>
         </div>
         <button
           type="button"

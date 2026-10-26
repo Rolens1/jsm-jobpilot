@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Search, MapPin, Loader2, CheckCircle2, X, Sparkles, ShieldAlert, AlertTriangle } from "lucide-react";
+import { Search, MapPin, Loader2, CheckCircle2, X, Sparkles, ShieldAlert, AlertTriangle, ShieldCheck } from "lucide-react";
 import { useTranslation } from "@/components/providers/LanguageProvider";
 
 type Props = {
@@ -86,6 +86,10 @@ export function SearchControls({
           )}
         </button>
       </form>
+      <div className="flex items-center gap-1.5 text-[11px] text-text-muted mt-2.5">
+        <ShieldCheck className="w-3.5 h-3.5 text-accent shrink-0" />
+        <span>Demo Quota: 3 job searches per 10 minutes to protect live API quotas.</span>
+      </div>
 
       {/* Feedback Banner */}
       {showBanner && (() => {

@@ -1,7 +1,11 @@
 import { createInsforgeServer } from "./insforge-server";
 import { headers } from "next/headers";
 
-export type RateLimitEndpoint = "job_search" | "company_research" | "resume_extract";
+export type RateLimitEndpoint =
+  | "job_search"
+  | "company_research"
+  | "resume_extract"
+  | "resume_generate";
 
 export interface RateLimitResult {
   allowed: boolean;
@@ -20,12 +24,13 @@ interface RateLimitConfig {
 }
 
 // Calibrated portfolio showcase limits:
-// Tight quotas so recruiters and evaluators easily trigger the guard and see
-// the defensive architecture in action, resetting in 10 minutes so they can resume testing.
+// 2 to 3 requests per 10 minutes so recruiters and evaluators can test each feature
+// multiple times and easily experience the rate limit guard in action.
 export const ENDPOINT_CONFIGS: Record<RateLimitEndpoint, RateLimitConfig> = {
-  job_search: { limit: 2, windowSeconds: 600, name: "Job discovery search" },
-  company_research: { limit: 2, windowSeconds: 600, name: "Company research agent" },
-  resume_extract: { limit: 1, windowSeconds: 600, name: "Resume AI extraction" },
+  job_search: { limit: 3, windowSeconds: 600, name: "Job discovery search" },
+  company_research: { limit: 3, windowSeconds: 600, name: "Company research agent" },
+  resume_extract: { limit: 2, windowSeconds: 600, name: "Resume AI extraction" },
+  resume_generate: { limit: 3, windowSeconds: 600, name: "Resume PDF generation" },
 };
 
 /**
@@ -111,5 +116,29 @@ export async function checkRateLimit(
       retryAfter: 0,
       limit: config.limit,
     };
+  }
+}
+
+/**
+ * Maintenance helper: Purges expired rate limit records older than retention period.
+ *
+ * @param retentionHours Hours of inactivity before records are deleted (defaults to 24)
+ */
+export async function cleanupExpiredRateLimits(retentionHours = 24): Promise<number> {
+  try {
+    const insforge = await createInsforgeServer();
+    const { data, error } = await insforge.database.rpc("cleanup_expired_rate_limits", {
+      p_retention_hours: retentionHours,
+    });
+
+    if (error) {
+      console.warn("⚠️ Failed to purge expired rate limits:", error.message);
+      return 0;
+    }
+
+    return Number(data) || 0;
+  } catch (err) {
+    console.warn("⚠️ Rate limit cleanup encountered exception:", err);
+    return 0;
   }
 }

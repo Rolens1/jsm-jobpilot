@@ -96,3 +96,22 @@ $$;
 
 -- Grant execution to authenticated, anon, postgres
 GRANT EXECUTE ON FUNCTION public.check_rate_limit(TEXT, TEXT, INT, INT) TO anon, authenticated, postgres;
+
+-- Maintenance function: purge expired rate limit records older than retention period
+CREATE OR REPLACE FUNCTION public.cleanup_expired_rate_limits(p_retention_hours INT DEFAULT 24)
+RETURNS INT
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_deleted INT;
+BEGIN
+  DELETE FROM public.rate_limits
+  WHERE updated_at < now() - (p_retention_hours || ' hours')::INTERVAL;
+  GET DIAGNOSTICS v_deleted = ROW_COUNT;
+  RETURN v_deleted;
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.cleanup_expired_rate_limits(INT) TO anon, authenticated, postgres;
+

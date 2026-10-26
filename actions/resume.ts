@@ -381,6 +381,15 @@ export async function generateResumePdf(): Promise<{
     const userId = authData.user.id;
     const userEmail = authData.user.email;
 
+    // Rate limiting check
+    const rateLimit = await checkRateLimit("resume_generate", userId);
+    if (!rateLimit.allowed) {
+      return {
+        success: false,
+        error: rateLimit.message,
+      };
+    }
+
     // 1. Fetch current profile from database
     const { data: profile, error: profileError } = await insforge.database
       .from("profiles")

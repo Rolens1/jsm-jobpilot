@@ -401,6 +401,9 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
               <span className="bg-accent/15 border border-accent/30 text-accent text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
                 Autonomous Agent
               </span>
+              <span className="bg-surface-secondary border border-border text-text-muted text-[11px] font-medium px-2.5 py-0.5 rounded-full">
+                Quota: 3 / 10 min
+              </span>
             </div>
             <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
               {dict.jobDetails.researchSubtitle}
