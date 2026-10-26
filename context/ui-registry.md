@@ -289,3 +289,61 @@ After building any component — update this file with the component name, file 
 - **Bar Container**: `fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-border py-3.5 px-4 sm:px-8 shadow-2xl transition-all duration-300 ease-in-out`
 - **Apply Action**: `bg-accent text-accent-foreground font-semibold px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl hover:bg-accent-dark active:scale-[0.99] transition-all flex items-center gap-2 shadow-sm text-xs sm:text-sm shrink-0`
 
+### `StatsBar`
+- **File**: `components/dashboard/StatsBar.tsx`
+- **Container**: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6`
+- **Card**: `bg-surface rounded-2xl border border-border p-5 sm:p-6 shadow-sm hover:border-accent/40 transition-colors`
+- **Title**: `text-xs sm:text-sm font-medium text-text-muted`
+- **Value**: `text-2xl sm:text-3xl font-bold tracking-tight text-text-primary`
+- **Positive Trend Badge**: `inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-success-lightest text-success-dark border border-success/30`
+- **Subtitle**: `text-xs text-text-muted`
+
+### `RecentActivity`
+- **File**: `components/dashboard/RecentActivity.tsx`
+- **Card**: `bg-surface rounded-2xl border border-border p-6 shadow-sm flex flex-col justify-between h-full`
+- **Header**: `flex items-center justify-between pb-4 border-b border-border`
+- **Title**: `text-base sm:text-lg font-bold text-text-primary tracking-tight`
+- **View All Action**: `text-xs sm:text-sm font-semibold text-accent hover:text-accent-dark transition-colors inline-flex items-center gap-1`
+- **Timeline List**: `space-y-4 pt-2`
+- **Indicator Dot**: `w-2.5 h-2.5 rounded-full ring-4 ring-offset-2 ring-offset-surface`
+- **Connector Line**: `w-0.5 bg-border`
+- **Item Title**: `text-sm font-semibold text-text-primary leading-tight`
+- **Item Detail**: `text-xs text-text-secondary leading-snug`
+- **Timestamp**: `text-[11px] font-medium text-text-muted shrink-0 pt-0.5`
+
+### `CompanyResearchChart`
+- **File**: `components/dashboard/CompanyResearchChart.tsx`
+- **Card**: `bg-surface rounded-2xl border border-border p-6 shadow-sm flex flex-col justify-between h-full`
+- **Header**: `text-base sm:text-lg font-bold text-text-primary tracking-tight`
+- **Subtitle**: `text-xs text-text-muted mt-0.5`
+- **Grid Lines**: `stroke-border stroke-dasharray="3 3"`
+- **Daily Bars**: `fill-[#61A8FF] rx-1.5`
+- **Axis Text**: `text-[11px] fill-text-muted`
+
+### `JobsFoundChart`
+- **File**: `components/dashboard/JobsFoundChart.tsx`
+- **Card**: `bg-surface rounded-2xl border border-border p-6 shadow-sm flex flex-col justify-between h-full`
+- **Header**: `text-base sm:text-lg font-bold text-text-primary tracking-tight`
+- **Subtitle**: `text-xs text-text-muted mt-0.5`
+- **Curve Path**: `stroke-[#7C5CFC] stroke-[2.5]`
+- **Gradient Fill**: `url(#jobsFoundGradient)`
+- **Data Marker**: `fill-[#7C5CFC] stroke-surface stroke-2`
+- **Grid Lines**: `stroke-border stroke-dasharray="3 3"`
+
+### `MatchScoreDistributionChart`
+- **File**: `components/dashboard/MatchScoreDistributionChart.tsx`
+- **Card**: `bg-surface rounded-2xl border border-border p-6 shadow-sm flex flex-col justify-between h-full`
+- **Header**: `text-base sm:text-lg font-bold text-text-primary tracking-tight`
+- **Subtitle**: `text-xs text-text-muted mt-0.5`
+- **Distribution Bars**: `fill-[#10B981] rx-2`
+- **Grid Lines**: `stroke-border stroke-dasharray="3 3"`
+- **Axis Text**: `text-[11px] fill-text-muted`
+
+### `DashboardContainer`
+- **File**: `components/dashboard/DashboardContainer.tsx`
+- **Wrapper**: `w-full space-y-6`
+- **Middle Row Grid**: `grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch`
+- **Bottom Row Grid**: `grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch`
+- **Wide Chart Column**: `lg:col-span-7 xl:col-span-8`
+- **Distribution Chart Column**: `lg:col-span-5 xl:col-span-4`
+
