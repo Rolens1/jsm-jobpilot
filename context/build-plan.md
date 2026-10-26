@@ -520,13 +520,16 @@ Configure and validate production environment variables, security contracts, and
 
 ---
 
-### 22 Build Hardening, Security Headers & Runtime Compatibility
+### 22 Build Hardening, Security Headers, Rate Limiting & Runtime Compatibility
 
-Ensure the Next.js 16 application is fully hardened for production edge and serverless execution on Vercel.
+Ensure the Next.js 16 application is fully hardened for production edge and serverless execution on Vercel with active abuse protection.
 
 **Scope & Logic:**
 - Address Next.js 16 runtime conventions (resolve proxy/middleware deprecation warnings).
 - Configure production HTTP security headers in `next.config.ts` (Content-Security-Policy, Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, Referrer-Policy).
+- Implement database backed API rate limiting in `lib/rate-limit.ts` backed by an InsForge PostgreSQL table (`rate_limits`) with zero extra third party dependencies.
+- Protect expensive endpoints (`/api/agent/find`, `/api/agent/research`, and resume extraction) against quota exhaustion using sliding window counters by client IP address and authenticated user ID.
+- Return standard HTTP 429 Too Many Requests status codes with `Retry-After` headers and localized candidate friendly alert messages when limits are reached.
 - Verify bundle optimization, static page caching, and Partial Prerendering compliance under production flags.
 
 ---
