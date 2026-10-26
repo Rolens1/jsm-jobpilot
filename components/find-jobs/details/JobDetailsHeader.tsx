@@ -1,12 +1,16 @@
+"use client";
+
 import React from "react";
 import { Job } from "@/types/database";
 import { MapPin, ExternalLink, Sparkles, Building2 } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 interface JobDetailsHeaderProps {
   job: Job;
 }
 
 export function JobDetailsHeader({ job }: JobDetailsHeaderProps) {
+  const { dict } = useTranslation();
   const isHighMatch = job.match_score >= 80;
   const isMedMatch = job.match_score >= 60 && job.match_score < 80;
 
@@ -59,7 +63,7 @@ export function JobDetailsHeader({ job }: JobDetailsHeaderProps) {
           >
             <Sparkles className="w-4 h-4 shrink-0" />
             <span className="text-sm font-bold tracking-tight">
-              {job.match_score}% Match
+              {job.match_score}% {dict.jobDetails.matchScoreLabel}
             </span>
           </div>
 
@@ -70,7 +74,7 @@ export function JobDetailsHeader({ job }: JobDetailsHeaderProps) {
               rel="noopener noreferrer"
               className="bg-accent text-accent-foreground font-semibold px-5 py-2.5 rounded-xl hover:bg-accent-dark active:scale-[0.99] transition-all flex items-center gap-2 shadow-sm text-sm shrink-0"
             >
-              <span>Apply Now</span>
+              <span>{dict.jobDetails.applyNow}</span>
               <ExternalLink className="w-4 h-4" />
             </a>
           )}

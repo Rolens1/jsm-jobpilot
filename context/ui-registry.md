@@ -344,4 +344,11 @@ After building any component — update this file with the component name, file 
 - **Confirm CTA**: `w-full py-2.5 px-4 rounded-xl bg-accent text-accent-foreground font-medium text-sm hover:bg-accent-dark transition-all shadow-sm cursor-pointer disabled:opacity-50`
 - **Dismiss Link**: `w-full py-1.5 text-xs text-text-muted hover:text-text-secondary transition-colors text-center cursor-pointer`
 
+### `LoginReturnLink`
+- **File**: `components/auth/LoginReturnLink.tsx`
+- **Link**: `inline-flex items-center gap-2 text-sm text-text-secondary hover:text-accent font-medium transition-colors mb-6 group`
+- **Icon**: `w-4 h-4 transition-transform group-hover:-translate-x-1`
+- **Internationalization**: Uses `dict.auth.backToHome` via `useTranslation()`
+
+
 

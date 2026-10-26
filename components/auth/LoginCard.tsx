@@ -4,6 +4,7 @@ import { useState } from "react";
 import posthog from "posthog-js";
 import { initiateOAuth } from "@/actions/auth";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 const isPostHogConfigured = Boolean(
   process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN && process.env.NEXT_PUBLIC_POSTHOG_HOST,
@@ -44,14 +45,16 @@ export function LoginCard({ defaultRedirect = "/dashboard", initialError }: Prop
     }
   };
 
+  const { dict } = useTranslation();
+
   return (
     <div className="w-full max-w-[420px] bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm">
       <div className="text-center mb-6">
         <h1 className="text-2xl font-bold text-text-primary tracking-tight">
-          Welcome to JobPilot
+          {dict.auth.welcomeTitle}
         </h1>
         <p className="text-sm text-text-secondary mt-2">
-          Sign in to access your AI job hunting assistant
+          {dict.auth.welcomeSubtitle}
         </p>
       </div>
 
@@ -94,8 +97,8 @@ export function LoginCard({ defaultRedirect = "/dashboard", initialError }: Prop
           )}
           <span>
             {loadingProvider === "google"
-              ? "Connecting to Google..."
-              : "Continue with Google"}
+              ? dict.auth.googleConnecting
+              : dict.auth.googleButton}
           </span>
         </button>
 
@@ -122,15 +125,15 @@ export function LoginCard({ defaultRedirect = "/dashboard", initialError }: Prop
           )}
           <span>
             {loadingProvider === "github"
-              ? "Connecting to GitHub..."
-              : "Continue with GitHub"}
+              ? dict.auth.githubConnecting
+              : dict.auth.githubButton}
           </span>
         </button>
       </div>
 
       <div className="mt-8 pt-6 border-t border-border/60 text-center">
         <p className="text-xs text-text-muted leading-relaxed">
-          By signing in, you agree to our Terms of Service and Privacy Policy.
+          {dict.auth.termsNotice}
         </p>
       </div>
     </div>

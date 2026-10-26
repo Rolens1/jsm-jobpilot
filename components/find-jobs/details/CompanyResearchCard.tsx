@@ -17,12 +17,14 @@ import {
   ExternalLink,
   AlertTriangle,
 } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 interface CompanyResearchCardProps {
   job: Job;
 }
 
 export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
+  const { dict } = useTranslation();
   const [dossier, setDossier] = useState<CompanyResearchDossier | null>(
     job.company_research || null
   );
@@ -168,14 +170,14 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
                 <h2 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight">
-                  Company Intelligence Dossier
+                  {dict.jobDetails.researchTitle}
                 </h2>
                 <span className="bg-success-lightest border border-success/30 text-success-dark text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
                   Verified Analysis
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
-                Tailored interview briefing for {job.company} synthesized for your profile
+                {dict.jobDetails.researchSubtitle}
               </p>
             </div>
           </div>
@@ -190,7 +192,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
             }`}
           >
             <RefreshCw className={`w-3.5 h-3.5 ${confirmRefresh ? "text-accent animate-spin" : "text-accent"}`} />
-            <span>{confirmRefresh ? "Confirm Re-run?" : "Refresh Research"}</span>
+            <span>{confirmRefresh ? dict.jobDetails.refreshResearchConfirm : dict.jobDetails.refreshResearch}</span>
           </button>
         </div>
 
@@ -199,7 +201,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
           <div>
             <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2 flex items-center gap-2">
               <Compass className="w-4 h-4 text-accent" />
-              <span>Company Overview & Market Footprint</span>
+              <span>{dict.jobDetails.overviewLabel}</span>
             </h3>
             <p className="text-sm leading-relaxed text-text-secondary whitespace-pre-line">
               {overviewText || `${job.company} operates as an established market player in this sector.`}
@@ -211,7 +213,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
               <Target className="w-5 h-5 text-accent shrink-0 mt-0.5" />
               <div>
                 <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
-                  Why This Role Matters
+                  {dict.jobDetails.whyThisRoleLabel}
                 </h4>
                 <p className="text-xs sm:text-sm text-text-secondary mt-1 leading-relaxed">
                   {dossier.whyThisRole}
@@ -229,7 +231,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle2 className="w-4 h-4 text-success-dark shrink-0" />
                 <h3 className="text-xs sm:text-sm font-bold text-success-dark uppercase tracking-wider">
-                  Your Unique Edge
+                  {dict.jobDetails.yourEdgeLabel}
                 </h3>
               </div>
               <ul className="space-y-2.5">
@@ -252,7 +254,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
               <div className="flex items-center gap-2 mb-3">
                 <AlertTriangle className="w-4 h-4 text-warning-dark shrink-0" />
                 <h3 className="text-xs sm:text-sm font-bold text-warning-dark uppercase tracking-wider">
-                  Gaps to Address (Strategy)
+                  {dict.jobDetails.gapsLabel}
                 </h3>
               </div>
               <ul className="space-y-2.5">
@@ -276,7 +278,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
           <div>
             <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3 flex items-center gap-2">
               <Layers className="w-4 h-4 text-accent" />
-              <span>Verified Tech Stack & Tooling</span>
+              <span>{dict.jobDetails.techStackLabel}</span>
             </h3>
             <div className="flex flex-wrap gap-2">
               {techStackList.map((tech, idx) => (
@@ -295,7 +297,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
           <div>
             <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3 flex items-center gap-2">
               <Users2 className="w-4 h-4 text-accent" />
-              <span>Team Cadence & Engineering Values</span>
+              <span>{dict.jobDetails.cultureLabel}</span>
             </h3>
             <ul className="space-y-2">
               {cultureList.map((item, idx) => (
@@ -316,7 +318,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
               <div className="flex items-center gap-2 mb-3">
                 <MessageSquare className="w-4 h-4 text-accent shrink-0" />
                 <h3 className="text-xs sm:text-sm font-bold text-text-primary uppercase tracking-wider">
-                  Actionable Interview Prep
+                  {dict.jobDetails.interviewPrepLabel}
                 </h3>
               </div>
               <ul className="space-y-2.5">
@@ -336,7 +338,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
               <div className="flex items-center gap-2 mb-3">
                 <HelpCircle className="w-4 h-4 text-accent shrink-0" />
                 <h3 className="text-xs sm:text-sm font-bold text-text-primary uppercase tracking-wider">
-                  Smart Questions to Ask Interviewers
+                  {dict.jobDetails.smartQuestionsLabel}
                 </h3>
               </div>
               <ul className="space-y-2.5">
@@ -355,7 +357,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
         {sourcesList.length > 0 && (
           <div className="pt-4 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-text-muted relative z-10">
             <div className="flex items-center gap-2 flex-wrap">
-              <span>Sources consulted:</span>
+              <span>{dict.jobDetails.sourcesLabel}:</span>
               {sourcesList.map((source, idx) => (
                 <a
                   key={idx}
@@ -393,14 +395,14 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
           <div>
             <div className="flex items-center gap-2.5">
               <h2 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight">
-                Company Intelligence Dossier
+                {dict.jobDetails.researchTitle}
               </h2>
               <span className="bg-accent/15 border border-accent/30 text-accent text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
                 Autonomous Agent
               </span>
             </div>
             <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
-              Autonomous background research synthesized from {job.company}&apos;s public website and engineering footprint
+              {dict.jobDetails.researchSubtitle}
             </p>
           </div>
         </div>
@@ -411,7 +413,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
           className="bg-accent hover:bg-accent-dark text-accent-foreground font-semibold px-5 py-2.5 rounded-xl text-xs sm:text-sm inline-flex items-center gap-2 cursor-pointer transition-all shrink-0 self-start sm:self-center shadow-sm active:scale-[0.99]"
         >
           <Sparkles className="w-4 h-4" />
-          <span>Research Company</span>
+          <span>{dict.jobDetails.researchButton}</span>
         </button>
       </div>
 
@@ -426,7 +428,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
             onClick={handleResearchCompany}
             className="underline hover:opacity-80 cursor-pointer font-semibold"
           >
-            Try Again
+            {dict.common.retry}
           </button>
         </div>
       )}
@@ -437,7 +439,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
         <div className="p-4 rounded-xl bg-surface-secondary/50 border border-border/80 flex flex-col justify-between gap-3">
           <div className="flex items-center gap-2 text-text-primary">
             <Compass className="w-4 h-4 text-accent shrink-0" />
-            <h3 className="text-xs sm:text-sm font-bold">Company Mission</h3>
+            <h3 className="text-xs sm:text-sm font-bold">{dict.jobDetails.companyMissionCulture}</h3>
           </div>
           <p className="text-xs text-text-secondary leading-relaxed">
             Market positioning, core business model, key customer segments, and strategic roadmap.
@@ -451,7 +453,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
         <div className="p-4 rounded-xl bg-surface-secondary/50 border border-border/80 flex flex-col justify-between gap-3">
           <div className="flex items-center gap-2 text-text-primary">
             <Layers className="w-4 h-4 text-accent shrink-0" />
-            <h3 className="text-xs sm:text-sm font-bold">Tech Stack</h3>
+            <h3 className="text-xs sm:text-sm font-bold">{dict.jobDetails.techStackEngineering}</h3>
           </div>
           <p className="text-xs text-text-secondary leading-relaxed">
             Infrastructure, frontend frameworks, APIs, and cloud services detected in active production.
@@ -465,7 +467,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
         <div className="p-4 rounded-xl bg-surface-secondary/50 border border-border/80 flex flex-col justify-between gap-3">
           <div className="flex items-center gap-2 text-text-primary">
             <Users2 className="w-4 h-4 text-accent shrink-0" />
-            <h3 className="text-xs sm:text-sm font-bold">Team & Culture</h3>
+            <h3 className="text-xs sm:text-sm font-bold">{dict.jobDetails.leadershipKeyPeople}</h3>
           </div>
           <p className="text-xs text-text-secondary leading-relaxed">
             Work cadence, remote culture, engineering autonomy, and team leadership values.
@@ -479,7 +481,7 @@ export function CompanyResearchCard({ job }: CompanyResearchCardProps) {
         <div className="p-4 rounded-xl bg-surface-secondary/50 border border-border/80 flex flex-col justify-between gap-3">
           <div className="flex items-center gap-2 text-text-primary">
             <MessageSquare className="w-4 h-4 text-accent shrink-0" />
-            <h3 className="text-xs sm:text-sm font-bold">Interview Prep</h3>
+            <h3 className="text-xs sm:text-sm font-bold">{dict.jobDetails.interviewPrepQuestions}</h3>
           </div>
           <p className="text-xs text-text-secondary leading-relaxed">
             Tailored questions to ask interviewers and strategic role answers highlighting your matched skills.

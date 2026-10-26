@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 type Props = {
   currentPage: number;
@@ -20,6 +21,8 @@ export function JobsPagination({
   onPageChange,
   onPageSizeChange,
 }: Props) {
+  const { dict } = useTranslation();
+
   if (totalResults === 0) return null;
 
   const startIdx = (currentPage - 1) * pageSize + 1;
@@ -36,10 +39,10 @@ export function JobsPagination({
       {/* Slice Counter and Page Size Selector */}
       <div className="flex items-center gap-3">
         <span className="text-xs sm:text-sm text-text-secondary">
-          Showing{" "}
-          <span className="font-semibold text-text-primary">{startIdx}</span> to{" "}
-          <span className="font-semibold text-text-primary">{endIdx}</span> of{" "}
-          <span className="font-semibold text-text-primary">{totalResults}</span> results
+          {dict.findJobs.showing}{" "}
+          <span className="font-semibold text-text-primary">{startIdx}</span> {dict.findJobs.to}{" "}
+          <span className="font-semibold text-text-primary">{endIdx}</span> {dict.findJobs.of}{" "}
+          <span className="font-semibold text-text-primary">{totalResults}</span> {dict.findJobs.results}
         </span>
         {onPageSizeChange && (
           <select
@@ -48,8 +51,8 @@ export function JobsPagination({
             aria-label="Results per page"
             className="bg-surface-secondary/70 border border-border rounded-lg px-2 py-1 text-xs font-medium text-text-secondary hover:text-text-primary focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent cursor-pointer transition-all"
           >
-            <option value={10}>10 / page</option>
-            <option value={20}>20 / page</option>
+            <option value={10}>10 / {dict.findJobs.perPage}</option>
+            <option value={20}>20 / {dict.findJobs.perPage}</option>
           </select>
         )}
       </div>
@@ -61,11 +64,11 @@ export function JobsPagination({
           type="button"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          aria-label="Previous page"
+          aria-label={dict.findJobs.prev}
           className="px-3 py-1.5 rounded-xl border border-border text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1"
         >
           <ChevronLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">Previous</span>
+          <span className="hidden sm:inline">{dict.findJobs.prev}</span>
         </button>
 
         {/* Page Number Buttons */}
@@ -96,10 +99,10 @@ export function JobsPagination({
           type="button"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          aria-label="Next page"
+          aria-label={dict.findJobs.next}
           className="px-3 py-1.5 rounded-xl border border-border text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1"
         >
-          <span className="hidden sm:inline">Next</span>
+          <span className="hidden sm:inline">{dict.findJobs.next}</span>
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>

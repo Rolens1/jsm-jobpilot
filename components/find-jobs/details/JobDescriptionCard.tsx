@@ -1,12 +1,16 @@
+"use client";
+
 import React from "react";
 import { Job } from "@/types/database";
 import { FileText, Check, ExternalLink, ArrowRight } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 interface JobDescriptionCardProps {
   job: Job;
 }
 
 export function JobDescriptionCard({ job }: JobDescriptionCardProps) {
+  const { dict } = useTranslation();
   const applyUrl = job.external_apply_url || job.source_url;
   const responsibilities = Array.isArray(job.responsibilities) ? job.responsibilities : [];
   const requirements = Array.isArray(job.requirements) ? job.requirements : [];
@@ -22,11 +26,11 @@ export function JobDescriptionCard({ job }: JobDescriptionCardProps) {
             <FileText className="w-4 h-4" />
           </div>
           <h2 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight">
-            Role Overview
+            {dict.jobDetails.roleOverview}
           </h2>
         </div>
         <div className="text-sm sm:text-base text-text-secondary leading-relaxed whitespace-pre-line space-y-4">
-          {job.about_role || "No detailed overview provided for this role."}
+          {job.about_role || dict.jobDetails.noOverviewProvided}
         </div>
       </div>
 
@@ -34,7 +38,7 @@ export function JobDescriptionCard({ job }: JobDescriptionCardProps) {
       {responsibilities.length > 0 && (
         <div className="pt-6 border-t border-border">
           <h3 className="text-sm sm:text-base font-bold text-text-primary uppercase tracking-wider mb-4">
-            Key Responsibilities
+            {dict.jobDetails.keyResponsibilities}
           </h3>
           <ul className="space-y-3">
             {responsibilities.map((item, idx) => (
@@ -53,7 +57,7 @@ export function JobDescriptionCard({ job }: JobDescriptionCardProps) {
       {requirements.length > 0 && (
         <div className="pt-6 border-t border-border">
           <h3 className="text-sm sm:text-base font-bold text-text-primary uppercase tracking-wider mb-4">
-            Qualifications and Requirements
+            {dict.jobDetails.qualificationsRequirements}
           </h3>
           <ul className="space-y-3">
             {requirements.map((item, idx) => (
@@ -74,7 +78,7 @@ export function JobDescriptionCard({ job }: JobDescriptionCardProps) {
           {niceToHave.length > 0 && (
             <div>
               <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider mb-3">
-                Bonus / Nice to Have
+                {dict.jobDetails.bonusNiceToHave}
               </h4>
               <ul className="space-y-2">
                 {niceToHave.map((item, idx) => (
@@ -90,7 +94,7 @@ export function JobDescriptionCard({ job }: JobDescriptionCardProps) {
           {benefits.length > 0 && (
             <div>
               <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider mb-3">
-                Perks & Benefits
+                {dict.jobDetails.perksBenefits}
               </h4>
               <ul className="space-y-2">
                 {benefits.map((item, idx) => (
@@ -123,7 +127,7 @@ export function JobDescriptionCard({ job }: JobDescriptionCardProps) {
               rel="noopener noreferrer"
               className="bg-accent text-accent-foreground font-semibold px-6 py-3 rounded-xl hover:bg-accent-dark active:scale-[0.99] transition-all flex items-center gap-2 shadow-sm text-sm shrink-0"
             >
-              <span>Submit Application</span>
+              <span>{dict.jobDetails.applyNow}</span>
               <ExternalLink className="w-4 h-4" />
             </a>
           </div>

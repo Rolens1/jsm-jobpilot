@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { AlertCircle, CheckCircle2, Search, ArrowRight } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 type Props = {
   percentage?: number;
@@ -10,6 +13,7 @@ export function ProfileAttentionBanner({
   percentage = 70,
   missingFields = ["PHONE", "LOCATION", "EDUCATION"],
 }: Props) {
+  const { dict } = useTranslation();
   const isComplete = percentage >= 100 || missingFields.length === 0;
 
   // SVG Circular progress ring calculations
@@ -18,6 +22,18 @@ export function ProfileAttentionBanner({
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (Math.min(percentage, 100) / 100) * circumference;
+
+  const fieldLabels: Record<string, string> = {
+    PHONE: dict.profile.phone,
+    LOCATION: dict.profile.location,
+    EDUCATION: dict.profile.educationTitle,
+    RESUME: dict.profile.resumeTitle,
+    FULL_NAME: dict.profile.fullName,
+    TARGET_ROLE: dict.profile.targetRole,
+    EXPERIENCE_YEARS: dict.profile.experienceYears,
+    SKILLS: dict.profile.skillsTitle,
+    WORK_EXPERIENCE: dict.profile.experienceTitle,
+  };
 
   return (
     <section
@@ -31,14 +47,14 @@ export function ProfileAttentionBanner({
             <>
               <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
               <h2 className="text-lg font-bold tracking-tight">
-                Profile is complete!
+                {dict.profile.bannerCompleteTitle}
               </h2>
             </>
           ) : (
             <>
               <AlertCircle className="w-5 h-5 text-error shrink-0" />
               <h2 className="text-lg font-bold tracking-tight">
-                Profile needs attention
+                {dict.profile.bannerNeedsTitle}
               </h2>
             </>
           )}
@@ -46,8 +62,8 @@ export function ProfileAttentionBanner({
 
         <p className="text-xs sm:text-sm text-text-secondary mt-1.5 max-w-xl leading-relaxed">
           {isComplete
-            ? "Great job! All required fields and your resume are saved. The JobPilot agent can now discover matching roles and tailor your documents."
-            : "Complete the missing fields to improve your chance of getting tailored matches and generating quality resumes."}
+            ? dict.profile.bannerCompleteDesc
+            : dict.profile.bannerNeedsDesc}
         </p>
 
         {isComplete && (
@@ -57,7 +73,7 @@ export function ProfileAttentionBanner({
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-accent text-accent-foreground text-xs font-semibold hover:bg-accent-dark transition-colors shadow-xs"
             >
               <Search className="w-3.5 h-3.5" />
-              <span>Explore matching jobs</span>
+              <span>{dict.profile.bannerExploreJobs}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -70,7 +86,7 @@ export function ProfileAttentionBanner({
                 key={field}
                 className="px-2.5 py-1 rounded-md text-[11px] font-semibold tracking-wider uppercase bg-error/10 text-error border border-error/20"
               >
-                {field}
+                {fieldLabels[field.toUpperCase()] || field}
               </span>
             ))}
           </div>

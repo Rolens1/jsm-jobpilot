@@ -6,6 +6,8 @@ import { Job } from "@/types/database";
 import { formatRelativeTime } from "@/lib/date-utils";
 import { Building2, MapPin, SearchX, ArrowRight } from "lucide-react";
 
+import { useTranslation } from "@/components/providers/LanguageProvider";
+
 type Props = {
   jobs: Job[];
   onResetFilters?: () => void;
@@ -57,6 +59,8 @@ function getMatchScoreTheme(score: number): {
 }
 
 export function JobsTable({ jobs, onResetFilters }: Props) {
+  const { dict } = useTranslation();
+
   if (jobs.length === 0) {
     return (
       <div className="w-full bg-surface rounded-2xl border border-border p-12 shadow-sm flex flex-col items-center justify-center text-center">
@@ -64,10 +68,10 @@ export function JobsTable({ jobs, onResetFilters }: Props) {
           <SearchX className="w-7 h-7" />
         </div>
         <h3 className="text-base font-semibold text-text-primary mb-1">
-          No matching jobs found
+          {dict.findJobs.noJobsTitle}
         </h3>
         <p className="text-sm text-text-secondary max-w-md mb-6">
-          We could not find any jobs matching your active search query or match score filter.
+          {dict.findJobs.noJobsSubtitle}
         </p>
         {onResetFilters && (
           <button
@@ -75,7 +79,7 @@ export function JobsTable({ jobs, onResetFilters }: Props) {
             onClick={onResetFilters}
             className="px-4 py-2 bg-accent text-accent-foreground rounded-xl text-sm font-medium hover:bg-accent-dark transition-colors cursor-pointer"
           >
-            Reset Filters
+            {dict.findJobs.resetFilters}
           </button>
         )}
       </div>
@@ -89,19 +93,19 @@ export function JobsTable({ jobs, onResetFilters }: Props) {
           <thead>
             <tr className="border-b border-border bg-surface-secondary/40 text-[11px] sm:text-xs font-semibold text-text-secondary uppercase tracking-wider">
               <th scope="col" className="py-3.5 pl-6 pr-4">
-                Company
+                {dict.findJobs.colCompany}
               </th>
               <th scope="col" className="py-3.5 px-4">
-                Role
+                {dict.findJobs.colRole}
               </th>
               <th scope="col" className="py-3.5 px-4 min-w-[150px]">
-                Match Score
+                {dict.findJobs.colMatchScore}
               </th>
               <th scope="col" className="py-3.5 px-4">
-                Salary Est.
+                {dict.findJobs.colSalary}
               </th>
               <th scope="col" className="py-3.5 pl-4 pr-6">
-                Date Found
+                {dict.findJobs.colDateFound}
               </th>
             </tr>
           </thead>
@@ -148,14 +152,14 @@ export function JobsTable({ jobs, onResetFilters }: Props) {
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-[11px] font-medium text-text-secondary bg-surface-secondary px-2 py-0.5 rounded-full border border-border">
                           {job.job_type === "fulltime"
-                            ? "Full-time"
+                            ? dict.findJobs.jobTypeFulltime
                             : job.job_type === "contract"
-                            ? "Contract"
-                            : "Part-time"}
+                            ? dict.findJobs.jobTypeContract
+                            : dict.findJobs.jobTypeParttime}
                         </span>
                         {job.source === "url" && (
                           <span className="text-[11px] font-medium text-linkedin bg-linkedin-light px-2 py-0.5 rounded-full">
-                            Direct URL
+                            {dict.findJobs.directUrl}
                           </span>
                         )}
                       </div>
@@ -189,7 +193,7 @@ export function JobsTable({ jobs, onResetFilters }: Props) {
                       </span>
                     ) : (
                       <span className="text-sm text-text-muted">
-                        Salary not disclosed
+                        {dict.findJobs.salaryNotDisclosed}
                       </span>
                     )}
                   </td>

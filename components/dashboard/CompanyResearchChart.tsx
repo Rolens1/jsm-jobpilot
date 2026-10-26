@@ -1,10 +1,15 @@
+"use client";
+
+import React from "react";
 import type { DailyCountPoint } from "@/lib/dashboard-mock-data";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 interface Props {
   data: DailyCountPoint[];
 }
 
 export function CompanyResearchChart({ data }: Props) {
+  const { dict } = useTranslation();
   // Chart dimensions
   const svgWidth = 520;
   const svgHeight = 220;
@@ -29,7 +34,7 @@ export function CompanyResearchChart({ data }: Props) {
       {/* Card Header */}
       <div>
         <h2 className="text-base font-semibold text-text-primary">
-          Company Research Activity
+          {dict.dashboard.chartResearchTitle}
         </h2>
       </div>
 
@@ -39,7 +44,7 @@ export function CompanyResearchChart({ data }: Props) {
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
           className="w-full h-full overflow-visible"
           role="img"
-          aria-label="Company Research Activity Bar Chart"
+          aria-label={dict.dashboard.chartResearchTitle}
         >
           {/* Horizontal dashed grid lines and Y-axis labels */}
           {yTicks.map((tick) => {

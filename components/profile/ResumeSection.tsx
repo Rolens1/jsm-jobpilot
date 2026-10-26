@@ -14,6 +14,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { generateResumePdf } from "@/actions/resume";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 type Props = {
   selectedFile?: File | null;
@@ -32,6 +33,7 @@ export function ResumeSection({
   isExtracting = false,
   onGenerateResume,
 }: Props) {
+  const { dict } = useTranslation();
   const [isDragging, setIsDragging] = useState(false);
   const [internalSelectedFile, setInternalSelectedFile] = useState<File | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -158,14 +160,14 @@ export function ResumeSection({
 
   return (
     <section
-      aria-label="Resume Upload"
+      aria-label={dict.profile.resumeTitle}
       className="w-full bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm"
     >
       <h2 className="text-lg font-bold text-text-primary tracking-tight">
-        Resume
+        {dict.profile.resumeTitle}
       </h2>
       <p className="text-xs sm:text-sm text-text-secondary mt-1">
-        Upload your resume PDF to keep it stored in your profile, view it anytime, or generate a tailored copy.
+        {dict.profile.resumeSubtitle}
       </p>
 
       {/* Hidden File Input */}
@@ -199,10 +201,10 @@ export function ResumeSection({
         {isExtracting ? (
           <div className="flex flex-col items-center gap-2">
             <p className="text-sm sm:text-base font-bold text-text-primary">
-              Analyzing & Extracting Details from Resume...
+              {dict.profile.analyzingResume}
             </p>
             <p className="text-xs text-text-secondary max-w-sm">
-              Discovering candidate contact, professional history, skills, and education.
+              {dict.profile.analyzingSub}
             </p>
           </div>
         ) : selectedFile ? (
@@ -237,12 +239,12 @@ export function ResumeSection({
                 {isExtracting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Extracting...</span>
+                    <span>{dict.profile.extractingButton}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4" />
-                    <span>Extract from Resume</span>
+                    <span>{dict.profile.extractButton}</span>
                   </>
                 )}
               </button>
@@ -253,7 +255,7 @@ export function ResumeSection({
                 className="px-3.5 py-2 bg-surface hover:bg-surface-secondary border border-border rounded-lg text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary flex items-center gap-2 transition-colors cursor-pointer"
               >
                 <Eye className="w-4 h-4" />
-                <span>View PDF</span>
+                <span>{dict.profile.viewPdfButton}</span>
               </button>
 
               <button
@@ -262,25 +264,25 @@ export function ResumeSection({
                 disabled={isExtracting}
                 className="px-3.5 py-2 bg-surface hover:bg-surface-secondary border border-border rounded-lg text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary transition-colors cursor-pointer disabled:opacity-50"
               >
-                Change File
+                {dict.profile.changeFileButton}
               </button>
             </div>
 
             <p className="text-xs text-text-secondary mt-1 max-w-md">
-              File selected. Click &quot;Extract from Resume&quot; to discover your profile details, or &quot;Save Profile&quot; below to persist to storage.
+              {dict.profile.fileSelectedHint}
             </p>
           </div>
         ) : existingResumeUrl ? (
           <div className="flex flex-col items-center gap-2">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface border border-border shadow-xs text-xs sm:text-sm font-medium text-text-primary">
               <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
-              <span>Current Resume Saved in Profile</span>
+              <span>{dict.profile.currentResumeSaved}</span>
               <span className="text-xs text-text-muted">
-                (PDF document)
+                ({dict.profile.pdfDocumentLabel})
               </span>
             </div>
             <p className="text-xs text-text-secondary mt-1 max-w-md">
-              You have a resume stored in your profile. You can extract your profile details directly, view it, or upload a replacement file.
+              {dict.profile.resumeSubtitle}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
               <button
@@ -292,12 +294,12 @@ export function ResumeSection({
                 {isExtracting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Extracting...</span>
+                    <span>{dict.profile.extractingButton}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4" />
-                    <span>Extract from Saved Resume</span>
+                    <span>{dict.profile.extractButton}</span>
                   </>
                 )}
               </button>
@@ -308,7 +310,7 @@ export function ResumeSection({
                 className="px-3.5 py-2 bg-surface hover:bg-surface-secondary border border-border rounded-lg text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary flex items-center gap-2 transition-colors cursor-pointer"
               >
                 <Eye className="w-4 h-4" />
-                <span>View Saved Resume</span>
+                <span>{dict.profile.viewPdfButton}</span>
               </button>
 
               <button
@@ -317,24 +319,24 @@ export function ResumeSection({
                 disabled={isExtracting}
                 className="px-4 py-2 bg-surface hover:bg-surface-secondary border border-border rounded-lg text-xs sm:text-sm font-medium text-text-primary shadow-xs transition-colors cursor-pointer disabled:opacity-50"
               >
-                Upload New Resume PDF
+                {dict.profile.changeFileButton}
               </button>
             </div>
           </div>
         ) : (
           <>
             <p className="text-sm sm:text-base font-semibold text-text-primary">
-              Click to upload or drag and drop
+              {dict.profile.dropzonePrompt}
             </p>
             <p className="text-xs text-text-secondary mt-1">
-              PDF formatting only. Maximum file size 5MB.
+              {dict.profile.dropzoneHint}
             </p>
             <button
               type="button"
               onClick={handleSelectResumeClick}
               className="mt-4 px-4 py-2 bg-surface hover:bg-surface-secondary border border-border rounded-lg text-xs sm:text-sm font-medium text-text-primary shadow-xs transition-colors cursor-pointer"
             >
-              Select Resume
+              {dict.profile.changeFileButton}
             </button>
           </>
         )}
@@ -365,10 +367,10 @@ export function ResumeSection({
       <div className="mt-6 pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-border/60">
         <div>
           <span className="text-xs sm:text-sm font-medium text-text-primary block">
-            Generate tailored resume
+            {dict.profile.generateAtsButton}
           </span>
           <span className="text-xs text-text-secondary block mt-0.5">
-            Creates a single page monochrome ATS resume tailored to your target job titles.
+            {dict.profile.resumeSubtitle}
           </span>
         </div>
         <button
@@ -380,12 +382,12 @@ export function ResumeSection({
           {isGenerating ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Generating AI Resume...</span>
+              <span>{dict.profile.generatingAtsButton}</span>
             </>
           ) : (
             <>
               <Sparkles className="w-4 h-4" />
-              <span>Generate AI Resume</span>
+              <span>{dict.profile.generateAtsButton}</span>
             </>
           )}
         </button>
@@ -408,7 +410,7 @@ export function ResumeSection({
               <div className="flex items-center gap-2.5">
                 <FileText className="w-5 h-5 text-accent" />
                 <h3 className="font-bold text-text-primary text-sm sm:text-base">
-                  {selectedFile?.name || "Resume PDF"}
+                  {selectedFile?.name || dict.profile.resumeModalTitle}
                 </h3>
               </div>
               <div className="flex items-center gap-2">
@@ -418,7 +420,7 @@ export function ResumeSection({
                   className="px-3 py-1.5 rounded-lg bg-accent hover:bg-accent-dark text-accent-foreground text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-2xs"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  <span>Download PDF</span>
+                  <span>{dict.profile.downloadPdf}</span>
                 </a>
                 <a
                   href={previewBlobUrl}
@@ -427,7 +429,7 @@ export function ResumeSection({
                   className="px-3 py-1.5 rounded-lg border border-border hover:bg-surface-secondary text-text-secondary hover:text-text-primary text-xs font-medium flex items-center gap-1.5 transition-colors"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Open in Tab</span>
+                  <span>{dict.profile.openTab}</span>
                 </a>
                 <button
                   type="button"

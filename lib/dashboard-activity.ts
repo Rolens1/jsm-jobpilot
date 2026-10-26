@@ -1,5 +1,6 @@
 import type { ActivityEvent } from "@/lib/dashboard-mock-data";
 import { formatRelativeTime } from "@/lib/date-utils";
+import type { Dictionary } from "@/types/i18n";
 
 export interface AgentRunRecord {
   id: string;
@@ -36,9 +37,13 @@ interface RawActivityItem {
 export function formatRecentActivities(
   agentRuns: AgentRunRecord[] = [],
   researchedJobs: ResearchedJobRecord[] = [],
-  maxItems: number = 5
+  maxItems: number = 5,
+  dict?: Dictionary
 ): ActivityEvent[] {
   const rawItems: RawActivityItem[] = [];
+
+  const researchedPrefix = dict?.dashboard.activityResearchedPrefix || "Researched";
+  const foundPrefix = dict?.dashboard.activityFoundPrefix || "Found";
 
   // 1. Process agent runs
   let searchColorToggle = false;
@@ -54,7 +59,7 @@ export function formatRecentActivities(
       const companyName = searchedTitle.replace(/^Research:\s*/i, "").trim();
       rawItems.push({
         id: `run-${run.id}`,
-        title: `Researched ${companyName}`,
+        title: `${researchedPrefix} ${companyName}`,
         type: "company_research",
         dotColor: "info",
         timestampMs,
@@ -65,8 +70,8 @@ export function formatRecentActivities(
       const count = run.jobs_found ?? 0;
       const title =
         count > 0
-          ? `Found ${count} ${count === 1 ? "job" : "jobs"} for ${searchedTitle}`
-          : `Searched for ${searchedTitle}`;
+          ? `${foundPrefix} ${count} ${count === 1 ? "job" : "jobs"} ${searchedTitle ? `for ${searchedTitle}` : ""}`.trim()
+          : `${searchedTitle ? `Search: ${searchedTitle}` : "Job search"}`;
 
       // Alternate accent and success colors to match visual rhythm in dashboard.png
       const dotColor = searchColorToggle ? "success" : "accent";
@@ -94,7 +99,7 @@ export function formatRecentActivities(
     const companyName = (job.company || "Company").trim();
     rawItems.push({
       id: `job-research-${job.id}`,
-      title: `Researched ${companyName}`,
+      title: `${researchedPrefix} ${companyName}`,
       type: "company_research",
       dotColor: "info",
       timestampMs,

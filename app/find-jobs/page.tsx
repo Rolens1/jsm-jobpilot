@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { createInsforgeServer } from "@/lib/insforge-server";
+import { getLocale, getDictionary } from "@/lib/i18n";
 import { Navbar } from "@/components/layout/Navbar";
 import { FindJobsContainer } from "@/components/find-jobs/FindJobsContainer";
 import { Loader2 } from "lucide-react";
@@ -14,6 +15,8 @@ export const metadata: Metadata = {
 
 async function FindJobsContent() {
   await connection();
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
   const insforge = await createInsforgeServer();
   const { data } = await insforge.auth.getCurrentUser();
 
@@ -52,10 +55,10 @@ async function FindJobsContent() {
       <main className="flex-1 max-w-[1440px] mx-auto w-full px-4 sm:px-6 md:px-8 py-8">
         <div className="mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight">
-            Find Jobs
+            {dict.findJobs.title}
           </h1>
           <p className="text-sm sm:text-base text-text-secondary mt-1">
-            Search across career opportunities and find your best matches.
+            {dict.findJobs.subtitle}
           </p>
         </div>
 

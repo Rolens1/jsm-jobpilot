@@ -1,12 +1,16 @@
+"use client";
+
 import React from "react";
 import { Job } from "@/types/database";
 import { Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 interface JobMatchAnalysisCardProps {
   job: Job;
 }
 
 export function JobMatchAnalysisCard({ job }: JobMatchAnalysisCardProps) {
+  const { dict } = useTranslation();
   const matchedSkills = Array.isArray(job.matched_skills) ? job.matched_skills : [];
   const missingSkills = Array.isArray(job.missing_skills) ? job.missing_skills : [];
 
@@ -20,10 +24,10 @@ export function JobMatchAnalysisCard({ job }: JobMatchAnalysisCardProps) {
           </div>
           <div>
             <h2 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight">
-              AI Recruiter Fit Breakdown
+              {dict.jobDetails.aiAnalysisTitle}
             </h2>
             <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
-              Calibrated against your profile, real work history, and demonstrated skills
+              {dict.jobDetails.aiAnalysisSubtitle}
             </p>
           </div>
         </div>
@@ -45,7 +49,7 @@ export function JobMatchAnalysisCard({ job }: JobMatchAnalysisCardProps) {
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
             <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">
-              Matched Skills ({matchedSkills.length})
+              {dict.jobDetails.matchedSkillsLabel} ({matchedSkills.length})
             </h3>
           </div>
 
@@ -62,7 +66,7 @@ export function JobMatchAnalysisCard({ job }: JobMatchAnalysisCardProps) {
               ))
             ) : (
               <span className="text-xs text-text-muted">
-                No direct keyword matches extracted.
+                {dict.jobDetails.noDirectMatches}
               </span>
             )}
           </div>
@@ -73,7 +77,7 @@ export function JobMatchAnalysisCard({ job }: JobMatchAnalysisCardProps) {
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-warning-dark shrink-0" />
             <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider">
-              Missing Skills / Growth Areas ({missingSkills.length})
+              {dict.jobDetails.missingSkillsLabel} ({missingSkills.length})
             </h3>
           </div>
 
@@ -90,7 +94,7 @@ export function JobMatchAnalysisCard({ job }: JobMatchAnalysisCardProps) {
               ))
             ) : (
               <div className="p-3 rounded-lg bg-surface-secondary/40 border border-border text-xs text-text-secondary">
-                No critical skill gaps identified. Your technical background covers core requirements.
+                {dict.jobDetails.noMissingSkills}
               </div>
             )}
           </div>

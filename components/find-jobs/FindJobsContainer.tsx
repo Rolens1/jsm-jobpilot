@@ -7,6 +7,7 @@ import { JobFilters, type ScoreThreshold, type SortOption } from "@/components/f
 import { JobsTable } from "@/components/find-jobs/JobsTable";
 import { JobsPagination } from "@/components/find-jobs/JobsPagination";
 import { CloudDownload, Loader2 } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 interface FindJobsContainerProps {
   initialJobs?: Job[];
@@ -19,6 +20,7 @@ export function FindJobsContainer({
   defaultJobTitle = "Frontend Engineer",
   defaultLocation = "Montreal, QC",
 }: FindJobsContainerProps) {
+  const { dict } = useTranslation();
   // Use real database jobs exclusively - no mock data fallback
   const [jobs, setJobs] = useState<Job[]>(initialJobs);
 
@@ -260,12 +262,12 @@ export function FindJobsContainer({
           {isLoadingMore ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin text-accent" />
-              <span>Fetching from web...</span>
+              <span>{dict.findJobs.loadingMore}</span>
             </>
           ) : (
             <>
               <CloudDownload className="w-4 h-4 text-accent" />
-              <span>Load 10 More from Web</span>
+              <span>{dict.findJobs.loadMoreButton}</span>
             </>
           )}
         </button>

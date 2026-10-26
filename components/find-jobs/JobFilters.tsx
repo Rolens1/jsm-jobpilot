@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Search, X, SlidersHorizontal, ArrowUpDown } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 export type ScoreThreshold = "all" | "high" | "low";
 export type SortOption = "match_score" | "newest" | "oldest";
@@ -23,6 +24,8 @@ export function JobFilters({
   sortBy,
   onSortByChange,
 }: Props) {
+  const { dict } = useTranslation();
+
   return (
     <div className="w-full bg-surface rounded-2xl border border-border p-3 sm:p-4 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4">
       {/* Quick Text Filter */}
@@ -34,15 +37,15 @@ export function JobFilters({
           type="text"
           value={filterText}
           onChange={(e) => onFilterTextChange(e.target.value)}
-          placeholder="Filter by company or role..."
-          aria-label="Filter by company or role"
+          placeholder={dict.findJobs.filterPlaceholder}
+          aria-label={dict.findJobs.filterPlaceholder}
           className="w-full pl-10 pr-9 py-2 bg-surface-secondary/60 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-all"
         />
         {filterText && (
           <button
             type="button"
             onClick={() => onFilterTextChange("")}
-            aria-label="Clear filter"
+            aria-label={dict.findJobs.clearFilter}
             className="absolute inset-y-0 right-0 pr-3 flex items-center text-text-muted hover:text-text-primary cursor-pointer transition-colors"
           >
             <X className="w-4 h-4" />
@@ -56,17 +59,17 @@ export function JobFilters({
         <div className="relative flex items-center">
           <div className="hidden sm:flex items-center mr-2 text-text-secondary text-xs font-medium">
             <SlidersHorizontal className="w-3.5 h-3.5 mr-1 text-text-muted" />
-            <span>Match:</span>
+            <span>{dict.findJobs.matchFilterLabel}</span>
           </div>
           <select
             value={threshold}
             onChange={(e) => onThresholdChange(e.target.value as ScoreThreshold)}
-            aria-label="Match score threshold filter"
+            aria-label={dict.findJobs.matchFilterLabel}
             className="bg-surface-secondary/60 border border-border rounded-xl px-3 py-2 text-xs sm:text-sm font-medium text-text-primary focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent cursor-pointer transition-all"
           >
-            <option value="all">All Matches</option>
-            <option value="high">High Match (&ge; 70%)</option>
-            <option value="low">Low Match (&lt; 70%)</option>
+            <option value="all">{dict.findJobs.filterAll}</option>
+            <option value="high">{dict.findJobs.filterHigh}</option>
+            <option value="low">{dict.findJobs.filterLow}</option>
           </select>
         </div>
 
@@ -74,17 +77,17 @@ export function JobFilters({
         <div className="relative flex items-center">
           <div className="hidden sm:flex items-center mr-2 text-text-secondary text-xs font-medium">
             <ArrowUpDown className="w-3.5 h-3.5 mr-1 text-text-muted" />
-            <span>Sort:</span>
+            <span>{dict.findJobs.sortLabel}</span>
           </div>
           <select
             value={sortBy}
             onChange={(e) => onSortByChange(e.target.value as SortOption)}
-            aria-label="Sort jobs by"
+            aria-label={dict.findJobs.sortLabel}
             className="bg-surface-secondary/60 border border-border rounded-xl px-3 py-2 text-xs sm:text-sm font-medium text-text-primary focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent cursor-pointer transition-all"
           >
-            <option value="match_score">Match Score</option>
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
+            <option value="match_score">{dict.findJobs.sortMatchScore}</option>
+            <option value="newest">{dict.findJobs.sortNewest}</option>
+            <option value="oldest">{dict.findJobs.sortOldest}</option>
           </select>
         </div>
       </div>

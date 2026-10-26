@@ -1,10 +1,15 @@
+"use client";
+
+import React from "react";
 import type { DailyCountPoint } from "@/lib/dashboard-mock-data";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 interface Props {
   data: DailyCountPoint[];
 }
 
 export function JobsFoundChart({ data }: Props) {
+  const { dict } = useTranslation();
   // Chart dimensions
   const svgWidth = 650;
   const svgHeight = 220;
@@ -72,7 +77,7 @@ export function JobsFoundChart({ data }: Props) {
       {/* Card Header */}
       <div>
         <h2 className="text-base font-semibold text-text-primary">
-          Jobs Found Over Time
+          {dict.dashboard.chartJobsTitle}
         </h2>
       </div>
 
@@ -82,7 +87,7 @@ export function JobsFoundChart({ data }: Props) {
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
           className="w-full h-full overflow-visible"
           role="img"
-          aria-label="Jobs Found Over Time Area Chart"
+          aria-label={dict.dashboard.chartJobsTitle}
         >
           <defs>
             <linearGradient id="purpleSplineGradient" x1="0" y1="0" x2="0" y2="1">

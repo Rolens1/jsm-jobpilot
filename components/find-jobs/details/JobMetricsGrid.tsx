@@ -1,21 +1,26 @@
+"use client";
+
 import React from "react";
 import { Job } from "@/types/database";
 import { formatRelativeTime } from "@/lib/date-utils";
 import { Banknote, Briefcase, Calendar, Globe } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 interface JobMetricsGridProps {
   job: Job;
 }
 
 export function JobMetricsGrid({ job }: JobMetricsGridProps) {
+  const { dict } = useTranslation();
+
   const formattedJobType =
     job.job_type === "fulltime"
-      ? "Full-time"
+      ? dict.findJobs.jobTypeFulltime
       : job.job_type === "parttime"
-      ? "Part-time"
+      ? dict.findJobs.jobTypeParttime
       : job.job_type === "contract"
-      ? "Contract"
-      : job.job_type || "Full-time";
+      ? dict.findJobs.jobTypeContract
+      : job.job_type || dict.findJobs.jobTypeFulltime;
 
   return (
     <div className="bg-surface rounded-2xl border border-border p-5 sm:p-6 shadow-sm">
@@ -27,10 +32,10 @@ export function JobMetricsGrid({ job }: JobMetricsGridProps) {
           </div>
           <div>
             <span className="text-[11px] sm:text-xs text-text-muted font-semibold uppercase tracking-wider block">
-              Salary Estimate
+              {dict.jobDetails.salaryLabel}
             </span>
             <span className="text-sm sm:text-base font-bold text-text-primary mt-0.5 block truncate">
-              {job.salary || "Not disclosed"}
+              {job.salary || dict.jobDetails.salaryNotDisclosed}
             </span>
           </div>
         </div>
@@ -42,7 +47,7 @@ export function JobMetricsGrid({ job }: JobMetricsGridProps) {
           </div>
           <div>
             <span className="text-[11px] sm:text-xs text-text-muted font-semibold uppercase tracking-wider block">
-              Employment Type
+              {dict.jobDetails.typeLabel}
             </span>
             <span className="text-sm sm:text-base font-bold text-text-primary mt-0.5 block">
               {formattedJobType}
@@ -57,7 +62,7 @@ export function JobMetricsGrid({ job }: JobMetricsGridProps) {
           </div>
           <div>
             <span className="text-[11px] sm:text-xs text-text-muted font-semibold uppercase tracking-wider block">
-              Discovered
+              {dict.jobDetails.foundDateLabel}
             </span>
             <span className="text-sm sm:text-base font-bold text-text-primary mt-0.5 block">
               {formatRelativeTime(job.found_at)}
@@ -72,7 +77,7 @@ export function JobMetricsGrid({ job }: JobMetricsGridProps) {
           </div>
           <div>
             <span className="text-[11px] sm:text-xs text-text-muted font-semibold uppercase tracking-wider block">
-              Source Listing
+              {dict.jobDetails.sourceLabel}
             </span>
             <span className="text-sm sm:text-base font-bold text-text-primary mt-0.5 block uppercase">
               {job.source || "Search"}

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Search, MapPin, Loader2, CheckCircle2, X, Sparkles } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 type Props = {
   jobTitle: string;
@@ -26,6 +27,8 @@ export function SearchControls({
   bannerMessage = "Found 8 jobs and saved 4 strong matches.",
   onDismissBanner,
 }: Props) {
+  const { dict } = useTranslation();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearch(e);
@@ -43,8 +46,8 @@ export function SearchControls({
             type="text"
             value={jobTitle}
             onChange={(e) => onJobTitleChange(e.target.value)}
-            placeholder="Job title, keywords, or skills"
-            aria-label="Job title"
+            placeholder={dict.findJobs.searchTitlePlaceholder}
+            aria-label={dict.findJobs.searchTitleLabel}
             className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-surface-secondary/70 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-all"
           />
         </div>
@@ -58,8 +61,8 @@ export function SearchControls({
             type="text"
             value={location}
             onChange={(e) => onLocationChange(e.target.value)}
-            placeholder="Location, city, or Remote"
-            aria-label="Location"
+            placeholder={dict.findJobs.searchLocationPlaceholder}
+            aria-label={dict.findJobs.searchLocationLabel}
             className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-surface-secondary/70 border border-border rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-all"
           />
         </div>
@@ -73,12 +76,12 @@ export function SearchControls({
           {isSearching ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Finding Jobs...</span>
+              <span>{dict.findJobs.searching}</span>
             </>
           ) : (
             <>
               <Sparkles className="w-4 h-4" />
-              <span>Find Jobs</span>
+              <span>{dict.findJobs.searchButton}</span>
             </>
           )}
         </button>

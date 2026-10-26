@@ -49,7 +49,7 @@ Update this file after every completed feature. Any AI agent reading this should
 ### Phase 6: Internationalization (French and English)
 
 - [x] 18 Language Architecture, Dictionaries, and Onboarding Preference
-- [ ] 19 Full UI Copy Conversion Across All App Surfaces
+- [x] 19 Full UI Copy Conversion Across All App Surfaces
 - [ ] 20 Bilingual AI and Document Intelligence
 
 ---
@@ -79,6 +79,7 @@ Update this file after every completed feature. Any AI agent reading this should
 - **Recent Activity Real Data Timeline Integration (Spec 0011)**: Connected the Recent Activity feed to live database events collected from `agent_runs` and `jobs.company_research` in `app/dashboard/page.tsx`. Built chronological event merger and deduplicator in `lib/dashboard-activity.ts` that handles job search queries, formats company research dossiers, deduplicates overlapping research agent runs within ten minute windows, formats human readable relative timestamps (`Just now`, `X minutes ago`, `Yesterday`) using `lib/date-utils.ts`, and gracefully handles empty states with an inviting search prompt.
 - **Analytics Charts Real Data and Dynamic Scaling Architecture (Spec 0012)**: Connected the three native SVG analytics charts on the dashboard to live candidate metrics. Built pure statistical transformation engine in `lib/dashboard-charts.ts` that aggregates daily company research counts and job discovery volume across the current week (Monday through Sunday) and buckets candidate match scores into five standard tiers (`50-60%`, `60-70%`, `70-80%`, `80-90%`, `90-100%`). Engineered dynamic tiered Y axis scaling (`maxY` 10, 25, 50, 100+) across all three SVG charts so small candidate counts produce prominent visual bars and curves. Added resilient empty state handling rendering zero counts cleanly without NaN or division by zero errors.
 - **Bilingual Language Architecture & Zero Route Disruption (Spec 0013)**: Built type safe dictionary foundation in `types/i18n.ts`, `dictionaries/en.ts`, and `dictionaries/fr.ts`. Implemented cookie based locale resolution using `NEXT_LOCALE` and `JOBPILOT_LANG_PROMPTED` with automatic `Accept-Language` detection on initial landing in `middleware.ts`. Connected Client Components via `LanguageProvider` (`useTranslation`, `useLocale`), added segmented pill switcher in `components/layout/Navbar.tsx`, and mounted welcoming first visit `LanguageOnboardingModal` on candidate dashboard. Preserved Next.js 16 Partial Prerendering (`◐`) across all 13 routes with zero TypeScript errors.
+- **Full Application UI Copy Conversion Across All App Surfaces (Feature 19)**: Converted all app screens and presentation components across 5 UI groups into complete, native French and English copy without hardcoded strings. Unified dictionary consumption across Client Components (`useTranslation`) and Server Components (`getLocale`, `getDictionary`). Guaranteed complete schema parity between `types/i18n.ts`, `dictionaries/en.ts`, and `dictionaries/fr.ts` (380 lines each). Preserved Next.js 16 Partial Prerendering across all 13 routes with 0 TypeScript errors.
 
 
 

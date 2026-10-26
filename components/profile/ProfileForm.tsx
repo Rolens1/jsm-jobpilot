@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect, useRef, useTransition, FormEvent, KeyboardEvent } from "react";
 import {
   ChevronDown,
@@ -12,6 +14,7 @@ import {
 import { saveProfile } from "@/actions/profile";
 import type { ExtractedProfileData } from "@/actions/resume";
 import type { Profile } from "@/types/database";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 type WorkExperience = {
   id: string;
@@ -56,6 +59,8 @@ export function ProfileForm({
   onSave,
   onSaveSuccess,
 }: Props) {
+  const { dict } = useTranslation();
+
   // Helper mappings for prefilled data
   const mapWorkAuthToLabel = (val?: string | null) => {
     if (!val) return "Citizen";
@@ -760,10 +765,10 @@ export function ProfileForm({
       className="w-full bg-surface rounded-2xl border border-border p-6 sm:p-8 shadow-sm text-left"
     >
       <h2 className="text-lg font-bold text-text-primary tracking-tight">
-        Profile Information
+        {dict.profile.profileInfoHeading}
       </h2>
       <p className="text-xs sm:text-sm text-text-secondary mt-1">
-        This context is used to accurately represent you in agent interactions.
+        {dict.profile.profileInfoSubtitle}
       </p>
 
       <hr className="border-border my-6" />
@@ -774,20 +779,20 @@ export function ProfileForm({
           id="personal-info-heading"
           className="text-base font-bold text-text-primary mb-4"
         >
-          Personal Info
+          {dict.profile.personalTitle}
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
           {/* Full Name */}
           <div>
             <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Full Name
+              {dict.profile.fullName}
             </label>
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="e.g. Faizan Ali"
+              placeholder={dict.profile.fullNamePlaceholder}
               className="w-full bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors"
             />
           </div>
@@ -795,7 +800,7 @@ export function ProfileForm({
           {/* Email (Read Only) */}
           <div>
             <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Email
+              {dict.profile.email}
             </label>
             <input
               type="email"
@@ -809,13 +814,13 @@ export function ProfileForm({
           {/* Phone Number */}
           <div>
             <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Phone Number
+              {dict.profile.phone}
             </label>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+1 (555) 000-0000"
+              placeholder={dict.profile.phonePlaceholder}
               className="w-full bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors"
             />
           </div>
@@ -823,13 +828,13 @@ export function ProfileForm({
           {/* Location */}
           <div>
             <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Location
+              {dict.profile.location}
             </label>
             <input
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="City, Country"
+              placeholder={dict.profile.locationPlaceholder}
               className="w-full bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors"
             />
           </div>
@@ -837,7 +842,7 @@ export function ProfileForm({
           {/* LinkedIn URL */}
           <div>
             <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              LinkedIn URL
+              {dict.profile.linkedinUrl}
             </label>
             <input
               type="url"
@@ -851,7 +856,7 @@ export function ProfileForm({
           {/* Portfolio / GitHub */}
           <div>
             <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Portfolio / GitHub
+              {dict.profile.portfolioUrl}
             </label>
             <input
               type="url"
@@ -865,7 +870,7 @@ export function ProfileForm({
           {/* Work Authorization */}
           <div>
             <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Work Authorization
+              {dict.profile.workAuthorization}
             </label>
             <div className="relative">
               <select
@@ -873,9 +878,9 @@ export function ProfileForm({
                 onChange={(e) => setWorkAuthorization(e.target.value)}
                 className="w-full bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary appearance-none focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer pr-10"
               >
-                <option value="Citizen">Citizen</option>
-                <option value="Permanent Resident">Permanent Resident</option>
-                <option value="Visa Required">Visa Required</option>
+                <option value="Citizen">{dict.profile.citizen}</option>
+                <option value="Permanent Resident">{dict.profile.permanentResident}</option>
+                <option value="Visa Required">{dict.profile.visaRequired}</option>
               </select>
               <ChevronDown className="w-4 h-4 text-text-secondary absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
@@ -891,13 +896,13 @@ export function ProfileForm({
           id="professional-info-heading"
           className="text-base font-bold text-text-primary mb-4"
         >
-          Professional Info
+          {dict.profile.professionalInfoHeading}
         </h3>
 
         {/* Current Job Title */}
         <div>
           <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-            Current/Recent Job Title
+            {dict.profile.currentJobTitle}
           </label>
           <input
             type="text"
@@ -912,7 +917,7 @@ export function ProfileForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mt-4">
           <div>
             <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Experience Level
+              {dict.profile.experienceLevel}
             </label>
             <div className="relative">
               <select
@@ -920,10 +925,10 @@ export function ProfileForm({
                 onChange={(e) => setExperienceLevel(e.target.value)}
                 className="w-full bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary appearance-none focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer pr-10"
               >
-                <option value="Junior">Junior</option>
-                <option value="Mid">Mid</option>
-                <option value="Senior">Senior</option>
-                <option value="Lead">Lead</option>
+                <option value="Junior">{dict.profile.levelJunior}</option>
+                <option value="Mid">{dict.profile.levelMid}</option>
+                <option value="Senior">{dict.profile.levelSenior}</option>
+                <option value="Lead">{dict.profile.levelLead}</option>
               </select>
               <ChevronDown className="w-4 h-4 text-text-secondary absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
@@ -931,7 +936,7 @@ export function ProfileForm({
 
           <div>
             <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Years of Experience
+              {dict.profile.experienceYears}
             </label>
             <input
               type="number"
@@ -948,7 +953,7 @@ export function ProfileForm({
         {/* Skills Tag Input */}
         <div className="mt-4">
           <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-            Skills
+            {dict.profile.skillsTitle}
           </label>
           <div className="flex gap-2">
             <input
@@ -956,7 +961,7 @@ export function ProfileForm({
               value={newSkill}
               onChange={(e) => setNewSkill(e.target.value)}
               onKeyDown={handleSkillKeyDown}
-              placeholder="Add a skill"
+              placeholder={dict.profile.addSkillPlaceholder}
               className="flex-1 bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors"
             />
             <button
@@ -964,7 +969,7 @@ export function ProfileForm({
               onClick={handleAddSkill}
               className="px-4 py-2 bg-surface hover:bg-surface-secondary border border-border rounded-lg text-sm font-medium text-text-primary shadow-xs transition-colors cursor-pointer"
             >
-              Add
+              {dict.profile.addSkillButton}
             </button>
           </div>
 
@@ -993,7 +998,7 @@ export function ProfileForm({
         {/* Industries Worked In */}
         <div className="mt-4">
           <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-            Industries Worked In (Optional)
+            {dict.profile.industriesWorkedIn}
           </label>
           <div className="flex gap-2">
             <input
@@ -1001,7 +1006,7 @@ export function ProfileForm({
               value={newIndustry}
               onChange={(e) => setNewIndustry(e.target.value)}
               onKeyDown={handleIndustryKeyDown}
-              placeholder="E.g. FinTech, Healthcare"
+              placeholder={dict.profile.industriesWorkedInPlaceholder}
               className="flex-1 bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors"
             />
             <button
@@ -1009,7 +1014,7 @@ export function ProfileForm({
               onClick={handleAddIndustry}
               className="px-4 py-2 bg-surface hover:bg-surface-secondary border border-border rounded-lg text-sm font-medium text-text-primary shadow-xs transition-colors cursor-pointer"
             >
-              Add
+              {dict.profile.addSkillButton}
             </button>
           </div>
 
@@ -1045,7 +1050,7 @@ export function ProfileForm({
             id="work-experience-heading"
             className="text-base font-bold text-text-primary"
           >
-            Work Experience
+            {dict.profile.experienceTitle}
           </h3>
           {experiences.length < 3 && (
             <button
@@ -1054,7 +1059,7 @@ export function ProfileForm({
               className="text-sm font-medium text-accent hover:text-accent-dark transition-colors flex items-center gap-1 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>Add role</span>
+              <span>{dict.profile.addRoleButton}</span>
             </button>
           )}
         </div>
@@ -1070,7 +1075,7 @@ export function ProfileForm({
                   type="button"
                   onClick={() => handleRemoveRole(exp.id)}
                   className="absolute top-4 right-4 text-text-muted hover:text-error transition-colors p-1"
-                  title="Remove role"
+                  title={dict.profile.removeExperience}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -1080,7 +1085,7 @@ export function ProfileForm({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                 <div>
                   <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-                    Company Name
+                    {dict.profile.companyName}
                   </label>
                   <input
                     type="text"
@@ -1095,7 +1100,7 @@ export function ProfileForm({
 
                 <div>
                   <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-                    Job Title
+                    {dict.profile.jobTitle}
                   </label>
                   <input
                     type="text"
@@ -1113,7 +1118,7 @@ export function ProfileForm({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                 <div>
                   <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-                    Start Date
+                    {dict.profile.startDate}
                   </label>
                   <div className="relative">
                     <input
@@ -1136,7 +1141,7 @@ export function ProfileForm({
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block">
-                      End Date
+                      {dict.profile.endDate}
                     </label>
                     <label className="inline-flex items-center gap-1.5 text-xs text-text-secondary cursor-pointer select-none">
                       <input
@@ -1151,17 +1156,17 @@ export function ProfileForm({
                         }
                         className="rounded border-border text-accent focus:ring-accent w-3.5 h-3.5 cursor-pointer accent-accent"
                       />
-                      <span>Currently working here</span>
+                      <span>{dict.profile.currentlyWorking}</span>
                     </label>
                   </div>
                   <input
                     type="text"
-                    value={exp.isCurrent ? "--------- ----" : exp.endDate}
+                    value={exp.isCurrent ? "" : exp.endDate}
                     onChange={(e) =>
                       handleExperienceChange(exp.id, "endDate", e.target.value)
                     }
                     disabled={exp.isCurrent}
-                    placeholder="Present"
+                    placeholder={dict.profile.present}
                     className={`w-full border border-border rounded-lg px-3.5 py-2.5 text-sm transition-colors ${
                       exp.isCurrent
                         ? "bg-surface-secondary text-text-muted cursor-not-allowed"
@@ -1174,7 +1179,7 @@ export function ProfileForm({
               {/* Responsibilities */}
               <div>
                 <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-                  Key Responsibilities
+                  {dict.profile.roleDescription}
                 </label>
                 <textarea
                   rows={3}
@@ -1204,7 +1209,7 @@ export function ProfileForm({
             id="education-heading"
             className="text-base font-bold text-text-primary"
           >
-            Education
+            {dict.profile.educationTitle}
           </h3>
           {educations.length < 3 && (
             <button
@@ -1213,7 +1218,7 @@ export function ProfileForm({
               className="text-sm font-medium text-accent hover:text-accent-dark transition-colors flex items-center gap-1 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>Add education</span>
+              <span>{dict.profile.addEducationButton}</span>
             </button>
           )}
         </div>
@@ -1229,7 +1234,7 @@ export function ProfileForm({
                   type="button"
                   onClick={() => handleRemoveEducation(edu.id)}
                   className="absolute top-4 right-4 text-text-muted hover:text-error transition-colors p-1 cursor-pointer"
-                  title="Remove education"
+                  title={dict.profile.removeEducation}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -1239,7 +1244,7 @@ export function ProfileForm({
                 {/* Degree */}
                 <div>
                   <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-                    Highest Degree
+                    {dict.profile.degree}
                   </label>
                   <div className="relative">
                     <select
@@ -1249,11 +1254,11 @@ export function ProfileForm({
                       }
                       className="w-full bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary appearance-none focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer pr-10"
                     >
-                      <option value="High School">High School</option>
-                      <option value="Associate">Associate Degree</option>
-                      <option value="Bachelor's">Bachelor&apos;s</option>
-                      <option value="Master's">Master&apos;s</option>
-                      <option value="Doctorate">Doctorate</option>
+                      <option value="High School">{dict.profile.degreeHighSchool}</option>
+                      <option value="Associate">{dict.profile.degreeAssociate}</option>
+                      <option value="Bachelor's">{dict.profile.degreeBachelor}</option>
+                      <option value="Master's">{dict.profile.degreeMaster}</option>
+                      <option value="Doctorate">{dict.profile.degreeDoctorate}</option>
                     </select>
                     <ChevronDown className="w-4 h-4 text-text-secondary absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
@@ -1262,7 +1267,7 @@ export function ProfileForm({
                 {/* Field of Study */}
                 <div>
                   <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-                    Field of Study
+                    {dict.profile.fieldOfStudy}
                   </label>
                   <input
                     type="text"
@@ -1278,7 +1283,7 @@ export function ProfileForm({
                 {/* Institution Name */}
                 <div>
                   <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-                    Institution Name
+                    {dict.profile.institution}
                   </label>
                   <input
                     type="text"
@@ -1298,7 +1303,7 @@ export function ProfileForm({
                 {/* Graduation Year */}
                 <div>
                   <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-                    Graduation Year
+                    {dict.profile.graduationYear}
                   </label>
                   <input
                     type="text"
@@ -1328,19 +1333,19 @@ export function ProfileForm({
           id="job-preferences-heading"
           className="text-base font-bold text-text-primary mb-4"
         >
-          Job Preferences
+          {dict.profile.jobPreferencesHeading}
         </h3>
 
         {/* Job Titles Seeking */}
         <div>
           <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-            Job Titles Seeking
+            {dict.profile.jobTitlesSeekingLabel}
           </label>
           <input
             type="text"
             value={jobTitlesSeeking}
             onChange={(e) => setJobTitlesSeeking(e.target.value)}
-            placeholder="Frontend Engineer, React Developer"
+            placeholder={dict.profile.jobTitlesSeekingPlaceholder}
             className="w-full bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors"
           />
         </div>
@@ -1349,7 +1354,7 @@ export function ProfileForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mt-4">
           <div>
             <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Remote Preference
+              {dict.profile.remotePreferenceLabel}
             </label>
             <div className="relative">
               <select
@@ -1357,10 +1362,10 @@ export function ProfileForm({
                 onChange={(e) => setRemotePreference(e.target.value)}
                 className="w-full bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary appearance-none focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors cursor-pointer pr-10"
               >
-                <option value="Any">Any</option>
-                <option value="Remote">Remote</option>
-                <option value="Hybrid">Hybrid</option>
-                <option value="Onsite">Onsite</option>
+                <option value="Any">{dict.profile.remoteAny}</option>
+                <option value="Remote">{dict.profile.remoteRemote}</option>
+                <option value="Hybrid">{dict.profile.remoteHybrid}</option>
+                <option value="Onsite">{dict.profile.remoteOnsite}</option>
               </select>
               <ChevronDown className="w-4 h-4 text-text-secondary absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
@@ -1368,13 +1373,13 @@ export function ProfileForm({
 
           <div>
             <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Salary Expectation (Optional)
+              {dict.profile.salaryExpectationOptional}
             </label>
             <input
               type="text"
               value={salaryExpectation}
               onChange={(e) => setSalaryExpectation(e.target.value)}
-              placeholder="E.g. $120k+"
+              placeholder={dict.profile.salaryExpectationPlaceholder}
               className="w-full bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors"
             />
           </div>
@@ -1383,13 +1388,13 @@ export function ProfileForm({
         {/* Preferred Locations */}
         <div className="mt-4">
           <label className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-            Preferred Locations (Optional)
+            {dict.profile.preferredLocationsOptional}
           </label>
           <input
             type="text"
             value={preferredLocations}
             onChange={(e) => setPreferredLocations(e.target.value)}
-            placeholder="E.g. New York, London"
+            placeholder={dict.profile.preferredLocationsPlaceholder}
             className="w-full bg-surface border border-border rounded-lg px-3.5 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent transition-colors"
           />
         </div>
@@ -1405,15 +1410,15 @@ export function ProfileForm({
           {isPending ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin text-accent-foreground" />
-              <span>Saving Profile...</span>
+              <span>{dict.profile.savingButton}</span>
             </>
           ) : isSavedFeedback ? (
             <>
               <Check className="w-5 h-5 text-accent-foreground animate-in fade-in zoom-in-75" />
-              <span>Profile Information Saved!</span>
+              <span>{dict.profile.profileSavedFeedback}</span>
             </>
           ) : (
-            <span>Save Profile</span>
+            <span>{dict.profile.saveButton}</span>
           )}
         </button>
 
@@ -1436,7 +1441,7 @@ export function ProfileForm({
         {/* Success Feedback Notice */}
         {isSavedFeedback && !warningMessage && (
           <p className="text-center text-xs text-success font-medium animate-in fade-in">
-            Profile saved to InsForge database.
+            {dict.profile.profileSavedDatabase}
           </p>
         )}
       </div>

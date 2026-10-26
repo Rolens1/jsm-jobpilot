@@ -3,8 +3,10 @@ import Image from "next/image";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createInsforgeServer } from "@/lib/insforge-server";
+import { getLocale, getDictionary } from "@/lib/i18n";
 import { LoginCard } from "@/components/auth/LoginCard";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { LoginReturnLink } from "@/components/auth/LoginReturnLink";
+import { Loader2 } from "lucide-react";
 
 type Props = {
   searchParams: Promise<{
@@ -29,13 +31,16 @@ async function LoginContent({ searchParams }: Props) {
     }
   }
 
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+
   const errorMessage =
     params.error === "auth_failed"
-      ? "Authentication failed. Please try signing in again."
+      ? dict.auth.errorAuthFailed
       : params.error === "cancelled"
-      ? "Sign-in was cancelled."
+      ? dict.auth.errorCancelled
       : params.error
-      ? "Could not sign you in. Please check your connection and try again."
+      ? dict.auth.errorGeneric
       : undefined;
 
   return (
@@ -79,15 +84,7 @@ export default function LoginPage({ searchParams }: Props) {
         </Suspense>
 
         {/* Clear bottom return link */}
-        <div className="mt-6 text-center">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-text-primary transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Return to homepage</span>
-          </Link>
-        </div>
+        <LoginReturnLink />
       </div>
     </div>
   );

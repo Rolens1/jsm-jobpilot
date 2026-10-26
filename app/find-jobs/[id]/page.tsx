@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
 import { createInsforgeServer } from "@/lib/insforge-server";
+import { getLocale, getDictionary } from "@/lib/i18n";
 import { Navbar } from "@/components/layout/Navbar";
 import { Job } from "@/types/database";
 import { ArrowLeft, Loader2 } from "lucide-react";
@@ -50,6 +51,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 async function JobDetailsContent({ params }: Props) {
   await connection();
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
   const insforge = await createInsforgeServer();
   const { data: authData } = await insforge.auth.getCurrentUser();
 
@@ -95,7 +98,7 @@ async function JobDetailsContent({ params }: Props) {
             className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-text-secondary hover:text-accent transition-colors group cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-            <span>Back to Find Jobs</span>
+            <span>{dict.jobDetails.backToJobs}</span>
           </Link>
         </div>
 

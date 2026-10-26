@@ -14,6 +14,7 @@ import {
   Loader2,
 } from "lucide-react";
 import type { ExtractedProfileData } from "@/actions/resume";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 type Props = {
   data: ExtractedProfileData;
@@ -34,6 +35,8 @@ export function ExtractedResumeReview({
   onDismiss,
   isApplying = false,
 }: Props) {
+  const { dict } = useTranslation();
+
   const isPersonalValidated = Boolean(validatedSections.personal);
   const isProfessionalValidated = Boolean(validatedSections.professional);
   const isSkillsValidated = Boolean(validatedSections.skills);
@@ -61,19 +64,19 @@ export function ExtractedResumeReview({
               <Sparkles className="w-3.5 h-3.5" />
               <span>
                 {extractionMethod === "ai"
-                  ? "AI Resume Extraction"
-                  : "Smart Resume Parser Engine"}
+                  ? dict.profile.aiResumeExtraction
+                  : dict.profile.smartResumeParser}
               </span>
             </span>
             <span className="text-xs font-medium text-text-secondary">
-              {validatedCount}/{totalSections} sections validated
+              {validatedCount}/{totalSections} {dict.profile.sectionsValidated}
             </span>
           </div>
           <h2 className="text-lg font-bold text-text-primary tracking-tight">
-            Extracted Resume Information
+            {dict.profile.reviewTitle}
           </h2>
           <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
-            Press the check button on any card to validate and apply that section, or click Auto-fill & Validate to apply all details immediately.
+            {dict.profile.reviewSubtitle}
           </p>
         </div>
 
@@ -88,12 +91,12 @@ export function ExtractedResumeReview({
             {isApplying ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin shrink-0" />
-                <span>Applying & Validating...</span>
+                <span>{dict.profile.applyingAndValidating}</span>
               </>
             ) : (
               <>
                 <FileCheck2 className="w-4 h-4 shrink-0" />
-                <span>Auto-fill & Validate All</span>
+                <span>{dict.profile.autoFillAndValidateAll}</span>
               </>
             )}
           </button>
@@ -103,7 +106,7 @@ export function ExtractedResumeReview({
               type="button"
               onClick={onDismiss}
               className="p-2 text-text-muted hover:text-text-primary rounded-lg transition-colors cursor-pointer"
-              title="Close review panel"
+              title={dict.profile.closeReviewPanel}
             >
               <X className="w-4 h-4" />
             </button>
@@ -120,7 +123,7 @@ export function ExtractedResumeReview({
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 text-accent" />
                 <span className="text-xs font-bold text-text-primary uppercase tracking-wider">
-                  Personal Information
+                  {dict.profile.personalTitle}
                 </span>
               </div>
               <button
@@ -135,12 +138,12 @@ export function ExtractedResumeReview({
                 {isPersonalValidated ? (
                   <>
                     <CheckCircle2 className="w-3.5 h-3.5 text-success" />
-                    <span>Validated</span>
+                    <span>{dict.profile.validated}</span>
                   </>
                 ) : (
                   <>
                     <Check className="w-3.5 h-3.5" />
-                    <span>Validate</span>
+                    <span>{dict.profile.validate}</span>
                   </>
                 )}
               </button>
@@ -148,30 +151,30 @@ export function ExtractedResumeReview({
 
             <div className="space-y-1.5 text-xs">
               <div className="flex items-center justify-between">
-                <span className="text-text-muted">Full Name:</span>
+                <span className="text-text-muted">{dict.profile.fullName}:</span>
                 <span className="font-semibold text-text-primary">{data.fullName || "—"}</span>
               </div>
               {data.phone && (
                 <div className="flex items-center justify-between">
-                  <span className="text-text-muted">Phone:</span>
+                  <span className="text-text-muted">{dict.profile.phone}:</span>
                   <span className="text-text-primary">{data.phone}</span>
                 </div>
               )}
               {data.location && (
                 <div className="flex items-center justify-between">
-                  <span className="text-text-muted">Location:</span>
+                  <span className="text-text-muted">{dict.profile.location}:</span>
                   <span className="text-text-primary">{data.location}</span>
                 </div>
               )}
               {data.linkedinUrl && (
                 <div className="flex items-center justify-between">
-                  <span className="text-text-muted">LinkedIn:</span>
+                  <span className="text-text-muted">{dict.profile.linkedinUrl}:</span>
                   <span className="text-accent truncate max-w-[180px]">{data.linkedinUrl}</span>
                 </div>
               )}
               {data.portfolioUrl && (
                 <div className="flex items-center justify-between">
-                  <span className="text-text-muted">Portfolio:</span>
+                  <span className="text-text-muted">{dict.profile.portfolioUrl}:</span>
                   <span className="text-accent truncate max-w-[180px]">{data.portfolioUrl}</span>
                 </div>
               )}
@@ -186,7 +189,7 @@ export function ExtractedResumeReview({
               <div className="flex items-center gap-2">
                 <Briefcase className="w-4 h-4 text-accent" />
                 <span className="text-xs font-bold text-text-primary uppercase tracking-wider">
-                  Professional Profile
+                  {dict.profile.professionalInfoHeading}
                 </span>
               </div>
               <button
@@ -201,12 +204,12 @@ export function ExtractedResumeReview({
                 {isProfessionalValidated ? (
                   <>
                     <CheckCircle2 className="w-3.5 h-3.5 text-success" />
-                    <span>Validated</span>
+                    <span>{dict.profile.validated}</span>
                   </>
                 ) : (
                   <>
                     <Check className="w-3.5 h-3.5" />
-                    <span>Validate</span>
+                    <span>{dict.profile.validate}</span>
                   </>
                 )}
               </button>
@@ -214,16 +217,16 @@ export function ExtractedResumeReview({
 
             <div className="space-y-1.5 text-xs">
               <div className="flex items-center justify-between">
-                <span className="text-text-muted">Current Title:</span>
+                <span className="text-text-muted">{dict.profile.currentJobTitle}:</span>
                 <span className="font-semibold text-text-primary">{data.currentTitle || "—"}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-text-muted">Experience Level:</span>
+                <span className="text-text-muted">{dict.profile.experienceLevel}:</span>
                 <span className="capitalize font-medium text-text-primary">{data.experienceLevel || "Mid"}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-text-muted">Years Experience:</span>
-                <span className="font-medium text-text-primary">{data.yearsExperience ?? 3} years</span>
+                <span className="text-text-muted">{dict.profile.experienceYears}:</span>
+                <span className="font-medium text-text-primary">{data.yearsExperience ?? 3}</span>
               </div>
             </div>
           </div>
@@ -236,7 +239,7 @@ export function ExtractedResumeReview({
               <div className="flex items-center gap-2">
                 <Wrench className="w-4 h-4 text-accent" />
                 <span className="text-xs font-bold text-text-primary uppercase tracking-wider">
-                  Detected Skills ({data.skills?.length || 0})
+                  {dict.profile.detectedSkills} ({data.skills?.length || 0})
                 </span>
               </div>
               <button
@@ -251,12 +254,12 @@ export function ExtractedResumeReview({
                 {isSkillsValidated ? (
                   <>
                     <CheckCircle2 className="w-3.5 h-3.5 text-success" />
-                    <span>Validated</span>
+                    <span>{dict.profile.validated}</span>
                   </>
                 ) : (
                   <>
                     <Check className="w-3.5 h-3.5" />
-                    <span>Validate</span>
+                    <span>{dict.profile.validate}</span>
                   </>
                 )}
               </button>
@@ -273,7 +276,7 @@ export function ExtractedResumeReview({
                   </span>
                 ))
               ) : (
-                <span className="text-xs text-text-muted italic">No skills extracted</span>
+                <span className="text-xs text-text-muted italic">{dict.profile.noSkillsExtracted}</span>
               )}
             </div>
           </div>
@@ -286,7 +289,7 @@ export function ExtractedResumeReview({
               <div className="flex items-center gap-2">
                 <GraduationCap className="w-4 h-4 text-accent" />
                 <span className="text-xs font-bold text-text-primary uppercase tracking-wider">
-                  Education ({data.education?.length || 0})
+                  {dict.profile.educationRecords} ({data.education?.length || 0})
                 </span>
               </div>
               <button
@@ -301,12 +304,12 @@ export function ExtractedResumeReview({
                 {isEducationValidated ? (
                   <>
                     <CheckCircle2 className="w-3.5 h-3.5 text-success" />
-                    <span>Validated</span>
+                    <span>{dict.profile.validated}</span>
                   </>
                 ) : (
                   <>
                     <Check className="w-3.5 h-3.5" />
-                    <span>Validate</span>
+                    <span>{dict.profile.validate}</span>
                   </>
                 )}
               </button>
@@ -317,7 +320,7 @@ export function ExtractedResumeReview({
                 data.education.map((edu, idx) => (
                   <div key={idx} className="pb-1.5 border-b border-border/40 last:border-0 last:pb-0">
                     <p className="font-semibold text-text-primary">
-                      {edu.degree} {edu.field ? `in ${edu.field}` : ""}
+                      {edu.degree} {edu.field ? `${edu.field}` : ""}
                     </p>
                     <p className="text-text-secondary text-[11px]">
                       {edu.institution} {edu.graduationYear ? `(${edu.graduationYear})` : ""}
@@ -325,7 +328,7 @@ export function ExtractedResumeReview({
                   </div>
                 ))
               ) : (
-                <span className="text-xs text-text-muted italic">No education records found</span>
+                <span className="text-xs text-text-muted italic">{dict.profile.noEducationFound}</span>
               )}
             </div>
           </div>
@@ -338,7 +341,7 @@ export function ExtractedResumeReview({
               <div className="flex items-center gap-2">
                 <Briefcase className="w-4 h-4 text-accent" />
                 <span className="text-xs font-bold text-text-primary uppercase tracking-wider">
-                  Work Experience / Projects ({data.workExperience?.length || 0})
+                  {dict.profile.workExperienceProjects} ({data.workExperience?.length || 0})
                 </span>
               </div>
               <button
@@ -353,12 +356,12 @@ export function ExtractedResumeReview({
                 {isExperienceValidated ? (
                   <>
                     <CheckCircle2 className="w-3.5 h-3.5 text-success" />
-                    <span>Validated</span>
+                    <span>{dict.profile.validated}</span>
                   </>
                 ) : (
                   <>
                     <Check className="w-3.5 h-3.5" />
-                    <span>Validate</span>
+                    <span>{dict.profile.validate}</span>
                   </>
                 )}
               </button>
@@ -375,7 +378,7 @@ export function ExtractedResumeReview({
                       <p className="font-bold text-text-primary">{exp.title}</p>
                       <p className="font-medium text-accent">{exp.company}</p>
                       <p className="text-text-muted text-[11px] mt-0.5">
-                        {exp.startDate} – {exp.isCurrent ? "Present" : exp.endDate || "Completed"}
+                        {exp.startDate} to {exp.isCurrent ? dict.profile.present : exp.endDate || ""}
                       </p>
                       {exp.responsibilities && (
                         <p className="text-text-secondary text-[11px] mt-2 line-clamp-3 leading-relaxed">
@@ -386,7 +389,7 @@ export function ExtractedResumeReview({
                   </div>
                 ))
               ) : (
-                <span className="text-xs text-text-muted italic">No experience entries found</span>
+                <span className="text-xs text-text-muted italic">{dict.profile.noExperienceFound}</span>
               )}
             </div>
           </div>
@@ -399,7 +402,7 @@ export function ExtractedResumeReview({
               <div className="flex items-center gap-2">
                 <Compass className="w-4 h-4 text-accent" />
                 <span className="text-xs font-bold text-text-primary uppercase tracking-wider">
-                  Target Roles & Preferences
+                  {dict.profile.targetRolesPreferences}
                 </span>
               </div>
               <button
@@ -414,12 +417,12 @@ export function ExtractedResumeReview({
                 {isPreferencesValidated ? (
                   <>
                     <CheckCircle2 className="w-3.5 h-3.5 text-success" />
-                    <span>Validated</span>
+                    <span>{dict.profile.validated}</span>
                   </>
                 ) : (
                   <>
                     <Check className="w-3.5 h-3.5" />
-                    <span>Validate</span>
+                    <span>{dict.profile.validate}</span>
                   </>
                 )}
               </button>
@@ -427,25 +430,25 @@ export function ExtractedResumeReview({
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <div>
-                <span className="text-text-muted block text-[11px]">Roles Seeking:</span>
+                <span className="text-text-muted block text-[11px]">{dict.profile.rolesSeeking}</span>
                 <span className="font-semibold text-text-primary">
-                  {data.jobTitlesSeeking?.join(", ") || data.currentTitle || "Full-Stack Developer"}
+                  {data.jobTitlesSeeking?.join(", ") || data.currentTitle || "Full Stack Developer"}
                 </span>
               </div>
               <div>
-                <span className="text-text-muted block text-[11px]">Work Place Preference:</span>
+                <span className="text-text-muted block text-[11px]">{dict.profile.workplacePreference}</span>
                 <span className="capitalize font-medium text-text-primary">
                   {data.remotePreference || "Hybrid"}
                 </span>
               </div>
               <div>
-                <span className="text-text-muted block text-[11px]">Work Authorization:</span>
+                <span className="text-text-muted block text-[11px]">{dict.profile.workAuthorization}:</span>
                 <span className="capitalize font-medium text-text-primary">
                   {data.workAuthorization === "permanent_resident"
-                    ? "Permanent Resident"
+                    ? dict.profile.permanentResident
                     : data.workAuthorization === "visa_required"
-                    ? "Visa Required"
-                    : "Citizen"}
+                    ? dict.profile.visaRequired
+                    : dict.profile.citizen}
                 </span>
               </div>
             </div>

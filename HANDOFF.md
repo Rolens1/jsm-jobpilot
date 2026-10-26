@@ -1,8 +1,8 @@
 # Handoff / Session Memory
 
-> Generated: 2026-10-26T10:50:00-04:00  
+> Generated: 2026-10-26T12:00:00-04:00  
 > Project: JobPilot (`d:/Ai Projects/job-pilot`)  
-> Session summary: Feature 18 (Language Architecture, Dictionaries, and Onboarding Preference) is 100% complete and fully verified. Spec 0013 is Accepted with complete verify.md checklist. Built zero route disruption bilingual foundation in English and French: strict TypeScript dictionaries (`types/i18n.ts`, `dictionaries/en.ts`, `dictionaries/fr.ts`), cookie based locale resolution (`NEXT_LOCALE`, `JOBPILOT_LANG_PROMPTED`), automatic Accept-Language browser detection in `middleware.ts`, `LanguageProvider` client context, segmented navbar toggle in `components/layout/Navbar.tsx`, and first visit candidate onboarding modal in `components/onboarding/LanguageOnboardingModal.tsx`. All 13 Next.js 16 routes compile with Partial Prerendering (`◐`) with zero TypeScript errors. Ready for Feature 19 (Full UI Copy Conversion Across All App Surfaces).
+> Session summary: Feature 19 (Full UI Copy Conversion Across All App Surfaces) is 100% complete and fully verified. Converted all UI copy across Homepage, Auth, Candidate Profile, Find Jobs, Job Details, and Dashboard into native bilingual English and French. Complete dictionary parity achieved in `types/i18n.ts`, `dictionaries/en.ts`, and `dictionaries/fr.ts` (380 lines each). All Client Components wired to `useTranslation()` from `@/components/providers/LanguageProvider` and Server Components wired to `getLocale()` / `getDictionary()`. TypeScript check (`npx tsc --noEmit`) and production Next.js 16 build (`npm run build`) pass cleanly with code 0 across all 13 routes with Partial Prerendering (`◐`). Ready for Feature 20 (Bilingual AI and Document Intelligence).
 
 ## Goal
 
@@ -10,7 +10,7 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
 
 ## Current State
 
-**Completed & Confirmed Working (Phases 1 through 5, and Phase 6 Feature 18 Complete):**
+**Completed & Confirmed Working (Phases 1 through 5, and Phase 6 Features 18 & 19 Complete):**
 - **Phase 1: Foundation (Features 01-04)**
   - Feature 01: Homepage with modern responsive landing design and design tokens.
   - Feature 02: InsForge Auth with PKCE, session sync via cookies, and middleware protection.
@@ -33,8 +33,9 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
   - Feature 15: Stats bar connected to live PostgreSQL jobs data computing total jobs, arithmetic mean match score, researched count, and 7-day velocity with comparative trends (Spec 0010).
   - Feature 16: Recent activity timeline connected to live database runs and researched jobs with 10-minute sliding window deduplication and relative timestamps (Spec 0011).
   - Feature 17: Three native SVG analytics charts connected to live candidate metrics with pure aggregation engine in `lib/dashboard-charts.ts`, dynamic tiered Y axis scaling (10, 15, 25, 50, 100+), 10-minute event deduplication, and zero state handling (Spec 0012).
-- **Phase 6: Internationalization (Feature 18 Complete)**
+- **Phase 6: Internationalization (Features 18 & 19 Complete)**
   - Feature 18: Bilingual language architecture, type safe dictionaries, cookie state resolution, navbar segmented pill switcher, and first visit onboarding modal (Spec 0013).
+  - Feature 19: Full UI copy conversion across all app surfaces (Navigation, Homepage, Footer, Auth, Profile, Find Jobs, Job Details, Dashboard) in English and French. Zero hardcoded UI strings. Full dictionary type safety.
 - **Code Reviews, Simplification, and Dead Code Removal**:
   - Full five-axis code reviews executed after Feature 14, 16, 17, and 18.
   - Feature 18 code review polish: eliminated duplicate server action round trip on onboarding confirm, added Escape key and backdrop dismissal handlers, and streamlined i18n import paths.
@@ -101,17 +102,18 @@ Phase 6 introduces bilingual localization across the entire application in Frenc
   - Established lightweight type-safe translation dictionaries (`dictionaries/en.ts`, `dictionaries/fr.ts`).
   - Added cookie based language state management (`NEXT_LOCALE`, `JOBPILOT_LANG_PROMPTED`) with effortless switching in navbar and first visit onboarding modal.
   - Created client `LanguageProvider` with `useTranslation` / `useLocale` and server helper `getLocale()`.
-- **Feature 19: Full UI Copy Conversion Across All App Surfaces**:
-  - Localize all static and dynamic text across Homepage, Auth, Profile, Find Jobs, Job Details, and Dashboard using `useTranslation()` and dictionaries.
+- **Feature 19: Full UI Copy Conversion Across All App Surfaces (Completed)**:
+  - Localized all static and dynamic text across Homepage, Auth, Profile, Find Jobs, Job Details, and Dashboard using `useTranslation()` and dictionaries. Complete type safety and 100% dictionary key parity.
 - **Feature 20: Bilingual AI and Document Intelligence**:
   - Instruct AI prompts (resume extraction, resume generation, company research) to respect candidate language preference and produce tailored French or English outputs.
 
 ## Next Steps
 
 When resuming in the next session:
-1. Proceed with Feature 19 (Full UI Copy Conversion Across All App Surfaces).
-2. Wire `useTranslation()` to localized copy in Homepage, Auth, Profile, Find Jobs, Job Details, and Dashboard.
-3. Verify build and type checking with `npx tsc --noEmit` and `npm run build`.g.
+1. Proceed with Feature 20 (Bilingual AI and Document Intelligence).
+2. Update AI prompts in `lib/ai.ts`, `lib/job-search/scorer.ts`, and `lib/agent/research.ts` to inspect candidate locale preference.
+3. Localize generated ATS resume PDF templates and headers in `@react-pdf/renderer` Server Actions according to selected locale.
+4. Verify end to end bilingual intelligence flows and finalize Phase 6 Internationalization.
 
 ## Key Constraints and Context
 

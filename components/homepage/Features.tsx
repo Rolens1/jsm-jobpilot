@@ -1,8 +1,13 @@
+"use client";
+
 import Image from "next/image";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 type Props = Record<string, never>;
 
 export function Features({}: Props = {}) {
+  const { dict } = useTranslation();
+
   return (
     <section className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 py-12 flex flex-col gap-12">
       {/* Feature Block 1: Manage Your Job Search With Ease */}
@@ -10,20 +15,19 @@ export function Features({}: Props = {}) {
         {/* Left Column: Text & List */}
         <div className="p-8 sm:p-12 lg:p-16 flex flex-col justify-center border-b lg:border-b-0 lg:border-r border-border">
           <h2 className="text-3xl sm:text-4xl font-bold text-text-primary tracking-tight mb-8 sm:mb-10">
-            Manage Your Job
+            {dict.homepage.featuresHeadingLine1}
             <br />
-            Search With Ease
+            {dict.homepage.featuresHeadingLine2}
           </h2>
 
           <div className="flex flex-col">
             {/* Item 1 - Active with left accent bar */}
             <div className="border-l-2 border-accent pl-4 py-1">
               <h3 className="text-base font-semibold text-text-primary">
-                Find jobs that actually fit
+                {dict.homepage.feature1Title}
               </h3>
               <p className="text-sm text-text-secondary mt-1.5 leading-relaxed">
-                Search by title and location or paste a job link. Get matched roles
-                you can quickly scan.
+                {dict.homepage.feature1Desc}
               </p>
             </div>
 
@@ -32,11 +36,10 @@ export function Features({}: Props = {}) {
             {/* Item 2 */}
             <div className="pl-4 py-1">
               <h3 className="text-base font-semibold text-text-primary">
-                Know the Company Before You Apply
+                {dict.homepage.feature2Title}
               </h3>
               <p className="text-sm text-text-secondary mt-1.5 leading-relaxed">
-                Stop guessing what a company is about. JobPilot browses their site
-                and gives you everything you need to apply with confidence.
+                {dict.homepage.feature2Desc}
               </p>
             </div>
 
@@ -45,11 +48,10 @@ export function Features({}: Props = {}) {
             {/* Item 3 */}
             <div className="pl-4 py-1">
               <h3 className="text-base font-semibold text-text-primary">
-                Keep track of every application
+                {dict.homepage.feature3Title}
               </h3>
               <p className="text-sm text-text-secondary mt-1.5 leading-relaxed">
-                Keep a clear view of every job you&apos;ve found, tailored. Your
-                activity and progress all stay in one simple place.
+                {dict.homepage.feature3Desc}
               </p>
             </div>
           </div>
@@ -87,20 +89,19 @@ export function Features({}: Props = {}) {
         {/* Right Column: Text & List */}
         <div className="p-8 sm:p-12 lg:p-16 flex flex-col justify-center order-1 lg:order-2">
           <h2 className="text-3xl sm:text-4xl font-bold text-text-primary tracking-tight mb-8 sm:mb-10">
-            Apply With More
+            {dict.homepage.featuresBlock2HeadingLine1}
             <br />
-            Confidence, Every Time
+            {dict.homepage.featuresBlock2HeadingLine2}
           </h2>
 
           <div className="flex flex-col">
             {/* Item 1 */}
             <div className="pl-4 py-1">
               <h3 className="text-base font-semibold text-text-primary">
-                Understand your match score
+                {dict.homepage.feature4Title}
               </h3>
               <p className="text-sm text-text-secondary mt-1.5 leading-relaxed">
-                See how your profile lines up with each role before you apply.
-                Get a clear breakdown of what fits and what&apos;s missing.
+                {dict.homepage.feature4Desc}
               </p>
             </div>
 
@@ -109,12 +110,10 @@ export function Features({}: Props = {}) {
             {/* Item 2 */}
             <div className="pl-4 py-1">
               <h3 className="text-base font-semibold text-text-primary">
-                AI-Powered Job Matching
+                {dict.homepage.feature5Title}
               </h3>
               <p className="text-sm text-text-secondary mt-1.5 leading-relaxed">
-                Stop guessing which jobs are worth applying to. JobPilot scores
-                every role against your actual skills so you focus on the ones that
-                matter.
+                {dict.homepage.feature5Desc}
               </p>
             </div>
 
@@ -123,11 +122,10 @@ export function Features({}: Props = {}) {
             {/* Item 3 */}
             <div className="pl-4 py-1">
               <h3 className="text-base font-semibold text-text-primary">
-                Focus on the right roles
+                {dict.homepage.feature6Title}
               </h3>
               <p className="text-sm text-text-secondary mt-1.5 leading-relaxed">
-                Filter out low fit jobs and stay on the ones that actually matter.
-                Spend less time sorting and more time applying.
+                {dict.homepage.feature6Desc}
               </p>
             </div>
           </div>

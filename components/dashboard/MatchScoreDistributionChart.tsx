@@ -1,10 +1,15 @@
+"use client";
+
+import React from "react";
 import type { ScoreDistributionBucket } from "@/lib/dashboard-mock-data";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 interface Props {
   data: ScoreDistributionBucket[];
 }
 
 export function MatchScoreDistributionChart({ data }: Props) {
+  const { dict } = useTranslation();
   // Chart dimensions
   const svgWidth = 380;
   const svgHeight = 220;
@@ -43,7 +48,7 @@ export function MatchScoreDistributionChart({ data }: Props) {
       {/* Card Header */}
       <div>
         <h2 className="text-base font-semibold text-text-primary">
-          Match Score Distribution
+          {dict.dashboard.chartMatchTitle}
         </h2>
       </div>
 
@@ -53,7 +58,7 @@ export function MatchScoreDistributionChart({ data }: Props) {
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
           className="w-full h-full overflow-visible"
           role="img"
-          aria-label="Match Score Distribution Bar Chart"
+          aria-label={dict.dashboard.chartMatchTitle}
         >
           {/* Horizontal dashed grid lines and Y-axis labels */}
           {yTicks.map((tick) => {

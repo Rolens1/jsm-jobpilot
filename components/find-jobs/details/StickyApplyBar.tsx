@@ -3,12 +3,14 @@
 import React, { useEffect, useState } from "react";
 import { Job } from "@/types/database";
 import { ExternalLink, Sparkles } from "lucide-react";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 interface StickyApplyBarProps {
   job: Job;
 }
 
 export function StickyApplyBar({ job }: StickyApplyBarProps) {
+  const { dict } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -77,7 +79,7 @@ export function StickyApplyBar({ job }: StickyApplyBarProps) {
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>{job.match_score}% Match</span>
+            <span>{job.match_score}% {dict.jobDetails.matchScoreLabel}</span>
           </div>
 
           <a
@@ -86,7 +88,7 @@ export function StickyApplyBar({ job }: StickyApplyBarProps) {
             rel="noopener noreferrer"
             className="bg-accent text-accent-foreground font-semibold px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl hover:bg-accent-dark active:scale-[0.99] transition-all flex items-center gap-2 shadow-sm text-xs sm:text-sm shrink-0"
           >
-            <span>Apply Now</span>
+            <span>{dict.jobDetails.applyNow}</span>
             <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </a>
         </div>

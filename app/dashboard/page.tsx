@@ -20,11 +20,13 @@ import {
   type AgentRunChartRecord,
 } from "@/lib/dashboard-charts";
 import { LanguageOnboardingModal } from "@/components/onboarding/LanguageOnboardingModal";
-import { hasLanguagePrompted } from "@/lib/i18n";
+import { hasLanguagePrompted, getLocale, getDictionary } from "@/lib/i18n";
 import type { Profile } from "@/types/database";
 
 async function DashboardContent() {
   await connection();
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
   const insforge = await createInsforgeServer();
   const { data: authData } = await insforge.auth.getCurrentUser();
 
@@ -65,7 +67,7 @@ async function DashboardContent() {
 
   const completion = calculateProfileCompletion(profile, profile?.resume_pdf_url);
   const stats = calculateDashboardStats(statJobs);
-  const activities = formatRecentActivities(agentRuns, researchedJobs, 5);
+  const activities = formatRecentActivities(agentRuns, researchedJobs, 5, dict);
   const chartsData = calculateDashboardCharts(chartJobs, chartRuns);
   const hasPrompted = await hasLanguagePrompted();
 

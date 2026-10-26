@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { LayoutDashboard, Search, User } from "lucide-react";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
+import { useTranslation } from "@/components/providers/LanguageProvider";
 
 type Props = {
   activePath?: string;
@@ -11,12 +14,13 @@ type Props = {
 };
 
 export function Navbar({ activePath, userEmail, showUserActions = true }: Props) {
+  const { dict } = useTranslation();
   const isAppNav = Boolean(activePath);
 
   const navItems = [
-    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Find Jobs", href: "/find-jobs", icon: Search },
-    { label: "Profile", href: "/profile", icon: User },
+    { label: dict.nav.dashboard, href: "/dashboard", icon: LayoutDashboard },
+    { label: dict.nav.findJobs, href: "/find-jobs", icon: Search },
+    { label: dict.nav.profile, href: "/profile", icon: User },
   ];
 
   return (
@@ -101,7 +105,7 @@ export function Navbar({ activePath, userEmail, showUserActions = true }: Props)
                 href="/login"
                 className="bg-text-darkest text-surface rounded-lg px-4 py-2 text-sm font-medium hover:opacity-90 transition-opacity"
               >
-                Start for free
+                {dict.nav.startFree}
               </Link>
             </div>
           </>
