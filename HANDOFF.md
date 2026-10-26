@@ -36,7 +36,8 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
 - **Phase 6: Internationalization (Feature 18 Complete)**
   - Feature 18: Bilingual language architecture, type safe dictionaries, cookie state resolution, navbar segmented pill switcher, and first visit onboarding modal (Spec 0013).
 - **Code Reviews, Simplification, and Dead Code Removal**:
-  - Full five-axis code reviews executed after Feature 14, 16, and 17.
+  - Full five-axis code reviews executed after Feature 14, 16, 17, and 18.
+  - Feature 18 code review polish: eliminated duplicate server action round trip on onboarding confirm, added Escape key and backdrop dismissal handlers, and streamlined i18n import paths.
   - Purged unreferenced developer diagnostics cards: `components/dashboard/EventTrackingCard.tsx` and `components/profile/ProfileCompleteTracker.tsx`.
   - Cleaned `context/ui-registry.md` removing obsolete placeholder entries.
   - Research event deduplication resolved double-counting between `jobs.company_research` and `agent_runs`.
