@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { LayoutDashboard, Search, User } from "lucide-react";
 import { SignOutButton } from "@/components/auth/SignOutButton";
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 
 type Props = {
   activePath?: string;
@@ -35,7 +36,7 @@ export function Navbar({ activePath, userEmail, showUserActions = true }: Props)
         </Link>
 
         {isAppNav ? (
-          <div className="flex items-center h-full gap-3 sm:gap-6">
+          <div className="flex items-center h-full gap-2 sm:gap-4 md:gap-6">
             {/* App Navigation Tabs */}
             <nav className="flex items-center h-full gap-2 sm:gap-6 md:gap-8">
               {navItems.map((item) => {
@@ -58,17 +59,20 @@ export function Navbar({ activePath, userEmail, showUserActions = true }: Props)
               })}
             </nav>
 
-            {/* Authenticated User Actions */}
-            {showUserActions && (
-              <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-border h-8">
-                {userEmail && (
-                  <span className="text-xs text-text-secondary hidden xl:inline-block max-w-[160px] truncate">
-                    {userEmail}
-                  </span>
-                )}
-                <SignOutButton className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg text-text-secondary hover:text-text-primary border border-border bg-surface hover:bg-surface-secondary transition-colors cursor-pointer" />
-              </div>
-            )}
+            {/* Language Switcher & Authenticated User Actions */}
+            <div className="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-border h-8">
+              <LanguageSwitcher />
+              {showUserActions && (
+                <>
+                  {userEmail && (
+                    <span className="text-xs text-text-secondary hidden xl:inline-block max-w-[160px] truncate">
+                      {userEmail}
+                    </span>
+                  )}
+                  <SignOutButton className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg text-text-secondary hover:text-text-primary border border-border bg-surface hover:bg-surface-secondary transition-colors cursor-pointer" />
+                </>
+              )}
+            </div>
           </div>
         ) : (
           <>
@@ -92,6 +96,7 @@ export function Navbar({ activePath, userEmail, showUserActions = true }: Props)
             </nav>
 
             <div className="flex items-center gap-3">
+              <LanguageSwitcher />
               <Link
                 href="/login"
                 className="bg-text-darkest text-surface rounded-lg px-4 py-2 text-sm font-medium hover:opacity-90 transition-opacity"

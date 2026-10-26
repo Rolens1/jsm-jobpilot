@@ -11,6 +11,17 @@ export async function middleware(request: NextRequest) {
 
   const response = NextResponse.next();
 
+  // Automatic language detection on initial visit
+  if (!request.cookies.has("NEXT_LOCALE")) {
+    const acceptLanguage = request.headers.get("accept-language")?.toLowerCase() || "";
+    const detected = acceptLanguage.startsWith("fr") || acceptLanguage.includes(",fr") ? "fr" : "en";
+    response.cookies.set("NEXT_LOCALE", detected, {
+      path: "/",
+      maxAge: 31536000,
+      sameSite: "lax",
+    });
+  }
+
   let accessToken: string | null = null;
 
   try {

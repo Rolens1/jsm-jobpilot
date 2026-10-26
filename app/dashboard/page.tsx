@@ -19,6 +19,8 @@ import {
   type JobChartRecord,
   type AgentRunChartRecord,
 } from "@/lib/dashboard-charts";
+import { LanguageOnboardingModal } from "@/components/onboarding/LanguageOnboardingModal";
+import { hasLanguagePrompted } from "@/lib/i18n";
 import type { Profile } from "@/types/database";
 
 async function DashboardContent() {
@@ -65,10 +67,14 @@ async function DashboardContent() {
   const stats = calculateDashboardStats(statJobs);
   const activities = formatRecentActivities(agentRuns, researchedJobs, 5);
   const chartsData = calculateDashboardCharts(chartJobs, chartRuns);
+  const hasPrompted = await hasLanguagePrompted();
 
   return (
     <>
       <PostHogUserIdentity userId={user.id} email={user.email} />
+
+      {/* Language Onboarding Prompt: displayed on first authenticated visit if unprompted */}
+      <LanguageOnboardingModal initialPrompted={hasPrompted} />
 
       {/* Top Navigation */}
       <Navbar activePath="/dashboard" userEmail={userEmail} />

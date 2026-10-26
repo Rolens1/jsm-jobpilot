@@ -1,8 +1,8 @@
 # Handoff / Session Memory
 
-> Generated: 2026-10-26T10:20:00-04:00  
+> Generated: 2026-10-26T10:50:00-04:00  
 > Project: JobPilot (`d:/Ai Projects/job-pilot`)  
-> Session summary: Phase 5 (Dashboard) is 100% complete and fully verified. Features 14 through 17 are implemented, tested, audited via code review, and committed. Completed pre-Phase-6 dead code cleanup: removed unreferenced developer testing cards (`EventTrackingCard.tsx` and `ProfileCompleteTracker.tsx`, removing 468 lines) and purged obsolete placeholder entries from `context/ui-registry.md`. Standardized 60-second clock skew tolerance across stats and charts calculations and guarded area chart math against division by zero. All 13 Next.js 16 routes compile with Partial Prerendering (`◐`) with zero TypeScript errors. Ready for Phase 6 (Internationalization in French and English), starting with Feature 18.
+> Session summary: Feature 18 (Language Architecture, Dictionaries, and Onboarding Preference) is 100% complete and fully verified. Spec 0013 is Accepted with complete verify.md checklist. Built zero route disruption bilingual foundation in English and French: strict TypeScript dictionaries (`types/i18n.ts`, `dictionaries/en.ts`, `dictionaries/fr.ts`), cookie based locale resolution (`NEXT_LOCALE`, `JOBPILOT_LANG_PROMPTED`), automatic Accept-Language browser detection in `middleware.ts`, `LanguageProvider` client context, segmented navbar toggle in `components/layout/Navbar.tsx`, and first visit candidate onboarding modal in `components/onboarding/LanguageOnboardingModal.tsx`. All 13 Next.js 16 routes compile with Partial Prerendering (`◐`) with zero TypeScript errors. Ready for Feature 19 (Full UI Copy Conversion Across All App Surfaces).
 
 ## Goal
 
@@ -10,7 +10,7 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
 
 ## Current State
 
-**Completed & Confirmed Working (Phases 1 through 5 Complete):**
+**Completed & Confirmed Working (Phases 1 through 5, and Phase 6 Feature 18 Complete):**
 - **Phase 1: Foundation (Features 01-04)**
   - Feature 01: Homepage with modern responsive landing design and design tokens.
   - Feature 02: InsForge Auth with PKCE, session sync via cookies, and middleware protection.
@@ -33,11 +33,17 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
   - Feature 15: Stats bar connected to live PostgreSQL jobs data computing total jobs, arithmetic mean match score, researched count, and 7-day velocity with comparative trends (Spec 0010).
   - Feature 16: Recent activity timeline connected to live database runs and researched jobs with 10-minute sliding window deduplication and relative timestamps (Spec 0011).
   - Feature 17: Three native SVG analytics charts connected to live candidate metrics with pure aggregation engine in `lib/dashboard-charts.ts`, dynamic tiered Y axis scaling (10, 15, 25, 50, 100+), 10-minute event deduplication, and zero state handling (Spec 0012).
+- **Phase 6: Internationalization (Feature 18 Complete)**
+  - Feature 18: Bilingual language architecture, type safe dictionaries, cookie state resolution, navbar segmented pill switcher, and first visit onboarding modal (Spec 0013).
 - **Code Reviews, Simplification, and Dead Code Removal**:
   - Full five-axis code reviews executed after Feature 14, 16, and 17.
   - Purged unreferenced developer diagnostics cards: `components/dashboard/EventTrackingCard.tsx` and `components/profile/ProfileCompleteTracker.tsx`.
   - Cleaned `context/ui-registry.md` removing obsolete placeholder entries.
   - Research event deduplication resolved double-counting between `jobs.company_research` and `agent_runs`.
+  - Clock skew tolerance added for instant real-time query accuracy across stats and charts (`diffMs >= -60000`).
+  - Zero-division defensive guard in `JobsFoundChart.tsx` points calculation.
+  - Token compliance: 100% of charts and i18n components use CSS variable fills and semantic tokens.
+  - TypeScript check (`npx tsc --noEmit`) and Next.js 16 production build (`npm run build`) pass cleanly with code 0.
   - Clock skew tolerance added for instant real-time query accuracy across stats and charts (`diffMs >= -60000`).
   - Zero-division defensive guard in `JobsFoundChart.tsx` points calculation.
   - Token compliance: 100% of charts use CSS variable fills and semantic tokens.
@@ -81,29 +87,30 @@ Build JobPilot, an AI powered job hunting assistant using Next.js 16 (App Router
    - *Working Alternative*: 10-minute sliding window deduplication across both sources in `lib/dashboard-charts.ts` matching `lib/dashboard-activity.ts`.
 4. **Developer Diagnostics UI on Production Dashboard**:
    - *Attempted*: Retaining interactive testing buttons (`EventTrackingCard.tsx` and `ProfileCompleteTracker.tsx`) on production pages.
-   - *Failure Reason*: Distracted from real dashboard metrics and created unnecessary client JavaScript payload.
-   - *Working Alternative*: Purged test cards; analytics events are now dispatched automatically during actual workflow actions (`actions/analytics.ts`, `actions/job-search.ts`, `app/api/agent/research/route.ts`).
+   - *Failure Reason*: Distracted from real dashboard metrics and created unnecessary client JavaScript payload    - *Working Alternative*: Purged test cards; analytics events are now dispatched automatically during actual workflow actions (`actions/analytics.ts`, `actions/job-search.ts`, `app/api/agent/research/route.ts`).
+5. **Direct `cookies()` Invocation in `RootLayout`**:
+   - *Attempted*: Calling `await getLocale()` directly in `app/layout.tsx` to pass initial locale to `<html lang={locale}>`.
+   - *Failure Reason*: Next.js 16 Partial Prerendering treats un-suspended `cookies()` at root layout as a dynamic blocker, triggering `HANGING_PROMISE_REJECTION` on static pages like `/_not-found`.
+   - *Working Alternative*: Keep `RootLayout` static-compatible with `html lang="en"`, while `LanguageProvider` client context reads `NEXT_LOCALE` cookie on client mount and updates `document.documentElement.lang`. Server Components that need locale call `await getLocale()` within their existing Suspense/dynamic boundaries.
 
 ## Current Best Theory (Phase 6 Internationalization)
 
 Phase 6 introduces bilingual localization across the entire application in French and English:
-- **Feature 18: Language Architecture, Dictionaries, and Onboarding Preference (Spec 0013)**:
-  - Establish lightweight type-safe translation dictionaries (`dictionaries/en.ts`, `dictionaries/fr.ts`).
-  - Add language state management via cookie / profile preference (`language: 'en' | 'fr'`) with effortless switching in navbar and profile settings.
-  - Create translation hooks and server translation helpers that maintain Partial Prerendering performance.
+- **Feature 18: Language Architecture, Dictionaries, and Onboarding Preference (Spec 0013 Accepted)**:
+  - Established lightweight type-safe translation dictionaries (`dictionaries/en.ts`, `dictionaries/fr.ts`).
+  - Added cookie based language state management (`NEXT_LOCALE`, `JOBPILOT_LANG_PROMPTED`) with effortless switching in navbar and first visit onboarding modal.
+  - Created client `LanguageProvider` with `useTranslation` / `useLocale` and server helper `getLocale()`.
 - **Feature 19: Full UI Copy Conversion Across All App Surfaces**:
-  - Localize all static and dynamic text across Homepage, Auth, Profile, Find Jobs, Job Details, and Dashboard.
+  - Localize all static and dynamic text across Homepage, Auth, Profile, Find Jobs, Job Details, and Dashboard using `useTranslation()` and dictionaries.
 - **Feature 20: Bilingual AI and Document Intelligence**:
   - Instruct AI prompts (resume extraction, resume generation, company research) to respect candidate language preference and produce tailored French or English outputs.
 
 ## Next Steps
 
 When resuming in the next session:
-1. Run `/architect feature 18` to generate Spec 0013 for Language Architecture, Dictionaries, and Onboarding Preference.
-2. Review Phase 6 requirements in [context/build-plan.md](file:///d:/Ai%20Projects/job-pilot/context/build-plan.md).
-3. Implement `dictionaries/en.ts` and `dictionaries/fr.ts` with typed keys.
-4. Add language toggle to the navigation bar and persist language in cookies / candidate profile.
-5. Verify build and test with Next.js 16 Partial Prerendering.
+1. Proceed with Feature 19 (Full UI Copy Conversion Across All App Surfaces).
+2. Wire `useTranslation()` to localized copy in Homepage, Auth, Profile, Find Jobs, Job Details, and Dashboard.
+3. Verify build and type checking with `npx tsc --noEmit` and `npm run build`.g.
 
 ## Key Constraints and Context
 

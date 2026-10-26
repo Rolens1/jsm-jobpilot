@@ -325,3 +325,23 @@ After building any component — update this file with the component name, file 
 - **Wide Chart Column**: `lg:col-span-7 xl:col-span-8`
 - **Distribution Chart Column**: `lg:col-span-5 xl:col-span-4`
 
+### `LanguageSwitcher`
+- **File**: `components/layout/LanguageSwitcher.tsx`
+- **Container**: `inline-flex items-center p-0.5 rounded-lg bg-surface-secondary border border-border`
+- **Active Segment**: `px-2 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer bg-accent text-accent-foreground shadow-2xs`
+- **Inactive Segment**: `px-2 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer text-text-secondary hover:text-text-primary hover:bg-surface`
+
+### `LanguageOnboardingModal`
+- **File**: `components/onboarding/LanguageOnboardingModal.tsx`
+- **Backdrop**: `fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 transition-all`
+- **Card**: `bg-surface border border-border rounded-2xl max-w-md w-full p-6 shadow-xl relative animate-in fade-in zoom-in-95 duration-200`
+- **Header Icon Box**: `w-10 h-10 rounded-xl bg-accent-muted border border-border flex items-center justify-center text-accent shrink-0`
+- **Option Button**: `w-full p-3.5 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer`
+- **Active Option**: `bg-accent-muted/40 border-accent shadow-xs`
+- **Inactive Option**: `bg-surface-secondary/70 border-border hover:bg-surface-secondary hover:border-border-hover`
+- **Badge Box**: `w-8 h-8 rounded-lg bg-surface border border-border flex items-center justify-center font-bold text-xs text-text-primary`
+- **Check Indicator**: `w-5 h-5 rounded-full bg-accent text-accent-foreground flex items-center justify-center`
+- **Confirm CTA**: `w-full py-2.5 px-4 rounded-xl bg-accent text-accent-foreground font-medium text-sm hover:bg-accent-dark transition-all shadow-sm cursor-pointer disabled:opacity-50`
+- **Dismiss Link**: `w-full py-1.5 text-xs text-text-muted hover:text-text-secondary transition-colors text-center cursor-pointer`
+
+

@@ -1,7 +1,7 @@
 # 0013. Language Architecture and Dictionaries
 
 **Date**: 2026-10-26  
-**Status**: Proposed  
+**Status**: Accepted  
 
 ## Summary
 
@@ -136,12 +136,12 @@ Rendered when `hasPrompted` is false and user is authenticated:
 
 ## Build Plan
 
-- **Step 1 (Contracts and Dictionaries)**: Create `types/i18n.ts`, `dictionaries/en.ts`, and `dictionaries/fr.ts` with complete type definitions covering common, nav, onboarding, and dashboard domains. Satisfies AC-3.
-- **Step 2 (Server and Client Infrastructure)**: Build `lib/i18n.ts` for server locale detection and dictionary retrieval, plus `actions/locale.ts` for cookie setting actions. Satisfies AC-2 and AC-4.
-- **Step 3 (Client Provider)**: Create `components/providers/LanguageProvider.tsx` supplying `useLocale()` and `useTranslation()`, and mount in `app/layout.tsx`. Satisfies AC-5.
-- **Step 4 (Navbar Switcher)**: Build `components/layout/LanguageSwitcher.tsx` and integrate into `components/layout/Navbar.tsx` for desktop and mobile viewports. Satisfies AC-1 and AC-7.
-- **Step 5 (Onboarding Modal)**: Build `components/onboarding/LanguageOnboardingModal.tsx` and mount inside the authenticated layout. Satisfies AC-6.
-- **Step 6 (Verification)**: Verify TypeScript compile passes with zero errors, confirm cookie setting in browser devtools, test locale switching, and verify responsive design. Satisfies AC-1 through AC-7.
+- [x] **Step 1 (Contracts and Dictionaries)**: Create `types/i18n.ts`, `dictionaries/en.ts`, and `dictionaries/fr.ts` with complete type definitions covering common, nav, onboarding, and dashboard domains. Satisfies AC-3.
+- [x] **Step 2 (Server and Client Infrastructure)**: Build `lib/i18n.ts` for server locale detection and dictionary retrieval, plus `actions/locale.ts` for cookie setting actions. Satisfies AC-2 and AC-4.
+- [x] **Step 3 (Client Provider)**: Create `components/providers/LanguageProvider.tsx` supplying `useLocale()` and `useTranslation()`, and mount in `app/layout.tsx`. Satisfies AC-5.
+- [x] **Step 4 (Navbar Switcher)**: Build `components/layout/LanguageSwitcher.tsx` and integrate into `components/layout/Navbar.tsx` for desktop and mobile viewports. Satisfies AC-1 and AC-7.
+- [x] **Step 5 (Onboarding Modal)**: Build `components/onboarding/LanguageOnboardingModal.tsx` and mount inside the authenticated layout. Satisfies AC-6.
+- [x] **Step 6 (Verification)**: Verify TypeScript compile passes with zero errors, confirm cookie setting in browser devtools, test locale switching, and verify responsive design. Satisfies AC-1 through AC-7.
 
 ## Security Considerations
 
