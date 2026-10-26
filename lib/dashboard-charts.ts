@@ -2,6 +2,7 @@ import type { DailyCountPoint, ScoreDistributionBucket } from "@/lib/dashboard-m
 
 export interface JobChartRecord {
   id: string;
+  company?: string;
   match_score: number | null;
   company_research?: unknown | null;
   found_at: string | null;
@@ -84,8 +85,8 @@ export function calculateDashboardCharts(
     if (isNaN(dateMs)) continue;
 
     const diffMs = nowMs - dateMs;
-    // Consider jobs discovered within the past 7 days
-    if (diffMs >= 0 && diffMs <= sevenDaysMs) {
+    // Consider jobs discovered within the past 7 days (with 1-minute clock skew tolerance)
+    if (diffMs >= -60000 && diffMs <= sevenDaysMs) {
       const dayIdx = getDayIndex(date.getDay());
       const dayName = DAYS_OF_WEEK[dayIdx];
       jobsCountsByDay[dayName] = (jobsCountsByDay[dayName] || 0) + 1;
@@ -93,7 +94,14 @@ export function calculateDashboardCharts(
   }
 
   // 2. Process Company Research Activity by Day of Week
-  const seenResearchDays = new Set<string>();
+  // Collect raw research events from both jobs and agent_runs, then deduplicate
+  // overlapping events for the same company within a 10-minute window
+  interface RawResearchEvent {
+    timestampMs: number;
+    companyKey: string;
+  }
+
+  const rawResearchEvents: RawResearchEvent[] = [];
 
   // A. From jobs with company_research
   for (const job of jobs) {
@@ -105,16 +113,8 @@ export function calculateDashboardCharts(
     const dateMs = date.getTime();
     if (isNaN(dateMs)) continue;
 
-    const diffMs = nowMs - dateMs;
-    if (diffMs >= 0 && diffMs <= sevenDaysMs) {
-      const dayIdx = getDayIndex(date.getDay());
-      const dayName = DAYS_OF_WEEK[dayIdx];
-      const key = `job-${job.id}-${dayName}`;
-      if (!seenResearchDays.has(key)) {
-        seenResearchDays.add(key);
-        researchCountsByDay[dayName] = (researchCountsByDay[dayName] || 0) + 1;
-      }
-    }
+    const companyKey = (job.company || "").trim().toLowerCase();
+    rawResearchEvents.push({ timestampMs: dateMs, companyKey });
   }
 
   // B. From agent_runs where job_title_searched starts with "Research:"
@@ -127,15 +127,37 @@ export function calculateDashboardCharts(
     const dateMs = date.getTime();
     if (isNaN(dateMs)) continue;
 
-    const diffMs = nowMs - dateMs;
-    if (diffMs >= 0 && diffMs <= sevenDaysMs) {
-      const dayIdx = getDayIndex(date.getDay());
+    const companyKey = run.job_title_searched.replace(/^Research:\s*/i, "").trim().toLowerCase();
+    rawResearchEvents.push({ timestampMs: dateMs, companyKey });
+  }
+
+  // Sort by timestamp descending
+  rawResearchEvents.sort((a, b) => b.timestampMs - a.timestampMs);
+
+  // Deduplicate research events within 10 minutes
+  const uniqueResearchEvents: RawResearchEvent[] = [];
+  const seenTimestamps: { ms: number; companyKey: string }[] = [];
+
+  for (const event of rawResearchEvents) {
+    const isDuplicate = seenTimestamps.some(
+      (seen) =>
+        Math.abs(seen.ms - event.timestampMs) < 10 * 60 * 1000 &&
+        (seen.companyKey === event.companyKey || !seen.companyKey || !event.companyKey)
+    );
+    if (!isDuplicate) {
+      seenTimestamps.push({ ms: event.timestampMs, companyKey: event.companyKey });
+      uniqueResearchEvents.push(event);
+    }
+  }
+
+  // Aggregate unique research events into weekly day buckets
+  for (const event of uniqueResearchEvents) {
+    const diffMs = nowMs - event.timestampMs;
+    if (diffMs >= -60000 && diffMs <= sevenDaysMs) {
+      const eventDate = new Date(event.timestampMs);
+      const dayIdx = getDayIndex(eventDate.getDay());
       const dayName = DAYS_OF_WEEK[dayIdx];
-      const key = `run-${run.id}-${dayName}`;
-      if (!seenResearchDays.has(key)) {
-        seenResearchDays.add(key);
-        researchCountsByDay[dayName] = (researchCountsByDay[dayName] || 0) + 1;
-      }
+      researchCountsByDay[dayName] = (researchCountsByDay[dayName] || 0) + 1;
     }
   }
 

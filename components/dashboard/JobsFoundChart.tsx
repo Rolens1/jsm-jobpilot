@@ -34,8 +34,9 @@ export function JobsFoundChart({ data }: Props) {
   const baselineY = marginTop + plotHeight;
 
   // Compute coordinate points
+  const denominator = data.length > 1 ? data.length - 1 : 1;
   const points = data.map((item, index) => {
-    const x = marginLeft + (index / (data.length - 1)) * plotWidth;
+    const x = marginLeft + (index / denominator) * plotWidth;
     const y = marginTop + ((maxY - item.count) / maxY) * plotHeight;
     return { x, y, ...item };
   });
