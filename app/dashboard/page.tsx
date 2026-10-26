@@ -10,6 +10,11 @@ import { DashboardContainer } from "@/components/dashboard/DashboardContainer";
 import { EventTrackingCard } from "@/components/dashboard/EventTrackingCard";
 import { Loader2 } from "lucide-react";
 import { calculateDashboardStats, type JobStatRecord } from "@/lib/dashboard-stats";
+import {
+  formatRecentActivities,
+  type AgentRunRecord,
+  type ResearchedJobRecord,
+} from "@/lib/dashboard-activity";
 import type { Profile } from "@/types/database";
 
 async function DashboardContent() {
@@ -24,8 +29,8 @@ async function DashboardContent() {
   const user = authData.user;
   const userEmail = user.email ?? "Authenticated User";
 
-  // Fetch candidate profile and jobs in parallel
-  const [profileResult, jobsResult] = await Promise.all([
+  // Fetch candidate profile, jobs, and recent agent runs in parallel
+  const [profileResult, jobsResult, agentRunsResult] = await Promise.all([
     insforge.database
       .from("profiles")
       .select("*")
@@ -33,15 +38,26 @@ async function DashboardContent() {
       .maybeSingle(),
     insforge.database
       .from("jobs")
-      .select("id, match_score, company_research, found_at, created_at")
-      .eq("user_id", user.id),
+      .select("id, company, title, match_score, company_research, found_at, created_at, updated_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false }),
+    insforge.database
+      .from("agent_runs")
+      .select("id, job_title_searched, location_searched, jobs_found, status, started_at, completed_at")
+      .eq("user_id", user.id)
+      .order("started_at", { ascending: false })
+      .limit(10),
   ]);
 
   const profile = profileResult.data as Profile | null;
-  const jobs = (jobsResult.data ?? []) as JobStatRecord[];
+  const rawJobs = jobsResult.data ?? [];
+  const statJobs = rawJobs as unknown as JobStatRecord[];
+  const researchedJobs = rawJobs as unknown as ResearchedJobRecord[];
+  const agentRuns = (agentRunsResult.data ?? []) as AgentRunRecord[];
 
   const completion = calculateProfileCompletion(profile, profile?.resume_pdf_url);
-  const stats = calculateDashboardStats(jobs);
+  const stats = calculateDashboardStats(statJobs);
+  const activities = formatRecentActivities(agentRuns, researchedJobs, 5);
 
   return (
     <>
@@ -61,7 +77,7 @@ async function DashboardContent() {
         )}
 
         {/* Dashboard Core: Stats, Recent Activity Feed, and Analytics Charts */}
-        <DashboardContainer initialStats={stats} />
+        <DashboardContainer initialStats={stats} initialActivity={activities} />
 
         {/* Developer Diagnostics & PostHog Event Verification Tool */}
         <div className="pt-4">

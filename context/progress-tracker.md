@@ -7,8 +7,8 @@ Update this file after every completed feature. Any AI agent reading this should
 ## Current Status
 
 **Phase:** Phase 5: Dashboard
-**Last completed:** 15 Stats Bar: Real Data (Spec 0010 built, verified, and accepted)
-**Next:** 16 Recent Activity: Real Data (Spec 0011)
+**Last completed:** 16 Recent Activity: Real Data (Spec 0011 built, verified, and accepted)
+**Next:** 17 Analytics Charts: PostHog Data (Spec 0012)
 
 ---
 
@@ -43,7 +43,7 @@ Update this file after every completed feature. Any AI agent reading this should
 
 - [x] 14 Dashboard Page — Full UI
 - [x] 15 Stats Bar — Real Data
-- [ ] 16 Recent Activity — Real Data
+- [x] 16 Recent Activity — Real Data
 - [ ] 17 Analytics Charts — PostHog Data
 
 ### Phase 6: Internationalization (French and English)
@@ -76,6 +76,7 @@ Update this file after every completed feature. Any AI agent reading this should
 - **Domain-Aware Heuristic Scoring & Resilient Domain Extraction**: Updated `cleanRootDomain` in `lib/agent/research.ts` to support multi-segment country-code top level domains such as `.co.uk`, `.qc.ca`, and `.com.au`. Upgraded `heuristicScoreJob` in `lib/job-search/scorer.ts` and `generateFallbackDossier` in `lib/agent/research.ts` to dynamically inspect job title and candidate target profile, adapting skills for finance and operations roles rather than assuming software engineering defaults.
 - **Dashboard Page Modular UI and Native SVG Architecture (Spec 0009)**: Built full visual dashboard matching `context/designs/dashboard.png` with six modular components (`StatsBar`, `RecentActivity`, `CompanyResearchChart`, `JobsFoundChart`, `MatchScoreDistributionChart`, `DashboardContainer`). Implemented three custom responsive SVG charts with zero external charting library dependencies to eliminate bundle bloat and React 19 App Router hydration errors. Integrated conditional `ProfileAttentionBanner` query via server-side `insforge.database.from("profiles")` while retaining the PostHog diagnostics dispatch tool. Verified with Next.js 16 Partial Prerendering and zero TypeScript errors.
 - **Stats Bar Real Data Integration (Spec 0010)**: Connected the four performance metric cards to live InsForge PostgreSQL jobs data in `app/dashboard/page.tsx` using `Promise.all` parallel fetching with profile query. Built pure statistical calculation engine in `lib/dashboard-stats.ts` computing total jobs found, arithmetic mean match score percentage, count of jobs with completed company research, and count of new jobs discovered within the past seven days. Implemented dynamic trend calculations comparing the last seven days against the preceding seven days, with clean empty state handling for new candidates.
+- **Recent Activity Real Data Timeline Integration (Spec 0011)**: Connected the Recent Activity feed to live database events collected from `agent_runs` and `jobs.company_research` in `app/dashboard/page.tsx`. Built chronological event merger and deduplicator in `lib/dashboard-activity.ts` that handles job search queries, formats company research dossiers, deduplicates overlapping research agent runs within ten minute windows, formats human readable relative timestamps (`Just now`, `X minutes ago`, `Yesterday`) using `lib/date-utils.ts`, and gracefully handles empty states with an inviting search prompt.
 
 
 

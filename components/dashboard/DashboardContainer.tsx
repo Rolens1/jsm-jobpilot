@@ -1,6 +1,11 @@
 "use client";
 
-import { DASHBOARD_MOCK_DATA, type DashboardData, type StatMetric } from "@/lib/dashboard-mock-data";
+import {
+  DASHBOARD_MOCK_DATA,
+  type DashboardData,
+  type StatMetric,
+  type ActivityEvent,
+} from "@/lib/dashboard-mock-data";
 import { StatsBar } from "@/components/dashboard/StatsBar";
 import { RecentActivity } from "@/components/dashboard/RecentActivity";
 import { CompanyResearchChart } from "@/components/dashboard/CompanyResearchChart";
@@ -10,13 +15,16 @@ import { MatchScoreDistributionChart } from "@/components/dashboard/MatchScoreDi
 interface Props {
   initialData?: DashboardData;
   initialStats?: StatMetric[];
+  initialActivity?: ActivityEvent[];
 }
 
 export function DashboardContainer({
   initialData = DASHBOARD_MOCK_DATA,
   initialStats,
+  initialActivity,
 }: Props) {
   const stats = initialStats ?? initialData.stats;
+  const activities = initialActivity ?? initialData.recentActivity;
 
   return (
     <div className="w-full space-y-6">
@@ -25,7 +33,7 @@ export function DashboardContainer({
 
       {/* 2. Middle Row: Recent Activity & Company Research Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
-        <RecentActivity activities={initialData.recentActivity} />
+        <RecentActivity activities={activities} />
         <CompanyResearchChart data={initialData.companyResearchActivity} />
       </div>
 
