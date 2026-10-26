@@ -495,6 +495,42 @@ Make AI generation, scoring explanations, and document generation respect the ca
 
 ---
 
+## Phase 7: Deployment & Production Launch
+
+### 21 Production Environment & Secrets Architecture
+
+Configure and validate production environment variables, security contracts, and InsForge database network settings for Vercel deployment.
+
+**Scope & Logic:**
+- Audit all required runtime and build-time environment variables across authentication, database, analytics, AI gateways, and job aggregators.
+- Produce a hardened `.env.example` defining exact expected keys, defaults, and documentation for deployment.
+- Verify InsForge BaaS production domain whitelisting, OAuth redirect URLs for Vercel production domain, and database connection pooling.
+
+---
+
+### 22 Build Hardening, Security Headers & Runtime Compatibility
+
+Ensure the Next.js 16 application is fully hardened for production edge and serverless execution on Vercel.
+
+**Scope & Logic:**
+- Address Next.js 16 runtime conventions (resolve proxy/middleware deprecation warnings).
+- Configure production HTTP security headers in `next.config.ts` (Content-Security-Policy, Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, Referrer-Policy).
+- Verify bundle optimization, static page caching, and Partial Prerendering compliance under production flags.
+
+---
+
+### 23 Vercel Project Architecture, CI/CD Pipeline & Live Deployment
+
+Link the project to Vercel, configure automated deployment triggers, and perform the live production release.
+
+**Scope & Logic:**
+- Create `vercel.json` if required for build settings, region selection, and serverless function limits.
+- Link repository via Vercel CLI / GitHub integration with preview and production deployment workflows.
+- Run pre-flight verification checks (`tsc --noEmit`, `next build`) and trigger deployment.
+- Perform end-to-end smoke verification on live `.vercel.app` URL covering auth, database queries, AI scoring, bilingual toggle, and resume PDF generation.
+
+---
+
 ## Feature Count
 
 | Phase                 | Features |
@@ -505,4 +541,5 @@ Make AI generation, scoring explanations, and document generation respect the ca
 | Phase 4: Job Details  | 2        |
 | Phase 5: Dashboard    | 4        |
 | Phase 6: i18n (FR/EN) | 3        |
-| **Total**             | **20**   |
+| Phase 7: Deployment   | 3        |
+| **Total**             | **23**   |

@@ -52,6 +52,12 @@ Update this file after every completed feature. Any AI agent reading this should
 - [x] 19 Full UI Copy Conversion Across All App Surfaces
 - [x] 20 Bilingual AI and Document Intelligence
 
+### Phase 7: Deployment & Production Launch
+
+- [ ] 21 Production Environment & Secrets Architecture
+- [ ] 22 Build Hardening, Security Headers & Runtime Compatibility
+- [ ] 23 Vercel Project Architecture, CI/CD Pipeline & Live Deployment
+
 ---
 
 ## Decisions Made During Build
